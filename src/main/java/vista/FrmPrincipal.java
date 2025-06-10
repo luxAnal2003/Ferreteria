@@ -52,6 +52,9 @@ public class FrmPrincipal extends javax.swing.JFrame {
         jMenuItem12 = new javax.swing.JMenuItem();
         jMenuItem14 = new javax.swing.JMenuItem();
         jMenu6 = new javax.swing.JMenu();
+        jMenuItem9 = new javax.swing.JMenuItem();
+        jMenuItem10 = new javax.swing.JMenuItem();
+        jMenuItem11 = new javax.swing.JMenuItem();
         jMenu7 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -126,8 +129,21 @@ public class FrmPrincipal extends javax.swing.JFrame {
         jMenuBar1.add(jMenu9);
 
         jMenu6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/historial1.png"))); // NOI18N
-        jMenu6.setText("Facturar");
+        jMenu6.setText("Ventas");
         jMenu6.setPreferredSize(new java.awt.Dimension(150, 50));
+
+        jMenuItem9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/nuevo-producto.png"))); // NOI18N
+        jMenuItem9.setText("Registrar");
+        jMenu6.add(jMenuItem9);
+
+        jMenuItem10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/buscar.png"))); // NOI18N
+        jMenuItem10.setText("Consultar");
+        jMenu6.add(jMenuItem10);
+
+        jMenuItem11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/eliminar.png"))); // NOI18N
+        jMenuItem11.setText("Anular");
+        jMenu6.add(jMenuItem11);
+
         jMenuBar1.add(jMenu6);
 
         jMenu7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/cerrar-sesion.png"))); // NOI18N
@@ -184,6 +200,8 @@ public class FrmPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu9;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem10;
+    private javax.swing.JMenuItem jMenuItem11;
     private javax.swing.JMenuItem jMenuItem12;
     private javax.swing.JMenuItem jMenuItem13;
     private javax.swing.JMenuItem jMenuItem14;
@@ -194,5 +212,6 @@ public class FrmPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JMenuItem jMenuItem8;
+    private javax.swing.JMenuItem jMenuItem9;
     // End of variables declaration//GEN-END:variables
 }
