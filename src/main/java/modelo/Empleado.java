@@ -4,6 +4,8 @@
  */
 package modelo;
 
+import java.time.LocalDateTime;
+
 /**
  *
  * @author admin
@@ -12,22 +14,26 @@ public class Empleado extends Usuario{
     
     private String rol;
     private int estado;
+    private String cargo;
 
-    public Empleado(String rol, int estado) {
+    public Empleado(String rol, int estado, String cargo) {
         this.rol = rol;
         this.estado = estado;
+        this.cargo = cargo;
     }
 
-    public Empleado(String rol, int estado, int id, String cedula, String nombre, String direccion, String correo) {
-        super(id, cedula, nombre, direccion, correo);
+    public Empleado(String rol, int estado, String cargo, int id, String cedula, String nombre, String apellido, String telefono, String direccion, String correo, LocalDateTime creado, LocalDateTime modificado, LocalDateTime eliminado, int creadoPor, int modificadoPor) {
+        super(id, cedula, nombre, apellido, telefono, direccion, correo, creado, modificado, eliminado, creadoPor, modificadoPor);
         this.rol = rol;
         this.estado = estado;
+        this.cargo = cargo;
     }
 
-    public Empleado(String rol, int estado, String cedula, String nombre, String direccion, String correo, String usuario, String contrasenia) {
-        super(cedula, nombre, direccion, correo, usuario, contrasenia);
+    public Empleado(String rol, int estado, String cargo, String cedula, String nombre, String apellido, String telefono, String direccion, String correo, LocalDateTime creado, LocalDateTime modificado, LocalDateTime eliminado, int creadoPor, int modificadoPor) {
+        super(cedula, nombre, apellido, telefono, direccion, correo, creado, modificado, eliminado, creadoPor, modificadoPor);
         this.rol = rol;
         this.estado = estado;
+        this.cargo = cargo;
     }
 
     public String getRol() {
@@ -70,6 +76,22 @@ public class Empleado extends Usuario{
         this.nombre = nombre;
     }
 
+    public String getApellido() {
+        return apellido;
+    }
+
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
     public String getDireccion() {
         return direccion;
     }
@@ -85,6 +107,16 @@ public class Empleado extends Usuario{
     public void setCorreo(String correo) {
         this.correo = correo;
     }
+
+    public String getCargo() {
+        return cargo;
+    }
+
+    public void setCargo(String cargo) {
+        this.cargo = cargo;
+    }
+
+    
     
     
 
