@@ -91,7 +91,7 @@ public class Empleado extends Usuario{
     @Override
     public String toString() {
         return "Empleado{" +
-               super.toString() + // Incluye la representación de Persona
+               super.toString() +
                ", rol='" + rol + '\'' +
                ", estado='" + estado + '\'' +
                '}';

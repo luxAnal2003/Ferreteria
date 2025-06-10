@@ -85,6 +85,13 @@ public class Cliente extends Usuario{
         this.correo = correo;
     }
 
-    
+    @Override
+    public String toString() {
+        return "Empleado{" +
+               super.toString() +
+               ", rol='" + rol + '\'' +
+               ", estado='" + estado + '\'' +
+               '}';
+    }
     
 }
