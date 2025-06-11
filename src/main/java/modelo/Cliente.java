@@ -14,7 +14,7 @@ public class Cliente extends Usuario{
     private String rol;
     private int estado;
 
-    public Cliente(String rol, int estado) {
+    public Cliente(String rol, int estado, String string1, String string2, String string3, String string4) {
         this.rol = rol;
         this.estado = estado;
     }
@@ -29,6 +29,14 @@ public class Cliente extends Usuario{
         super(cedula, nombre, apellido, telefono, direccion, correo, creado, modificado, eliminado, creadoPor, modificadoPor);
         this.rol = rol;
         this.estado = estado;
+    }
+
+    public Cliente(String administrador, int i, String ced, String nom, String dir, String cor, Object object, Object object0) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public Cliente(String string, int aInt, int aInt0, String string0, String string1, String string2, String string3) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     public String getRol() {
