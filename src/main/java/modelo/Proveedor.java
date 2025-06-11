@@ -19,17 +19,19 @@ public class Proveedor extends Usuario{
         this.estado = estado;
     }
 
-    public Proveedor(String rol, int estado, int id, String cedula, String nombre, String apellido, String telefono, String direccion, String correo, LocalDateTime creado, LocalDateTime modificado, LocalDateTime eliminado, int creadoPor, int modificadoPor) {
-        super(id, cedula, nombre, apellido, telefono, direccion, correo, creado, modificado, eliminado, creadoPor, modificadoPor);
+    public Proveedor(String rol, int estado, int id, String cedula, String nombre, String apellido, String telefono, String direccion, String correo) {
+        super(id, cedula, nombre, apellido, telefono, direccion, correo);
         this.rol = rol;
         this.estado = estado;
     }
 
-    public Proveedor(String rol, int estado, String cedula, String nombre, String apellido, String telefono, String direccion, String correo, LocalDateTime creado, LocalDateTime modificado, LocalDateTime eliminado, int creadoPor, int modificadoPor) {
-        super(cedula, nombre, apellido, telefono, direccion, correo, creado, modificado, eliminado, creadoPor, modificadoPor);
+    public Proveedor(String rol, int estado, String cedula, String nombre, String apellido, String telefono, String direccion, String correo) {
+        super(cedula, nombre, apellido, telefono, direccion, correo);
         this.rol = rol;
         this.estado = estado;
     }
+
+   
 
     public String getRol() {
         return rol;

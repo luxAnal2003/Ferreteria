@@ -9,12 +9,14 @@ import java.util.Optional;
 public class EmpleadoService {
 
     private List<Empleado> empleados = new ArrayList<>();
-
+    private int contadorId = 1;
+    
     public List<Empleado> obtenerTodos() {
         return empleados;
     }
 
     public void agregar(Empleado e) {
+        e.setId(contadorId++);
         empleados.add(e);
     }
 

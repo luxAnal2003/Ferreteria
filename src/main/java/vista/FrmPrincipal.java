@@ -7,6 +7,7 @@ import controlador.VentaController;
 import vista.FrmVenta;
 
 import controlador.EmpleadoController;
+import controlador.ProductoController;
 
 import java.awt.Dimension;
 import javax.swing.JFrame;
@@ -40,43 +41,17 @@ public class FrmPrincipal extends javax.swing.JFrame {
     private void initComponents() {
 
         jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu2 = new javax.swing.JMenu();
-        jMenuItem3 = new javax.swing.JMenuItem();
-        jMenuItem1 = new javax.swing.JMenuItem();
         jMenu8 = new javax.swing.JMenu();
         jMenuItem6 = new javax.swing.JMenuItem();
-        jMenuItem7 = new javax.swing.JMenuItem();
-        jMenuItem8 = new javax.swing.JMenuItem();
         jMenu5 = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
-        jMenuItem4 = new javax.swing.JMenuItem();
-        jMenuItem5 = new javax.swing.JMenuItem();
         jMenu9 = new javax.swing.JMenu();
-        jMenuItem13 = new javax.swing.JMenuItem();
         jMenuItem12 = new javax.swing.JMenuItem();
-        jMenuItem14 = new javax.swing.JMenuItem();
         jMenu6 = new javax.swing.JMenu();
         jMenuItem9 = new javax.swing.JMenuItem();
-        jMenuItem10 = new javax.swing.JMenuItem();
-        jMenuItem11 = new javax.swing.JMenuItem();
-        jMenu7 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jMenu2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/usuario.png"))); // NOI18N
-        jMenu2.setText("Usuario");
-        jMenu2.setPreferredSize(new java.awt.Dimension(150, 50));
-
-        jMenuItem3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/nuevo-cliente.png"))); // NOI18N
-        jMenuItem3.setText("Nuevo Usuario");
-        jMenu2.add(jMenuItem3);
-
-        jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/configuraciones.png"))); // NOI18N
-        jMenuItem1.setText("Gestionar Usuarios");
-        jMenu2.add(jMenuItem1);
-
-        jMenuBar1.add(jMenu2);
 
         jMenu8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/producto.png"))); // NOI18N
         jMenu8.setText("Producto");
@@ -84,15 +59,12 @@ public class FrmPrincipal extends javax.swing.JFrame {
 
         jMenuItem6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/nuevo-producto.png"))); // NOI18N
         jMenuItem6.setText("Nuevo");
+        jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem6ActionPerformed(evt);
+            }
+        });
         jMenu8.add(jMenuItem6);
-
-        jMenuItem7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/producto.png"))); // NOI18N
-        jMenuItem7.setText("Editar");
-        jMenu8.add(jMenuItem7);
-
-        jMenuItem8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/eliminar.png"))); // NOI18N
-        jMenuItem8.setText("Eliminar");
-        jMenu8.add(jMenuItem8);
 
         jMenuBar1.add(jMenu8);
 
@@ -104,41 +76,20 @@ public class FrmPrincipal extends javax.swing.JFrame {
         jMenuItem2.setText("Nuevo");
         jMenu5.add(jMenuItem2);
 
-        jMenuItem4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/producto.png"))); // NOI18N
-        jMenuItem4.setText("Editar");
-        jMenu5.add(jMenuItem4);
-
-        jMenuItem5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/eliminar.png"))); // NOI18N
-        jMenuItem5.setText("Eliminar");
-        jMenu5.add(jMenuItem5);
-
         jMenuBar1.add(jMenu5);
 
         jMenu9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/cliente.png"))); // NOI18N
         jMenu9.setText("Empleados");
         jMenu9.setPreferredSize(new java.awt.Dimension(150, 50));
 
-        jMenuItem13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/producto.png"))); // NOI18N
-        jMenuItem13.setText("Editar");
-        jMenu9.add(jMenuItem13);
-
         jMenuItem12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/nuevo-producto.png"))); // NOI18N
         jMenuItem12.setText("Nuevo");
-        jMenu9.add(jMenuItem12);
-
         jMenuItem12.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                FrmEmpleado vistaEmpleado = new FrmEmpleado();
-                EmpleadoController controlador = new EmpleadoController(vistaEmpleado);
-                vistaEmpleado.setVisible(true);
+                jMenuItem12ActionPerformed(evt);
             }
         });
-
-
-
-        jMenuItem14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/eliminar.png"))); // NOI18N
-        jMenuItem14.setText("Eliminar");
-        jMenu9.add(jMenuItem14);
+        jMenu9.add(jMenuItem12);
 
         jMenuBar1.add(jMenu9);
 
@@ -148,37 +99,37 @@ public class FrmPrincipal extends javax.swing.JFrame {
 
         jMenuItem9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/nuevo-producto.png"))); // NOI18N
         jMenuItem9.setText("Registrar");
-        jMenu6.add(jMenuItem9);
-
         jMenuItem9.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                FrmVenta vistaVenta = new FrmVenta();
-                VentaController controlador = new VentaController(vistaVenta);
-                vistaVenta.setVisible(true);
-
+                jMenuItem9ActionPerformed(evt);
             }
         });
-
-
-        jMenuItem10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/buscar.png"))); // NOI18N
-        jMenuItem10.setText("Consultar");
-        jMenu6.add(jMenuItem10);
-
-        jMenuItem11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/eliminar.png"))); // NOI18N
-        jMenuItem11.setText("Anular");
-        jMenu6.add(jMenuItem11);
+        jMenu6.add(jMenuItem9);
 
         jMenuBar1.add(jMenu6);
-
-        jMenu7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/cerrar-sesion.png"))); // NOI18N
-        jMenu7.setText("Cerrar Sesión");
-        jMenu7.setPreferredSize(new java.awt.Dimension(150, 50));
-        jMenuBar1.add(jMenu7);
 
         setJMenuBar(jMenuBar1);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
+        FrmEmpleado vista = new FrmEmpleado();
+        new EmpleadoController(vista);
+        vista.setVisible(true);   
+    }//GEN-LAST:event_jMenuItem12ActionPerformed
+
+    private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
+        FrmVenta vista = new FrmVenta();
+        new VentaController(vista);
+        vista.setVisible(true);   
+    }//GEN-LAST:event_jMenuItem9ActionPerformed
+
+    private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
+        FrmProducto vista = new FrmProducto();
+        new ProductoController(vista);
+        vista.setVisible(true);
+    }//GEN-LAST:event_jMenuItem6ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -216,26 +167,14 @@ public class FrmPrincipal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu5;
     private javax.swing.JMenu jMenu6;
-    private javax.swing.JMenu jMenu7;
     private javax.swing.JMenu jMenu8;
     private javax.swing.JMenu jMenu9;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem10;
-    private javax.swing.JMenuItem jMenuItem11;
     private javax.swing.JMenuItem jMenuItem12;
-    private javax.swing.JMenuItem jMenuItem13;
-    private javax.swing.JMenuItem jMenuItem14;
     private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem3;
-    private javax.swing.JMenuItem jMenuItem4;
-    private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem6;
-    private javax.swing.JMenuItem jMenuItem7;
-    private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JMenuItem jMenuItem9;
     // End of variables declaration//GEN-END:variables
 }

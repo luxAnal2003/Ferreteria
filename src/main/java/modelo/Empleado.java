@@ -22,20 +22,21 @@ public class Empleado extends Usuario{
         this.cargo = cargo;
     }
 
-    public Empleado(String rol, int estado, String cargo, int id, String cedula, String nombre, String apellido, String telefono, String direccion, String correo, LocalDateTime creado, LocalDateTime modificado, LocalDateTime eliminado, int creadoPor, int modificadoPor) {
-        super(id, cedula, nombre, apellido, telefono, direccion, correo, creado, modificado, eliminado, creadoPor, modificadoPor);
+    public Empleado(String rol, int estado, String cargo, int id, String cedula, String nombre, String apellido, String telefono, String direccion, String correo) {
+        super(id, cedula, nombre, apellido, telefono, direccion, correo);
         this.rol = rol;
         this.estado = estado;
         this.cargo = cargo;
     }
 
-    public Empleado(String rol, int estado, String cargo, String cedula, String nombre, String apellido, String telefono, String direccion, String correo, LocalDateTime creado, LocalDateTime modificado, LocalDateTime eliminado, int creadoPor, int modificadoPor) {
-        super(cedula, nombre, apellido, telefono, direccion, correo, creado, modificado, eliminado, creadoPor, modificadoPor);
+    public Empleado(String rol, int estado, String cargo, String cedula, String nombre, String apellido, String telefono, String direccion, String correo) {
+        super(cedula, nombre, apellido, telefono, direccion, correo);
         this.rol = rol;
         this.estado = estado;
         this.cargo = cargo;
     }
 
+    
     public String getRol() {
         return rol;
     }

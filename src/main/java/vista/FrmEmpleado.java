@@ -23,6 +23,8 @@ public class FrmEmpleado extends JFrame {
 
         panelForm.add(new JLabel("ID:"));
         txtId = new JTextField();
+        txtId.setEditable(false);
+        txtId.setEnabled(false);
         panelForm.add(txtId);
 
         panelForm.add(new JLabel("Nombre:"));

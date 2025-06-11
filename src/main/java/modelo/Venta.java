@@ -15,7 +15,8 @@ public class Venta {
     private int idVenta;
     private LocalDateTime fechaVenta;
     private int idCliente;
-    private int idUsuario;
+    private int idProducto;
+    private int idEmpleado;
     private double subtotal;
     private double iva;
     private double total;
@@ -23,18 +24,32 @@ public class Venta {
     private String estado;
     private String tipoPago;
     private String motivoAnulacion;
-    private LocalDateTime creado;
-    private LocalDateTime modificado;
-    private LocalDateTime eliminado;
-    private int creadoPor;
-    private int modificadoPor;
     private String Cliente;
     private Date fecha;
+    
     public Venta() {
     }
 
     public Venta(int idVenta, String Cliente, String subtotal){}
 
+    public Venta(int idVenta, LocalDateTime fechaVenta, int idCliente, int idProducto, int idEmpleado, double subtotal, double iva, double total, double descuento, String estado, String tipoPago, String motivoAnulacion, String Cliente, Date fecha) {
+        this.idVenta = idVenta;
+        this.fechaVenta = fechaVenta;
+        this.idCliente = idCliente;
+        this.idProducto = idProducto;
+        this.idEmpleado = idEmpleado;
+        this.subtotal = subtotal;
+        this.iva = iva;
+        this.total = total;
+        this.descuento = descuento;
+        this.estado = estado;
+        this.tipoPago = tipoPago;
+        this.motivoAnulacion = motivoAnulacion;
+        this.Cliente = Cliente;
+        this.fecha = fecha;
+    }
+
+    
 
     public Date getFecha() {
         return fecha;
@@ -75,14 +90,7 @@ public class Venta {
         this.idCliente = idCliente;
     }
 
-    public int getIdUsuario() {
-        return idUsuario;
-    }
-
-    public void setIdUsuario(int idUsuario) {
-        this.idUsuario = idUsuario;
-    }
-
+    
     public double getSubtotal() {
         return subtotal;
     }
@@ -139,49 +147,19 @@ public class Venta {
         this.motivoAnulacion = motivoAnulacion;
     }
 
-    public LocalDateTime getCreado() {
-        return creado;
+    public int getIdProducto() {
+        return idProducto;
     }
 
-    public void setCreado(LocalDateTime creado) {
-        this.creado = creado;
+    public void setIdProducto(int idProducto) {
+        this.idProducto = idProducto;
     }
 
-    public LocalDateTime getModificado() {
-        return modificado;
+    public int getIdEmpleado() {
+        return idEmpleado;
     }
 
-    public void setModificado(LocalDateTime modificado) {
-        this.modificado = modificado;
+    public void setIdEmpleado(int idEmpleado) {
+        this.idEmpleado = idEmpleado;
     }
-
-    public LocalDateTime getEliminado() {
-        return eliminado;
-    }
-
-    public void setEliminado(LocalDateTime eliminado) {
-        this.eliminado = eliminado;
-    }
-
-    public int getCreadoPor() {
-        return creadoPor;
-    }
-
-    public void setCreadoPor(int creadoPor) {
-        this.creadoPor = creadoPor;
-    }
-
-    public int getModificadoPor() {
-        return modificadoPor;
-    }
-
-    public void setModificadoPor(int modificadoPor) {
-        this.modificadoPor = modificadoPor;
-    }
-
-    @Override
-    public String toString() {
-        return "Venta{" + "idVenta=" + idVenta + "Cliente" + Cliente +", fechaVenta=" + fechaVenta + ", idCliente=" + idCliente + ", idUsuario=" + idUsuario + ", subtotal=" + subtotal + ", iva=" + iva + ", total=" + total + ", descuento=" + descuento + ", estado=" + estado + ", tipoPago=" + tipoPago + ", motivoAnulacion=" + motivoAnulacion + ", creado=" + creado + ", modificado=" + modificado + ", eliminado=" + eliminado + ", creadoPor=" + creadoPor + ", modificadoPor=" + modificadoPor + '}';
-    }
-    
 }

@@ -35,35 +35,39 @@ public class EmpleadoController {
 
     private void cargarEmpleados() {
         DefaultTableModel modelo = (DefaultTableModel) vista.modeloTabla;
-        modelo.setRowCount(0); // limpiar
+        modelo.setRowCount(0);
         for (Empleado e : servicio.obtenerTodos()) {
             modelo.addRow(new Object[]{e.getId(), e.getNombre(), e.getCargo()});
         }
     }
 
     private void guardar() {
-        try {
-            int id = Integer.parseInt(vista.txtId.getText().trim());
-            String nombre = vista.txtNombre.getText().trim();
-            String cargo = vista.txtCargo.getText().trim();
+        String nombre = vista.txtNombre.getText().trim();
+        String cargo = vista.txtCargo.getText().trim();
 
+        if (nombre.isEmpty() || cargo.isEmpty()) {
+            JOptionPane.showMessageDialog(vista, "Completa todos los campos");
+            return;
+        }
+
+        String idTexto = vista.txtId.getText().trim();
+        if (!idTexto.isEmpty()) {
+            int id = Integer.parseInt(idTexto);
             Empleado existente = servicio.buscarPorId(id);
             if (existente != null) {
                 existente.setNombre(nombre);
                 existente.setCargo(cargo);
                 servicio.actualizar(existente);
                 JOptionPane.showMessageDialog(vista, "Empleado actualizado");
-            } else {
-                servicio.agregar(new Empleado(id, nombre, cargo));
-                JOptionPane.showMessageDialog(vista, "Empleado agregado");
             }
-
-            cargarEmpleados();
-            limpiarCampos();
-
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(vista, "ID inválido");
+        } else {
+            Empleado nuevo = new Empleado(0, nombre, cargo); 
+            servicio.agregar(nuevo);
+            JOptionPane.showMessageDialog(vista, "Empleado agregado");
         }
+
+        cargarEmpleados();
+        limpiarCampos();
     }
 
     private void eliminar() {

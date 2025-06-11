@@ -1,16 +1,15 @@
 package controlador;
 
-import Services.EmpleadoService;
 import Services.VentaService;
-import modelo.Empleado;
 import modelo.Venta;
-import vista.FrmEmpleado;
 import vista.FrmVenta;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.SimpleDateFormat;
+import java.util.Map;
 
 public class VentaController {
 
@@ -36,34 +35,82 @@ public class VentaController {
 
     private void cargarVentas() {
         DefaultTableModel modelo = (DefaultTableModel) vista.modeloTabla;
-        modelo.setRowCount(0); // limpiar
-        for (Venta v : servicio.obtenerTodos()) {
-            modelo.addRow(new Object[]{v.getIdVenta(), v.getCliente(), v.getTotal()});
+        modelo.setRowCount(0);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        for (Venta v : servicio.obtenerTodas()) {
+            String nombreCliente = "";
+            String nombreProducto = "";
+            String nombreEmpleado = "";
+
+            for (Map.Entry<String, Integer> entry : vista.clienteMap.entrySet()) {
+                if (entry.getValue() == v.getIdCliente()) {
+                    nombreCliente = entry.getKey();
+                    break;
+                }
+            }
+            for (Map.Entry<String, Integer> entry : vista.productoMap.entrySet()) {
+                if (entry.getValue() == v.getIdProducto()) {
+                    nombreProducto = entry.getKey();
+                    break;
+                }
+            }
+            for (Map.Entry<String, Integer> entry : vista.empleadoMap.entrySet()) {
+                if (entry.getValue() == v.getIdEmpleado()) {
+                    nombreEmpleado = entry.getKey();
+                    break;
+                }
+            }
+
+            modelo.addRow(new Object[]{
+                v.getIdVenta(),
+                nombreCliente,
+                nombreProducto,
+                nombreEmpleado,
+                sdf.format(v.getFecha()),
+                v.getSubtotal()
+            });
         }
     }
 
     private void guardar() {
         try {
-            int id = Integer.parseInt(vista.txtIdVenta.getText().trim());
-            String idCliente = vista.txtCliente.getText().trim();
-            String subtotal = vista.txtSubtotal.getText().trim();
+            String nombreCliente = (String) vista.comboCliente.getSelectedItem();
+            String nombreProducto = (String) vista.comboProducto.getSelectedItem();
+            String nombreEmpleado = (String) vista.comboEmpleado.getSelectedItem();
 
-            Venta existente = servicio.buscarPorId(id);
-            if (existente != null) {
-                existente.setCliente(idCliente);
-                existente.setTotal(Double.parseDouble(subtotal));
-                servicio.actualizar(existente);
-                JOptionPane.showMessageDialog(vista, "Venta actualizada");
+            int idCliente = vista.clienteMap.get(nombreCliente);
+            int idProducto = vista.productoMap.get(nombreProducto);
+            int idEmpleado = vista.empleadoMap.get(nombreEmpleado);
+
+            double subtotal = Double.parseDouble(vista.txtSubtotal.getText().trim());
+
+            String idTexto = vista.txtIdVenta.getText().trim();
+            if (!idTexto.isEmpty()) {
+                int id = Integer.parseInt(idTexto);
+                Venta existente = servicio.buscarPorId(id);
+                if (existente != null) {
+                    existente.setIdCliente(idCliente);
+                    existente.setIdProducto(idProducto);
+                    existente.setIdEmpleado(idEmpleado);
+                    existente.setSubtotal(subtotal);
+                    servicio.actualizar(existente);
+                    JOptionPane.showMessageDialog(vista, "Venta actualizada");
+                }
             } else {
-                servicio.agregar(new Venta(id, idCliente, subtotal));
+                Venta nueva = new Venta();
+                nueva.setIdCliente(idCliente);
+                nueva.setIdProducto(idProducto);
+                nueva.setIdEmpleado(idEmpleado);
+                nueva.setSubtotal(subtotal);
+                nueva.setFecha(new java.util.Date());
+                servicio.agregar(nueva);
                 JOptionPane.showMessageDialog(vista, "Venta agregada");
             }
 
             cargarVentas();
             limpiarCampos();
-
         } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(vista, "ID inválido");
+            JOptionPane.showMessageDialog(vista, "Datos inválidos");
         }
     }
 
@@ -82,7 +129,8 @@ public class VentaController {
 
     private void limpiarCampos() {
         vista.txtIdVenta.setText("");
-        vista.txtCliente.setText("");
+        // vista.txtCliente.setText(""); 
+        vista.comboCliente.setSelectedIndex(0);
         vista.txtSubtotal.setText("");
         vista.tablaVentas.clearSelection();
     }
@@ -90,9 +138,21 @@ public class VentaController {
     private void cargarSeleccionado() {
         int fila = vista.tablaVentas.getSelectedRow();
         if (fila >= 0) {
-            vista.txtIdVenta.setText(vista.modeloTabla.getValueAt(fila, 0).toString());
-            vista.txtCliente.setText(vista.modeloTabla.getValueAt(fila, 1).toString());
-            vista.txtSubtotal.setText(vista.modeloTabla.getValueAt(fila, 2).toString());
+            int id = Integer.parseInt(vista.modeloTabla.getValueAt(fila, 0).toString());
+            Venta venta = servicio.buscarPorId(id);
+            if (venta != null) {
+                vista.txtIdVenta.setText(String.valueOf(venta.getIdVenta()));
+
+                for (int i = 0; i < vista.comboCliente.getItemCount(); i++) {
+                    String nombre = vista.comboCliente.getItemAt(i);
+                    if (vista.clienteMap.get(nombre) == venta.getIdCliente()) {
+                        vista.comboCliente.setSelectedIndex(i);
+                        break;
+                    }
+                }
+
+                vista.txtSubtotal.setText(String.valueOf(venta.getSubtotal()));
+            }
         }
     }
 }

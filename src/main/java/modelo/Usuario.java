@@ -5,7 +5,6 @@
 package modelo;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
  *
@@ -19,12 +18,7 @@ public class Usuario implements Serializable {
     protected String telefono;
     protected String direccion;
     protected String correo;
-    private LocalDateTime creado;
-    private LocalDateTime modificado;
-    private LocalDateTime eliminado;
-    private int creadoPor;
-    private int modificadoPor;
-
+    
     public Usuario(){
         this.id = 0;
         this.cedula = "";
@@ -33,13 +27,9 @@ public class Usuario implements Serializable {
         this.telefono = "";
         this.direccion = "";
         this.correo = "";
-        this.creado = LocalDateTime.now();
-        this.creadoPor = 0;
-        this.modificado = LocalDateTime.now();
-        this.modificadoPor = 0;
     }
 
-    public Usuario(int id, String cedula, String nombre, String apellido, String telefono, String direccion, String correo, LocalDateTime creado, LocalDateTime modificado, LocalDateTime eliminado, int creadoPor, int modificadoPor) {
+    public Usuario(int id, String cedula, String nombre, String apellido, String telefono, String direccion, String correo) {
         this.id = id;
         this.cedula = cedula;
         this.nombre = nombre;
@@ -47,25 +37,15 @@ public class Usuario implements Serializable {
         this.telefono = telefono;
         this.direccion = direccion;
         this.correo = correo;
-        this.creado = creado;
-        this.modificado = modificado;
-        this.eliminado = eliminado;
-        this.creadoPor = creadoPor;
-        this.modificadoPor = modificadoPor;
     }
 
-    public Usuario(String cedula, String nombre, String apellido, String telefono, String direccion, String correo, LocalDateTime creado, LocalDateTime modificado, LocalDateTime eliminado, int creadoPor, int modificadoPor) {
+    public Usuario(String cedula, String nombre, String apellido, String telefono, String direccion, String correo) {
         this.cedula = cedula;
         this.nombre = nombre;
         this.apellido = apellido;
         this.telefono = telefono;
         this.direccion = direccion;
         this.correo = correo;
-        this.creado = creado;
-        this.modificado = modificado;
-        this.eliminado = eliminado;
-        this.creadoPor = creadoPor;
-        this.modificadoPor = modificadoPor;
     }
 
     public int getId() {
@@ -122,58 +102,11 @@ public class Usuario implements Serializable {
 
     public void setCorreo(String correo) {
         this.correo = correo;
-    }
-
-    public LocalDateTime getCreado() {
-        return creado;
-    }
-
-    public void setCreado(LocalDateTime creado) {
-        this.creado = creado;
-    }
-
-    public LocalDateTime getModificado() {
-        return modificado;
-    }
-
-    public void setModificado(LocalDateTime modificado) {
-        this.modificado = modificado;
-    }
-
-    public LocalDateTime getEliminado() {
-        return eliminado;
-    }
-
-    public void setEliminado(LocalDateTime eliminado) {
-        this.eliminado = eliminado;
-    }
-
-    public int getCreadoPor() {
-        return creadoPor;
-    }
-
-    public void setCreadoPor(int creadoPor) {
-        this.creadoPor = creadoPor;
-    }
-
-    public int getModificadoPor() {
-        return modificadoPor;
-    }
-
-    public void setModificadoPor(int modificadoPor) {
-        this.modificadoPor = modificadoPor;
-    }
-    
-    
-    
-    void registrar(){}
-    void editar(){}
-    void eliminar(){}
-    void consultar(){}
+    } 
 
     @Override
     public String toString() {
-        return "Usuario{" + "id=" + id + ", cedula=" + cedula + ", nombre=" + nombre + ", apellido=" + apellido + ", telefono=" + telefono + ", direccion=" + direccion + ", correo=" + correo + ", creado=" + creado + ", modificado=" + modificado + ", eliminado=" + eliminado + ", creadoPor=" + creadoPor + ", modificadoPor=" + modificadoPor + '}';
+        return "Usuario{" + "id=" + id + ", cedula=" + cedula + ", nombre=" + nombre + ", apellido=" + apellido + ", telefono=" + telefono + ", direccion=" + direccion + ", correo=" + correo + '}';
     }
     
 }
