@@ -1,9 +1,15 @@
 vista\FrmPrincipal.class
 modelo\Proveedor.class
+vista\ClienteWiew$1.class
 modelo\Compra.class
+vista\FrmPrincipal$2.class
 conexion\Conexion.class
 modelo\Venta.class
+modelo\DetalleVenta.class
 modelo\Empleado.class
+controlador\ControlCliente.class
+vista\ClienteWiew.class
+vista\ClienteWiew$2.class
 controlador\ControlFerreteria.class
 modelo\Cliente.class
 modelo\Producto.class
