@@ -19,6 +19,7 @@ import java.awt.event.MouseEvent;
 import java.util.Map;
 
 public class ProductoController {
+
     private FrmProducto vista;
     private ProductoService servicio;
 
@@ -51,7 +52,7 @@ public class ProductoController {
                 }
             }
             modelo.addRow(new Object[]{
-                    p.getId(), p.getNombre(), p.getDescripcion(), p.getPrecioUnitario(), p.getStock(), nombreProveedor
+                p.getId(), p.getNombre(), p.getDescripcion(), p.getPrecioUnitario(), p.getStock(), nombreProveedor
             });
         }
     }
@@ -60,9 +61,18 @@ public class ProductoController {
         try {
             String nombre = vista.txtNombre.getText().trim();
             String descripcion = vista.txtDescripcion.getText().trim();
-            double precio = Double.parseDouble(vista.txtPrecio.getText().trim());
-            int stock = Integer.parseInt(vista.txtStock.getText().trim());
+            String precioTexto = vista.txtPrecio.getText().trim();
+            String stockTexto = vista.txtStock.getText().trim();
             String proveedorNombre = (String) vista.comboProveedor.getSelectedItem();
+
+            // VALIDACIÓN: Verificar campos vacíos
+            if (nombre.isEmpty() || descripcion.isEmpty() || precioTexto.isEmpty() || stockTexto.isEmpty() || proveedorNombre == null) {
+                JOptionPane.showMessageDialog(vista, "Por favor complete todos los campos.");
+                return;
+            }
+
+            double precio = Double.parseDouble(precioTexto);
+            int stock = Integer.parseInt(stockTexto);
             int proveedorId = vista.proveedorMap.get(proveedorNombre);
 
             String idTexto = vista.txtId.getText().trim();
@@ -86,8 +96,10 @@ public class ProductoController {
 
             cargarProductos();
             limpiarCampos();
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(vista, "Precio y stock deben ser valores numéricos válidos.");
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(vista, "Datos inválidos: " + ex.getMessage());
+            JOptionPane.showMessageDialog(vista, "Error al guardar producto: " + ex.getMessage());
         }
     }
 
