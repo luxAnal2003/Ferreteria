@@ -5,6 +5,7 @@
 package modelo;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  *
@@ -27,29 +28,29 @@ public class Venta {
     private LocalDateTime eliminado;
     private int creadoPor;
     private int modificadoPor;
-
+    private String Cliente;
+    private Date fecha;
     public Venta() {
     }
 
-    public Venta(int idVenta, LocalDateTime fechaVenta, int idCliente, int idUsuario, double subtotal, double iva, double total, double descuento, String estado, String tipoPago, String motivoAnulacion, LocalDateTime creado, LocalDateTime modificado, LocalDateTime eliminado, int creadoPor, int modificadoPor) {
-        this.idVenta = idVenta;
-        this.fechaVenta = fechaVenta;
-        this.idCliente = idCliente;
-        this.idUsuario = idUsuario;
-        this.subtotal = subtotal;
-        this.iva = iva;
-        this.total = total;
-        this.descuento = descuento;
-        this.estado = estado;
-        this.tipoPago = tipoPago;
-        this.motivoAnulacion = motivoAnulacion;
-        this.creado = creado;
-        this.modificado = modificado;
-        this.eliminado = eliminado;
-        this.creadoPor = creadoPor;
-        this.modificadoPor = modificadoPor;
+    public Venta(int idVenta, String Cliente, String subtotal){}
+
+
+    public Date getFecha() {
+        return fecha;
     }
 
+    public String getCliente() {
+        return Cliente;
+    }
+
+    public void setCliente(String cliente) {
+        Cliente = cliente;
+    }
+
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
+    }
     public int getIdVenta() {
         return idVenta;
     }
@@ -180,7 +181,7 @@ public class Venta {
 
     @Override
     public String toString() {
-        return "Venta{" + "idVenta=" + idVenta + ", fechaVenta=" + fechaVenta + ", idCliente=" + idCliente + ", idUsuario=" + idUsuario + ", subtotal=" + subtotal + ", iva=" + iva + ", total=" + total + ", descuento=" + descuento + ", estado=" + estado + ", tipoPago=" + tipoPago + ", motivoAnulacion=" + motivoAnulacion + ", creado=" + creado + ", modificado=" + modificado + ", eliminado=" + eliminado + ", creadoPor=" + creadoPor + ", modificadoPor=" + modificadoPor + '}';
+        return "Venta{" + "idVenta=" + idVenta + "Cliente" + Cliente +", fechaVenta=" + fechaVenta + ", idCliente=" + idCliente + ", idUsuario=" + idUsuario + ", subtotal=" + subtotal + ", iva=" + iva + ", total=" + total + ", descuento=" + descuento + ", estado=" + estado + ", tipoPago=" + tipoPago + ", motivoAnulacion=" + motivoAnulacion + ", creado=" + creado + ", modificado=" + modificado + ", eliminado=" + eliminado + ", creadoPor=" + creadoPor + ", modificadoPor=" + modificadoPor + '}';
     }
     
 }
