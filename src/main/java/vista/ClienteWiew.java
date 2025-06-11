@@ -13,30 +13,26 @@ import java.util.List;
 
 public class ClienteWiew extends JPanel {
     private final ControlCliente controller = new ControlCliente();
-    private DefaultTableModel tableModel;
-    private JTable table;
+    private final DefaultTableModel tableModel;
+    private final JTable table;
 
     private JTextField txtCedula, txtNombre, txtDireccion, txtCorreo;
     private JButton btnGuardar, btnNuevo, btnEliminar, btnActualizar;
     private int editingId = -1;
 
     public ClienteWiew() {
-        initComponents();
-    }
-
-    private void initComponents() {
         setLayout(new BorderLayout(10,10));
         setBorder(new EmptyBorder(10,10,10,10));
 
-        // Tabla
-        tableModel = new DefaultTableModel(new String[]{"ID","Cédula","Nombre","Dirección","Correo","Rol"}, 0) {
+        tableModel = new DefaultTableModel(
+            new String[]{"ID","Cédula","Nombre","Dirección","Correo","Rol"}, 0
+        ) {
             @Override public boolean isCellEditable(int row, int col) { return false; }
         };
         table = new JTable(tableModel);
         table.setRowHeight(22);
         add(new JScrollPane(table), BorderLayout.CENTER);
 
-        // Panel de botones acciones
         JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
         btnNuevo = new JButton("Nuevo");
         btnEliminar = new JButton("Eliminar");
@@ -46,7 +42,6 @@ public class ClienteWiew extends JPanel {
         actionPanel.add(btnActualizar);
         add(actionPanel, BorderLayout.NORTH);
 
-        // Formulario
         JPanel form = new JPanel(new GridLayout(5,2,5,5));
         form.setBorder(new EmptyBorder(10,0,0,0));
         form.add(new JLabel("Cédula:"));    txtCedula    = new JTextField(); form.add(txtCedula);
@@ -58,7 +53,6 @@ public class ClienteWiew extends JPanel {
         form.add(btnGuardar);
         add(form, BorderLayout.SOUTH);
 
-        // Eventos
         btnNuevo.addActionListener(e -> clearForm());
         btnGuardar.addActionListener(e -> onSave());
         btnActualizar.addActionListener(e -> onLoadForEdit());
@@ -70,28 +64,16 @@ public class ClienteWiew extends JPanel {
             }
         });
 
-        // Carga inicial de datos con manejo de errores
-        SwingUtilities.invokeLater(() -> {
-            try {
-                loadTable();
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this,
-                    "No se pudo cargar la tabla: " + ex.getMessage(),
-                    "Error de conexión",
-                    JOptionPane.ERROR_MESSAGE);
-            }
-        });
+        loadTable();
     }
 
     private void loadTable() {
         tableModel.setRowCount(0);
         List<Cliente> lista = controller.listarActivos();
-        if (lista != null) {
-            for (Cliente c : lista) {
-                tableModel.addRow(new Object[]{
-                    c.getId(), c.getCedula(), c.getNombre(), c.getDireccion(), c.getCorreo(), c.getRol()
-                });
-            }
+        for (Cliente c : lista) {
+            tableModel.addRow(new Object[]{
+                c.getId(), c.getCedula(), c.getNombre(), c.getDireccion(), c.getCorreo(), c.getRol()
+            });
         }
     }
 
@@ -113,7 +95,7 @@ public class ClienteWiew extends JPanel {
             JOptionPane.showMessageDialog(this, "Completa todos los campos");
             return;
         }
-        Cliente c = new Cliente("administrador", 1, ced, nom, dir, cor, null, null);
+        Cliente c = new Cliente(editingId < 0 ? 0 : editingId, ced, nom, dir, cor, "administrador", 1);
         boolean success;
         if (editingId < 0) {
             success = controller.crear(c);
@@ -129,10 +111,7 @@ public class ClienteWiew extends JPanel {
 
     private void onLoadForEdit() {
         int row = table.getSelectedRow();
-        if (row < 0) {
-            JOptionPane.showMessageDialog(this, "Selecciona un registro");
-            return;
-        }
+        if (row < 0) { JOptionPane.showMessageDialog(this, "Selecciona un registro"); return; }
         int id = (int) tableModel.getValueAt(row, 0);
         Cliente c = controller.obtenerPorId(id);
         if (c != null) {
@@ -147,14 +126,20 @@ public class ClienteWiew extends JPanel {
 
     private void onDelete() {
         int row = table.getSelectedRow();
-        if (row < 0) {
-            JOptionPane.showMessageDialog(this, "Selecciona un registro");
-            return;
-        }
+        if (row < 0) { JOptionPane.showMessageDialog(this, "Selecciona un registro"); return; }
         int id = (int) tableModel.getValueAt(row, 0);
         if (controller.eliminarLogico(id)) {
             JOptionPane.showMessageDialog(this, "Cliente eliminado (lógico)");
             loadTable();
         }
+    }
+
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("Clientes In-Memory");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.add(new ClienteWiew());
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
     }
 }

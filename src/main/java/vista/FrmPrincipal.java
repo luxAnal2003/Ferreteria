@@ -21,7 +21,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
         initComponents();
         this.setResizable(false);
         this.setTitle("Sistema de Facturacion e Inventario de Ferretería");
-        this.setSize(new Dimension(900, 500));
+        this.setSize(new Dimension(1000, 800));
         this.setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
