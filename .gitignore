@@ -1,0 +1,24 @@
+# Ignora compilaciones de Maven
+/target/
+
+# Archivos de configuración del IDE
+*.iml
+.idea/
+*.class
+
+# Archivos temporales del sistema
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Archivos de prueba temporales
+*.tmp
+
+# Ignora configuración local de NetBeans (si usas)
+/nbproject/private/
+
+# Ignora configuración de VSCode (opcional)
+.vscode/
+
