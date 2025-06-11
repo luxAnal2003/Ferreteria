@@ -5,20 +5,20 @@
 package modelo;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  *
  * @author admin
  */
 public class Empleado extends Usuario{
-    
     private String rol;
     private int estado;
     private String cargo;
 
-    public Empleado(String rol, int estado, String cargo) {
-        this.rol = rol;
-        this.estado = estado;
+    public Empleado(int id, String nombre, String cargo) {
+        this.id = id;
+        this.nombre = nombre;
         this.cargo = cargo;
     }
 

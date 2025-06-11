@@ -4,6 +4,8 @@
  */
 package vista;
 
+import controlador.EmpleadoController;
+
 import java.awt.Dimension;
 import javax.swing.JFrame;
 
@@ -121,6 +123,16 @@ public class FrmPrincipal extends javax.swing.JFrame {
         jMenuItem12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/nuevo-producto.png"))); // NOI18N
         jMenuItem12.setText("Nuevo");
         jMenu9.add(jMenuItem12);
+
+        jMenuItem12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                FrmEmpleado vistaEmpleado = new FrmEmpleado();
+                EmpleadoController controlador = new EmpleadoController(vistaEmpleado);
+                vistaEmpleado.setVisible(true);
+            }
+        });
+
+
 
         jMenuItem14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/eliminar.png"))); // NOI18N
         jMenuItem14.setText("Eliminar");
