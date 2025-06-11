@@ -13,22 +13,34 @@ import java.time.LocalDateTime;
 public class Proveedor extends Usuario{
     private String rol;
     private int estado;
+    private String razonSocial;
+    private String tipoProducto;
 
-    public Proveedor(String rol, int estado) {
-        this.rol = rol;
-        this.estado = estado;
+    public Proveedor(int id, String cedula, String razonSocial, String nombre, String telefono, String direccion, String correo, String tipoProducto) {
+        this.id=id;
+        this.cedula=cedula;
+        this.razonSocial =razonSocial;
+        this.nombre=nombre;
+        this.telefono=telefono;
+        this.direccion=direccion;
+        this.correo=correo;
+        this.tipoProducto=tipoProducto;
     }
 
-    public Proveedor(String rol, int estado, int id, String cedula, String nombre, String apellido, String telefono, String direccion, String correo) {
+    public Proveedor(String rol, int estado, String razonSocial, String tipoProducto,int id, String cedula, String nombre, String apellido, String telefono, String direccion, String correo) {
         super(id, cedula, nombre, apellido, telefono, direccion, correo);
         this.rol = rol;
         this.estado = estado;
+        this.razonSocial=razonSocial;
+        this.tipoProducto=tipoProducto;
     }
 
-    public Proveedor(String rol, int estado, String cedula, String nombre, String apellido, String telefono, String direccion, String correo) {
+    public Proveedor(String rol, int estado,String razonSocial, String tipoProducto, String cedula, String nombre, String apellido, String telefono, String direccion, String correo) {
         super(cedula, nombre, apellido, telefono, direccion, correo);
         this.rol = rol;
         this.estado = estado;
+        this.razonSocial=razonSocial;
+        this.tipoProducto=tipoProducto;
     }
 
    
@@ -48,7 +60,23 @@ public class Proveedor extends Usuario{
     public void setEstado(int estado) {
         this.estado = estado;
     }
-
+    
+    public String getRazonSocial(){
+        return razonSocial;
+    }
+    
+    public void setRazonSocial(String razonSocial){
+        this.razonSocial=razonSocial;
+    }
+    
+    public String getTipoProducto(){
+        return tipoProducto;
+    }
+    
+    public void setTipoProducto(String tipoProducto){
+        this.tipoProducto = tipoProducto;
+    }
+    
     public int getId() {
         return id;
     }
@@ -110,10 +138,12 @@ public class Proveedor extends Usuario{
 
     @Override
     public String toString() {
-        return "Empleado{" +
+        return "Proveedor{" +
                super.toString() +
                ", rol='" + rol + '\'' +
                ", estado='" + estado + '\'' +
+               ", Razón social='" + razonSocial + '\'' +
+               ", tipoProducto='" + tipoProducto + '\'' +
                '}';
     }
     

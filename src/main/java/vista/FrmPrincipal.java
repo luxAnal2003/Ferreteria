@@ -8,6 +8,7 @@ import vista.FrmVenta;
 
 import controlador.EmpleadoController;
 import controlador.ProductoController;
+import controlador.ProveedorController;
 
 import java.awt.Dimension;
 import javax.swing.JFrame;
@@ -49,6 +50,8 @@ public class FrmPrincipal extends javax.swing.JFrame {
         jMenuItem12 = new javax.swing.JMenuItem();
         jMenu6 = new javax.swing.JMenu();
         jMenuItem9 = new javax.swing.JMenuItem();
+        jMenu10 = new javax.swing.JMenu();
+        jMenuItem13 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -108,6 +111,21 @@ public class FrmPrincipal extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu6);
 
+        jMenu10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/cliente.png"))); // NOI18N
+        jMenu10.setText("Proveedores");
+        jMenu10.setPreferredSize(new java.awt.Dimension(150, 50));
+
+        jMenuItem13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/nuevo-producto.png"))); // NOI18N
+        jMenuItem13.setText("Nuevo");
+        jMenuItem13.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem13ActionPerformed(evt);
+            }
+        });
+        jMenu10.add(jMenuItem13);
+
+        jMenuBar1.add(jMenu10);
+
         setJMenuBar(jMenuBar1);
 
         pack();
@@ -130,6 +148,13 @@ public class FrmPrincipal extends javax.swing.JFrame {
         new ProductoController(vista);
         vista.setVisible(true);
     }//GEN-LAST:event_jMenuItem6ActionPerformed
+
+    private void jMenuItem13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem13ActionPerformed
+        // TODO add your handling code here:
+        FrmProveedor vista = new FrmProveedor();
+        new ProveedorController(vista);
+        vista.setVisible(true);
+    }//GEN-LAST:event_jMenuItem13ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -167,12 +192,14 @@ public class FrmPrincipal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenu jMenu10;
     private javax.swing.JMenu jMenu5;
     private javax.swing.JMenu jMenu6;
     private javax.swing.JMenu jMenu8;
     private javax.swing.JMenu jMenu9;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem12;
+    private javax.swing.JMenuItem jMenuItem13;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem9;
