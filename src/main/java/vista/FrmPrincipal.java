@@ -4,7 +4,9 @@
  */
 package vista;
 
+import controlador.EmpleadoController;
 import java.awt.BorderLayout;
+
 import java.awt.Dimension;
 import javax.swing.JFrame;
 
@@ -165,8 +167,8 @@ public class FrmPrincipal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-        jPanel1.removeAll();
-        ClienteWiew panelClientes = new ClienteWiew();
+                jPanel1.removeAll();
+        ClienteView panelClientes = new ClienteView();
         jPanel1.setLayout(new BorderLayout());
         jPanel1.add(panelClientes, BorderLayout.CENTER);
         jPanel1.revalidate();

@@ -1,6 +1,8 @@
+C:\Users\jotar\OneDrive\Documentos\NetBeansProjects\Ferreteria_2\src\main\java\Cliente.java
 C:\Users\jotar\OneDrive\Documentos\NetBeansProjects\Ferreteria_2\src\main\java\conexion\Conexion.java
 C:\Users\jotar\OneDrive\Documentos\NetBeansProjects\Ferreteria_2\src\main\java\controlador\ControlCliente.java
 C:\Users\jotar\OneDrive\Documentos\NetBeansProjects\Ferreteria_2\src\main\java\controlador\ControlFerreteria.java
+C:\Users\jotar\OneDrive\Documentos\NetBeansProjects\Ferreteria_2\src\main\java\controlador\EmpleadoController.java
 C:\Users\jotar\OneDrive\Documentos\NetBeansProjects\Ferreteria_2\src\main\java\modelo\Cliente.java
 C:\Users\jotar\OneDrive\Documentos\NetBeansProjects\Ferreteria_2\src\main\java\modelo\Compra.java
 C:\Users\jotar\OneDrive\Documentos\NetBeansProjects\Ferreteria_2\src\main\java\modelo\DetalleVenta.java
@@ -9,5 +11,7 @@ C:\Users\jotar\OneDrive\Documentos\NetBeansProjects\Ferreteria_2\src\main\java\m
 C:\Users\jotar\OneDrive\Documentos\NetBeansProjects\Ferreteria_2\src\main\java\modelo\Proveedor.java
 C:\Users\jotar\OneDrive\Documentos\NetBeansProjects\Ferreteria_2\src\main\java\modelo\Usuario.java
 C:\Users\jotar\OneDrive\Documentos\NetBeansProjects\Ferreteria_2\src\main\java\modelo\Venta.java
-C:\Users\jotar\OneDrive\Documentos\NetBeansProjects\Ferreteria_2\src\main\java\vista\ClienteWiew.java
+C:\Users\jotar\OneDrive\Documentos\NetBeansProjects\Ferreteria_2\src\main\java\Services\EmpleadoService.java
+C:\Users\jotar\OneDrive\Documentos\NetBeansProjects\Ferreteria_2\src\main\java\vista\ClienteView.java
+C:\Users\jotar\OneDrive\Documentos\NetBeansProjects\Ferreteria_2\src\main\java\vista\FrmEmpleado.java
 C:\Users\jotar\OneDrive\Documentos\NetBeansProjects\Ferreteria_2\src\main\java\vista\FrmPrincipal.java
