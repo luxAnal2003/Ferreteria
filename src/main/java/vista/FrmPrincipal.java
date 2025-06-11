@@ -3,6 +3,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package vista;
+import controlador.VentaController;
+import vista.FrmVenta;
 
 import controlador.EmpleadoController;
 
@@ -147,6 +149,16 @@ public class FrmPrincipal extends javax.swing.JFrame {
         jMenuItem9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/nuevo-producto.png"))); // NOI18N
         jMenuItem9.setText("Registrar");
         jMenu6.add(jMenuItem9);
+
+        jMenuItem9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                FrmVenta vistaVenta = new FrmVenta();
+                VentaController controlador = new VentaController(vistaVenta);
+                vistaVenta.setVisible(true);
+
+            }
+        });
+
 
         jMenuItem10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/buscar.png"))); // NOI18N
         jMenuItem10.setText("Consultar");
