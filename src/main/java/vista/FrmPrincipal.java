@@ -4,7 +4,8 @@
  */
 package vista;
 
-import java.awt.BorderLayout;
+import controlador.EmpleadoController;
+
 import java.awt.Dimension;
 import javax.swing.JFrame;
 
@@ -36,7 +37,6 @@ public class FrmPrincipal extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu2 = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
@@ -61,7 +61,6 @@ public class FrmPrincipal extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 900, 450));
 
         jMenu2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/usuario.png"))); // NOI18N
         jMenu2.setText("Usuario");
@@ -101,11 +100,6 @@ public class FrmPrincipal extends javax.swing.JFrame {
 
         jMenuItem2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/nuevo-producto.png"))); // NOI18N
         jMenuItem2.setText("Nuevo");
-        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem2ActionPerformed(evt);
-            }
-        });
         jMenu5.add(jMenuItem2);
 
         jMenuItem4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/producto.png"))); // NOI18N
@@ -129,6 +123,16 @@ public class FrmPrincipal extends javax.swing.JFrame {
         jMenuItem12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/nuevo-producto.png"))); // NOI18N
         jMenuItem12.setText("Nuevo");
         jMenu9.add(jMenuItem12);
+
+        jMenuItem12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                FrmEmpleado vistaEmpleado = new FrmEmpleado();
+                EmpleadoController controlador = new EmpleadoController(vistaEmpleado);
+                vistaEmpleado.setVisible(true);
+            }
+        });
+
+
 
         jMenuItem14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/eliminar.png"))); // NOI18N
         jMenuItem14.setText("Eliminar");
@@ -163,15 +167,6 @@ public class FrmPrincipal extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-        jPanel1.removeAll();
-        ClienteWiew panelClientes = new ClienteWiew();
-        jPanel1.setLayout(new BorderLayout());
-        jPanel1.add(panelClientes, BorderLayout.CENTER);
-        jPanel1.revalidate();
-        jPanel1.repaint();
-    }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -230,6 +225,5 @@ public class FrmPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JMenuItem jMenuItem9;
-    private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
 }
