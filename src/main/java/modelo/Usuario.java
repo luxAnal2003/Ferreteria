@@ -11,57 +11,63 @@ import java.io.Serializable;
  * @author admin
  */
 public class Usuario implements Serializable {
-    protected int id;
-    protected String cedula;
+    protected int idUsuario;
+    protected int idRol;
+    protected String tipoRol;
+    protected String usuario;
+    protected String contrasenia;
     protected String nombre;
     protected String apellido;
     protected String telefono;
-    protected String direccion;
-    protected String correo;
+     protected int estado;
     
     public Usuario(){
-        this.id = 0;
-        this.cedula = "";
+        this.idUsuario = 0;
+        this.idRol = 0;
+        this.tipoRol = "";
+        this.usuario = "";
+        this.contrasenia = "";
         this.nombre = "";
         this.apellido = "";
         this.telefono = "";
-        this.direccion = "";
-        this.correo = "";
+        this.estado = 0;
     }
 
-    public Usuario(int id, String cedula, String nombre, String apellido, String telefono, String direccion, String correo) {
-        this.id = id;
-        this.cedula = cedula;
+    public Usuario(int idUsuario, int idRol, String tipoRol, String usuario, String contrasenia, String nombre, String apellido, String telefono, int estado) {
+        this.idUsuario = idUsuario;
+        this.idRol = idRol;
+        this.tipoRol = tipoRol;
+        this.usuario = usuario;
+        this.contrasenia = contrasenia;
         this.nombre = nombre;
         this.apellido = apellido;
         this.telefono = telefono;
-        this.direccion = direccion;
-        this.correo = correo;
+        this.estado = estado;
     }
 
-    public Usuario(String cedula, String nombre, String apellido, String telefono, String direccion, String correo) {
-        this.cedula = cedula;
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.telefono = telefono;
-        this.direccion = direccion;
-        this.correo = correo;
+    public int getIdUsuario() {
+        return idUsuario;
     }
 
-    public int getId() {
-        return id;
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    
+    public String getUsuario() {
+        return usuario;
     }
 
-    public String getCedula() {
-        return cedula;
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
     }
 
-    public void setCedula(String cedula) {
-        this.cedula = cedula;
+    public String getContrasenia() {
+        return contrasenia;
+    }
+
+    public void setContrasenia(String contrasenia) {
+        this.contrasenia = contrasenia;
     }
 
     public String getNombre() {
@@ -88,25 +94,29 @@ public class Usuario implements Serializable {
         this.telefono = telefono;
     }
 
-    public String getDireccion() {
-        return direccion;
+    public int getEstado() {
+        return estado;
     }
 
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
+    public void setEstado(int estado) {
+        this.estado = estado;
     }
 
-    public String getCorreo() {
-        return correo;
+    public int getIdRol() {
+        return idRol;
     }
 
-    public void setCorreo(String correo) {
-        this.correo = correo;
-    } 
-
-    @Override
-    public String toString() {
-        return "Usuario{" + "id=" + id + ", cedula=" + cedula + ", nombre=" + nombre + ", apellido=" + apellido + ", telefono=" + telefono + ", direccion=" + direccion + ", correo=" + correo + '}';
+    public void setIdRol(int idRol) {
+        this.idRol = idRol;
     }
+
+    public String getTipoRol() {
+        return tipoRol;
+    }
+
+    public void setTipoRol(String tipoRol) {
+        this.tipoRol = tipoRol;
+    }
+
     
 }

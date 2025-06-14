@@ -11,16 +11,16 @@ import javax.swing.JFrame;
  *
  * @author admin
  */
-public class FrmPrincipal extends javax.swing.JFrame {
+public class FrmMenuCliente extends javax.swing.JFrame {
 
     /**
-     * Creates new form FrmPrincipal
+     * Creates new form FrmMenuCliente
      */
-    public FrmPrincipal() {
+    public FrmMenuCliente() {
         initComponents();
         this.setResizable(false);
         this.setTitle("Sistema de Facturacion e Inventario de Ferretería");
-        this.setSize(new Dimension(900, 500));
+        this.setSize(new Dimension(700, 400));
         this.setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
@@ -41,7 +41,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jMenu1.setText("Usuario");
+        jMenu1.setText("Comprar");
         jMenuBar1.add(jMenu1);
 
         jMenu2.setText("Edit");
@@ -80,20 +80,20 @@ public class FrmPrincipal extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(FrmPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrmMenuCliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(FrmPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrmMenuCliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(FrmPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrmMenuCliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(FrmPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(FrmMenuCliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new FrmPrincipal().setVisible(true);
+                new FrmMenuCliente().setVisible(true);
             }
         });
     }
