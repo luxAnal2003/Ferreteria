@@ -1,17 +1,17 @@
-//package vista;
-//
+package vista;
+
 //import controlador.ControlCliente;
 //import modelo.Cliente;
-//
-//import javax.swing.*;
-//import javax.swing.border.EmptyBorder;
-//import javax.swing.table.DefaultTableModel;
-//import java.awt.*;
-//import java.awt.event.MouseAdapter;
-//import java.awt.event.MouseEvent;
-//import java.util.List;
-//
-//public class FrmCliente extends JPanel {
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.List;
+
+public class FrmCliente extends JPanel {
 //
 //    private final ControlCliente controller = new ControlCliente();
 //    private final DefaultTableModel tableModel;
@@ -231,4 +231,4 @@
 //        frame.setLocationRelativeTo(null);
 //        frame.setVisible(true);
 //    }
-//}
+}

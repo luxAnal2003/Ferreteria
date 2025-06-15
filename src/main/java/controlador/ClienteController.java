@@ -1,10 +1,10 @@
-//package controlador;
-//
-//import modelo.Cliente;
-//import java.util.ArrayList;
-//import java.util.List;
-//
-//public class ControlCliente {
+package controlador;
+
+import modelo.Cliente;
+import java.util.ArrayList;
+import java.util.List;
+
+public class ClienteController {
 //    private final List<Cliente> lista = new ArrayList<>();
 //    private int nextId = 1;
 //
@@ -51,4 +51,4 @@
 //        }
 //        return null;
 //    }
-//}
+}

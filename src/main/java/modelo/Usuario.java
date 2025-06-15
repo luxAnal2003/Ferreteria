@@ -19,7 +19,7 @@ public class Usuario implements Serializable {
     protected String nombre;
     protected String apellido;
     protected String telefono;
-     protected int estado;
+    protected int estado;
     
     public Usuario(){
         this.idUsuario = 0;

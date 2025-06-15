@@ -1,17 +1,17 @@
-//package controlador;
-//
+package controlador;
+
 //import Services.EmpleadoService;
 //import modelo.Empleado;
 //import vista.FrmEmpleado;
-//
-//import javax.swing.*;
-//import javax.swing.table.DefaultTableModel;
-//import java.awt.event.MouseAdapter;
-//import java.awt.event.MouseEvent;
-//import java.util.ArrayList;
-//import java.util.List;
-//
-//public class EmpleadoController {
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
+
+public class EmpleadoController {
 //
 //    private FrmEmpleado vista;
 //    private EmpleadoService servicio;
@@ -98,4 +98,4 @@
 //            vista.txtCargo.setText(vista.modeloTabla.getValueAt(fila, 2).toString());
 //        }
 //    }
-//}
+}

@@ -1,151 +1,115 @@
-///*
-// * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-// * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
-// */
-//package controlador;
-//
-///**
-// *
-// * @author admin
-// */
-//import Services.ProductoService;
-//import modelo.Producto;
-//import vista.FrmProducto;
-//
-//import javax.swing.*;
-//import javax.swing.table.DefaultTableModel;
-//import java.awt.event.MouseAdapter;
-//import java.awt.event.MouseEvent;
-//import java.util.Map;
-//
-//public class ProductoController {
-//
-//    private FrmProducto vista;
-//    private ProductoService servicio;
-//
-//    public ProductoController(FrmProducto vista) {
-//        this.vista = vista;
-//        this.servicio = new ProductoService();
-//
-//        cargarProductos();
-//
-//        vista.btnGuardar.addActionListener(e -> guardar());
-//        vista.btnNuevo.addActionListener(e -> limpiarCampos());
-//        vista.btnEliminar.addActionListener(e -> eliminar());
-//
-//        vista.tablaProductos.addMouseListener(new MouseAdapter() {
-//            public void mouseClicked(MouseEvent e) {
-//                cargarSeleccionado();
-//            }
-//        });
-//    }
-//
-//    private void cargarProductos() {
-//        DefaultTableModel modelo = (DefaultTableModel) vista.modeloTabla;
-//        modelo.setRowCount(0);
-//        for (Producto p : servicio.obtenerTodos()) {
-//            String nombreProveedor = "";
-//            for (Map.Entry<String, Integer> entry : vista.proveedorMap.entrySet()) {
-//                if (entry.getValue() == p.getIdProveedor()) {
-//                    nombreProveedor = entry.getKey();
-//                    break;
-//                }
-//            }
-//            modelo.addRow(new Object[]{
-//                p.getIdProducto(), p.getNombre(), p.getDescripcion(), p.getPrecioUnitario(), p.getStock(), nombreProveedor
-//            });
-//        }
-//    }
-//
-//    private void guardar() {
-//        try {
-//            String nombre = vista.txtNombre.getText().trim();
-//            String descripcion = vista.txtDescripcion.getText().trim();
-//            String precioTexto = vista.txtPrecio.getText().trim();
-//            String stockTexto = vista.txtStock.getText().trim();
-//            String proveedorNombre = (String) vista.comboProveedor.getSelectedItem();
-//
-//            // VALIDACIÓN: Verificar campos vacíos
-//            if (nombre.isEmpty() || descripcion.isEmpty() || precioTexto.isEmpty() || stockTexto.isEmpty() || proveedorNombre == null) {
-//                JOptionPane.showMessageDialog(vista, "Por favor complete todos los campos.");
-//                return;
-//            }
-//
-//            double precio = Double.parseDouble(precioTexto);
-//            int stock = Integer.parseInt(stockTexto);
-//            int proveedorId = vista.proveedorMap.get(proveedorNombre);
-//
-//            String idTexto = vista.txtId.getText().trim();
-//            if (!idTexto.isEmpty()) {
-//                int id = Integer.parseInt(idTexto);
-//                Producto existente = servicio.buscarPorId(id);
-//                if (existente != null) {
-//                    existente.setNombre(nombre);
-//                    existente.setDescripcion(descripcion);
-//                    existente.setPrecioUnitario(precio);
-//                    existente.setStock(stock);
-//                    existente.setIdProveedor(proveedorId);
-//                    servicio.actualizar(existente);
-//                    JOptionPane.showMessageDialog(vista, "Producto actualizado");
-//                }
-//            } else {
-//                Producto nuevo = new Producto(0, nombre, descripcion, precio, stock, proveedorId);
-//                servicio.agregar(nuevo);
-//                JOptionPane.showMessageDialog(vista, "Producto agregado");
-//            }
-//
-//            cargarProductos();
-//            limpiarCampos();
-//        } catch (NumberFormatException ex) {
-//            JOptionPane.showMessageDialog(vista, "Precio y stock deben ser valores numéricos válidos.");
-//        } catch (Exception ex) {
-//            JOptionPane.showMessageDialog(vista, "Error al guardar producto: " + ex.getMessage());
-//        }
-//    }
-//
-//    private void eliminar() {
-//        int fila = vista.tablaProductos.getSelectedRow();
-//        if (fila >= 0) {
-//            int id = Integer.parseInt(vista.modeloTabla.getValueAt(fila, 0).toString());
-//            servicio.eliminar(id);
-//            cargarProductos();
-//            limpiarCampos();
-//            JOptionPane.showMessageDialog(vista, "Producto eliminado");
-//        } else {
-//            JOptionPane.showMessageDialog(vista, "Seleccione un producto");
-//        }
-//    }
-//
-//    private void limpiarCampos() {
-//        vista.txtId.setText("");
-//        vista.txtNombre.setText("");
-//        vista.txtDescripcion.setText("");
-//        vista.txtPrecio.setText("");
-//        vista.txtStock.setText("");
-//        vista.comboProveedor.setSelectedIndex(0);
-//        vista.tablaProductos.clearSelection();
-//    }
-//
-//    private void cargarSeleccionado() {
-//        int fila = vista.tablaProductos.getSelectedRow();
-//        if (fila >= 0) {
-//            int id = Integer.parseInt(vista.modeloTabla.getValueAt(fila, 0).toString());
-//            Producto producto = servicio.buscarPorId(id);
-//            if (producto != null) {
-//                vista.txtId.setText(String.valueOf(producto.getIdProducto()));
-//                vista.txtNombre.setText(producto.getNombre());
-//                vista.txtDescripcion.setText(producto.getDescripcion());
-//                vista.txtPrecio.setText(String.valueOf(producto.getPrecioUnitario()));
-//                vista.txtStock.setText(String.valueOf(producto.getStock()));
-//
-//                for (int i = 0; i < vista.comboProveedor.getItemCount(); i++) {
-//                    String nombre = vista.comboProveedor.getItemAt(i);
-//                    if (vista.proveedorMap.get(nombre) == producto.getIdProveedor()) {
-//                        vista.comboProveedor.setSelectedIndex(i);
-//                        break;
-//                    }
-//                }
-//            }
-//        }
-//    }
-//}
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package controlador;
+
+/**
+ *
+ * @author admin
+ */
+import dao.Conexion;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import modelo.Categoria;
+import modelo.Producto;
+import modelo.Proveedor;
+
+public class ProductoController {
+
+    public boolean guardar(Producto producto) {
+        boolean respuesta = false;
+        Connection cn = Conexion.conectar();
+
+        try {
+            String sql = "INSERT INTO producto (nombre, idProveedor, cantidad, descripcion, precio, iva, idCategoria, estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            PreparedStatement consulta = cn.prepareStatement(sql);
+            consulta.setString(1, producto.getNombreProducto());
+            consulta.setInt(2, producto.getIdProveedor().getIdProveedor());
+            consulta.setInt(3, producto.getCantidad());
+            consulta.setString(4, producto.getDescripcion());
+            consulta.setDouble(5, producto.getPrecio());
+            consulta.setDouble(6, producto.getIva());
+            consulta.setInt(7, producto.getIdCategoria().getIdCategoria());
+            consulta.setInt(8, producto.getEstado());
+
+            if (consulta.executeUpdate() > 0) {
+                respuesta = true;
+            }
+
+            cn.close();
+        } catch (SQLException e) {
+            System.out.println("Error al guardar producto: " + e);
+        }
+
+        return respuesta;
+    }
+
+    public List<Producto> listarProductos() {
+        List<Producto> lista = new ArrayList<>();
+        Connection cn = Conexion.conectar();
+
+       String sql = "SELECT * FROM producto p " +
+             "INNER JOIN categoria c ON p.idCategoria = c.idCategoria " +
+             "INNER JOIN proveedor pr ON p.idProveedor = pr.idProveedor";
+
+        try (PreparedStatement stmt = cn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Producto p = new Producto();
+                p.setNombreProducto(rs.getString("nombre"));
+
+                Proveedor proveedor = new Proveedor();
+                proveedor.setIdProveedor(rs.getInt("idProveedor"));
+                proveedor.setNombre(rs.getString("nombreProveedor"));
+                p.setIdProveedor(proveedor);
+
+                p.setCantidad(rs.getInt("cantidad"));
+                p.setDescripcion(rs.getString("descripcion"));
+                p.setPrecio(rs.getDouble("precio"));
+                p.setIva(rs.getDouble("iva"));
+
+                Categoria categoria = new Categoria();
+                categoria.setIdCategoria(rs.getInt("idCategoria"));
+                categoria.setNombre(rs.getString("descripcionCategoria"));
+                p.setIdCategoria(categoria);
+
+                p.setEstado(rs.getInt("estado"));
+
+                lista.add(p);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error al listar productos: " + e);
+        }
+
+        return lista;
+    }
+
+    public boolean existeProducto(String nombreProducto) {
+        boolean respuesta = false;
+        String sql = "SELECT nombreProducto FROM producto WHERE nombre = ?";
+        try (Connection cn = Conexion.conectar(); PreparedStatement ps = cn.prepareStatement(sql)) {
+
+            ps.setString(1, nombreProducto);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                respuesta = true;
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error al verificar existencia de producto: " + e);
+        }
+        return respuesta;
+    }
+}
