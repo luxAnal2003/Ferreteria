@@ -51,11 +51,9 @@ public class FrmMenuAdmin extends javax.swing.JFrame {
         menuItemEditarProveedor = new javax.swing.JMenuItem();
         menuItemEliminarProveedor = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
-        menuItemNuevoProducto = new javax.swing.JMenuItem();
-        menuItemEditarProducto = new javax.swing.JMenuItem();
-        menuItemELiminarProducto = new javax.swing.JMenuItem();
+        menuItemGestionarProducto = new javax.swing.JMenuItem();
         jMenu8 = new javax.swing.JMenu();
-        menuItemNuevaCategoria = new javax.swing.JMenuItem();
+        menuItemGestionarCategoria = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         menuItemNuevaVenta = new javax.swing.JMenuItem();
         menuItemEditarVenta = new javax.swing.JMenuItem();
@@ -159,40 +157,30 @@ public class FrmMenuAdmin extends javax.swing.JFrame {
         jMenu3.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jMenu3.setPreferredSize(new java.awt.Dimension(150, 50));
 
-        menuItemNuevoProducto.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        menuItemNuevoProducto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/agregar-producto.png"))); // NOI18N
-        menuItemNuevoProducto.setText("Nuevo");
-        menuItemNuevoProducto.addActionListener(new java.awt.event.ActionListener() {
+        menuItemGestionarProducto.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        menuItemGestionarProducto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/agregar-producto.png"))); // NOI18N
+        menuItemGestionarProducto.setText("Gestionar");
+        menuItemGestionarProducto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuItemNuevoProductoActionPerformed(evt);
+                menuItemGestionarProductoActionPerformed(evt);
             }
         });
-        jMenu3.add(menuItemNuevoProducto);
-
-        menuItemEditarProducto.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        menuItemEditarProducto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/editar-producto.png"))); // NOI18N
-        menuItemEditarProducto.setText("Editar");
-        jMenu3.add(menuItemEditarProducto);
-
-        menuItemELiminarProducto.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        menuItemELiminarProducto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/eliminar-producto.png"))); // NOI18N
-        menuItemELiminarProducto.setText("Eliminar");
-        jMenu3.add(menuItemELiminarProducto);
+        jMenu3.add(menuItemGestionarProducto);
 
         jMenu8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/carrito.png"))); // NOI18N
         jMenu8.setText("Categoria");
         jMenu8.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jMenu8.setPreferredSize(new java.awt.Dimension(150, 50));
 
-        menuItemNuevaCategoria.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        menuItemNuevaCategoria.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/nuevo.png"))); // NOI18N
-        menuItemNuevaCategoria.setText("Gestionar");
-        menuItemNuevaCategoria.addActionListener(new java.awt.event.ActionListener() {
+        menuItemGestionarCategoria.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        menuItemGestionarCategoria.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/nuevo.png"))); // NOI18N
+        menuItemGestionarCategoria.setText("Gestionar");
+        menuItemGestionarCategoria.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuItemNuevaCategoriaActionPerformed(evt);
+                menuItemGestionarCategoriaActionPerformed(evt);
             }
         });
-        jMenu8.add(menuItemNuevaCategoria);
+        jMenu8.add(menuItemGestionarCategoria);
 
         jMenu3.add(jMenu8);
 
@@ -274,7 +262,7 @@ public class FrmMenuAdmin extends javax.swing.JFrame {
         content.repaint();
     }//GEN-LAST:event_menuItemNuevoClienteActionPerformed
 
-    private void menuItemNuevaCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemNuevaCategoriaActionPerformed
+    private void menuItemGestionarCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemGestionarCategoriaActionPerformed
         content.removeAll();
         JPanelCategoria categoria = new JPanelCategoria();
         categoria.setSize(900, 400);
@@ -283,22 +271,22 @@ public class FrmMenuAdmin extends javax.swing.JFrame {
         content.add(categoria, BorderLayout.CENTER);
         content.revalidate();
         content.repaint();
-    }//GEN-LAST:event_menuItemNuevaCategoriaActionPerformed
+    }//GEN-LAST:event_menuItemGestionarCategoriaActionPerformed
 
     private void menuItemCerrarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemCerrarSesionActionPerformed
 //        this.login();
     }//GEN-LAST:event_menuItemCerrarSesionActionPerformed
 
-    private void menuItemNuevoProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemNuevoProductoActionPerformed
+    private void menuItemGestionarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemGestionarProductoActionPerformed
         content.removeAll();
-        JPanelProductoNuevo producto = new JPanelProductoNuevo();
+        JPanelProducto producto = new JPanelProducto();
         producto.setSize(900, 400);
         producto.setLocation(0,0);
         content.removeAll();
         content.add(producto, BorderLayout.CENTER);
         content.revalidate();
         content.repaint();
-    }//GEN-LAST:event_menuItemNuevoProductoActionPerformed
+    }//GEN-LAST:event_menuItemGestionarProductoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -346,21 +334,19 @@ public class FrmMenuAdmin extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu8;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem menuItemCerrarSesion;
-    private javax.swing.JMenuItem menuItemELiminarProducto;
     private javax.swing.JMenuItem menuItemEditarCliente;
     private javax.swing.JMenuItem menuItemEditarEmpleado;
-    private javax.swing.JMenuItem menuItemEditarProducto;
     private javax.swing.JMenuItem menuItemEditarProveedor;
     private javax.swing.JMenuItem menuItemEditarVenta;
     private javax.swing.JMenuItem menuItemEliminarCliente;
     private javax.swing.JMenuItem menuItemEliminarEmpleado;
     private javax.swing.JMenuItem menuItemEliminarProveedor;
     private javax.swing.JMenuItem menuItemEliminarVenta;
-    private javax.swing.JMenuItem menuItemNuevaCategoria;
+    private javax.swing.JMenuItem menuItemGestionarCategoria;
+    private javax.swing.JMenuItem menuItemGestionarProducto;
     private javax.swing.JMenuItem menuItemNuevaVenta;
     private javax.swing.JMenuItem menuItemNuevoCliente;
     private javax.swing.JMenuItem menuItemNuevoEmpleado;
-    private javax.swing.JMenuItem menuItemNuevoProducto;
     private javax.swing.JMenuItem menuItemNuevoProveedor;
     // End of variables declaration//GEN-END:variables
 }

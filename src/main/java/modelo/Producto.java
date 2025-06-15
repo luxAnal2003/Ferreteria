@@ -10,33 +10,35 @@ package modelo;
  */
 
 public class Producto {
+    private int idProducto;
     private String nombreProducto;
     private Proveedor idProveedor;
     private int cantidad;
     private String descripcion;
     private double precio;
-    private double iva;
+    private int porcentajeIva;
     private Categoria idCategoria;
     private int estado;
 
     public Producto(){
+        this.idProducto = 0;
         this.nombreProducto = "";
         this.idProveedor = new Proveedor();
         this.cantidad = 0;
         this.descripcion = "";
         this.precio = 0.0;
-        this.iva = 0.0;
+        this.porcentajeIva = 0;
         this.idCategoria = new Categoria();
         this.estado = 0;
     }
 
-    public Producto(String nombreProducto, Proveedor idProveedor, int cantidad, String descripcion, double precio, double iva, Categoria idCategoria, int estado) {
+    public Producto(String nombreProducto, Proveedor idProveedor, int cantidad, String descripcion, double precio, int porcentajeIva, Categoria idCategoria, int estado) {
         this.nombreProducto = nombreProducto;
         this.idProveedor = idProveedor;
         this.cantidad = cantidad;
         this.descripcion = descripcion;
         this.precio = precio;
-        this.iva = iva;
+        this.porcentajeIva = porcentajeIva;
         this.idCategoria = idCategoria;
         this.estado = estado;
     }
@@ -81,12 +83,20 @@ public class Producto {
         this.precio = precio;
     }
 
-    public double getIva() {
-        return iva;
+    public int getIdProducto() {
+        return idProducto;
     }
 
-    public void setIva(double iva) {
-        this.iva = iva;
+    public void setIdProducto(int idProducto) {
+        this.idProducto = idProducto;
+    }
+
+    public int getPorcentajeIva() {
+        return porcentajeIva;
+    }
+
+    public void setPorcentajeIva(int porcentajeIva) {
+        this.porcentajeIva = porcentajeIva;
     }
 
     public Categoria getIdCategoria() {

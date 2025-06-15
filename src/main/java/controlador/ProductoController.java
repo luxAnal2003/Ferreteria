@@ -31,27 +31,46 @@ public class ProductoController {
         boolean respuesta = false;
         Connection cn = Conexion.conectar();
 
+        String sql = "INSERT INTO producto (idProducto, nombre, cantidad, precio, descripcion, iva, idCategoria, idProveedor, estado) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
         try {
-            String sql = "INSERT INTO producto (nombre, idProveedor, cantidad, descripcion, precio, iva, idCategoria, estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement consulta = cn.prepareStatement(sql);
-            consulta.setString(1, producto.getNombreProducto());
-            consulta.setInt(2, producto.getIdProveedor().getIdProveedor());
+            consulta.setInt(1, 0); // El id autoincremental (puedes usar NULL o dejar que se genere solo)
+            consulta.setString(2, producto.getNombreProducto());
             consulta.setInt(3, producto.getCantidad());
-            consulta.setString(4, producto.getDescripcion());
-            consulta.setDouble(5, producto.getPrecio());
-            consulta.setDouble(6, producto.getIva());
-            consulta.setInt(7, producto.getIdCategoria().getIdCategoria());
-            consulta.setInt(8, producto.getEstado());
+            consulta.setDouble(4, producto.getPrecio());
+            consulta.setString(5, producto.getDescripcion());
+            consulta.setInt(6, producto.getPorcentajeIva());
+            consulta.setInt(7, producto.getIdCategoria().getIdCategoria()); // ✅ OK
+            consulta.setInt(8, producto.getIdProveedor().getIdProveedor()); // ✅ OK
+            consulta.setInt(9, producto.getEstado());
 
             if (consulta.executeUpdate() > 0) {
                 respuesta = true;
             }
-
             cn.close();
         } catch (SQLException e) {
             System.out.println("Error al guardar producto: " + e);
         }
+        return respuesta;
+    }
 
+    public boolean existeProducto(String producto) {
+        boolean respuesta = false;
+        String sql = "select nombre from producto where nombre = '" + producto + "'";
+        Statement st;
+
+        try {
+            Connection cn = Conexion.conectar();
+            st = cn.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+            while (rs.next()) {
+                respuesta = true;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al consultar producto: " + e);
+        }
         return respuesta;
     }
 
@@ -59,9 +78,9 @@ public class ProductoController {
         List<Producto> lista = new ArrayList<>();
         Connection cn = Conexion.conectar();
 
-       String sql = "SELECT * FROM producto p " +
-             "INNER JOIN categoria c ON p.idCategoria = c.idCategoria " +
-             "INNER JOIN proveedor pr ON p.idProveedor = pr.idProveedor";
+        String sql = "SELECT * FROM producto p "
+                + "INNER JOIN categoria c ON p.idCategoria = c.idCategoria "
+                + "INNER JOIN proveedor pr ON p.idProveedor = pr.idProveedor";
 
         try (PreparedStatement stmt = cn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
 
@@ -77,7 +96,7 @@ public class ProductoController {
                 p.setCantidad(rs.getInt("cantidad"));
                 p.setDescripcion(rs.getString("descripcion"));
                 p.setPrecio(rs.getDouble("precio"));
-                p.setIva(rs.getDouble("iva"));
+                p.setPorcentajeIva(rs.getInt("iva"));
 
                 Categoria categoria = new Categoria();
                 categoria.setIdCategoria(rs.getInt("idCategoria"));
@@ -94,22 +113,5 @@ public class ProductoController {
         }
 
         return lista;
-    }
-
-    public boolean existeProducto(String nombreProducto) {
-        boolean respuesta = false;
-        String sql = "SELECT nombreProducto FROM producto WHERE nombre = ?";
-        try (Connection cn = Conexion.conectar(); PreparedStatement ps = cn.prepareStatement(sql)) {
-
-            ps.setString(1, nombreProducto);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                respuesta = true;
-            }
-
-        } catch (SQLException e) {
-            System.out.println("Error al verificar existencia de producto: " + e);
-        }
-        return respuesta;
     }
 }

@@ -6,6 +6,7 @@ package vista;
 
 import controlador.CategoriaController;
 import dao.Conexion;
+import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Connection;
@@ -26,12 +27,14 @@ import modelo.Categoria;
 public class JPanelCategoria extends javax.swing.JPanel {
 
     private int idCategoria;
+
     /**
      * Creates new form JPanelCategoria
      */
     public JPanelCategoria() {
         initComponents();
-        cargarCategoriasEnTabla();
+        this.setSize(new Dimension(900, 400));
+        this.cargarCategoriasEnTabla();
     }
 
     /**
@@ -79,14 +82,14 @@ public class JPanelCategoria extends javax.swing.JPanel {
         ));
         jScrollPane1.setViewportView(tableCategoria);
 
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 380, 270));
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 390, 270));
 
-        add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 80, 400, 290));
+        add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 80, 410, 290));
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel5.setText("Tipo de categoria:");
-        add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 240, -1, -1));
-        add(txtCategoria, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 260, 400, -1));
+        add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 240, -1, -1));
+        add(txtCategoria, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 260, 400, -1));
 
         btnGuardar.setBackground(new java.awt.Color(204, 204, 255));
         btnGuardar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -96,7 +99,7 @@ public class JPanelCategoria extends javax.swing.JPanel {
                 btnGuardarActionPerformed(evt);
             }
         });
-        add(btnGuardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 310, 90, 30));
+        add(btnGuardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 310, 90, 30));
 
         btnEliminar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/eliminar.png"))); // NOI18N
@@ -105,7 +108,7 @@ public class JPanelCategoria extends javax.swing.JPanel {
                 btnEliminarActionPerformed(evt);
             }
         });
-        add(btnEliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 310, 50, 30));
+        add(btnEliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(800, 310, 50, 30));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/añadir-Categoria.png"))); // NOI18N
         add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 80, -1, -1));
@@ -118,7 +121,7 @@ public class JPanelCategoria extends javax.swing.JPanel {
                 btnActualizarActionPerformed(evt);
             }
         });
-        add(btnActualizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 310, 100, 30));
+        add(btnActualizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 310, 100, 30));
 
         btnLimpiar.setBackground(new java.awt.Color(204, 204, 255));
         btnLimpiar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -128,11 +131,11 @@ public class JPanelCategoria extends javax.swing.JPanel {
                 btnLimpiarActionPerformed(evt);
             }
         });
-        add(btnLimpiar, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 310, 90, 30));
+        add(btnLimpiar, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 310, 90, 30));
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-         Categoria categoria = new Categoria();
+        Categoria categoria = new Categoria();
         CategoriaController controladorCategoria = new CategoriaController();
 
         if (txtCategoria.getText().isEmpty()) {
@@ -155,48 +158,48 @@ public class JPanelCategoria extends javax.swing.JPanel {
                 JOptionPane.showMessageDialog(null, "La categoria ya existe");
             }
         }
-        txtCategoria.setText("");                        
+        txtCategoria.setText("");
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-        if(!txtCategoria.getText().isEmpty()){
+        if (!txtCategoria.getText().isEmpty()) {
             Categoria categoria = new Categoria();
             CategoriaController controlCategoria = new CategoriaController();
-            
+
             categoria.setNombre(txtCategoria.getText());
-            if(!controlCategoria.eliminar(idCategoria)){
+            if (!controlCategoria.eliminar(idCategoria)) {
                 JOptionPane.showMessageDialog(null, "Categoria eliminada");
                 txtCategoria.setText("");
                 this.cargarCategoriasEnTabla();
-            }else{
+            } else {
                 JOptionPane.showMessageDialog(null, "Error al eliminar categoria");
             }
-            
-        }else{
+
+        } else {
             JOptionPane.showMessageDialog(null, "Seleccione una categoria");
         }
-        
+
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
-        if(!txtCategoria.getText().isEmpty()){
+        if (!txtCategoria.getText().isEmpty()) {
             Categoria categoria = new Categoria();
             CategoriaController controlCategoria = new CategoriaController();
-            
+
             String nombreIngresado = txtCategoria.getText().trim();
-                if (!nombreIngresado.isEmpty()) {
-                    String nombreFormateado = nombreIngresado.substring(0, 1).toUpperCase() + nombreIngresado.substring(1).toLowerCase();
-                    categoria.setNombre(nombreFormateado);
-                }
-            if(controlCategoria.actualizar(categoria, idCategoria)){
+            if (!nombreIngresado.isEmpty()) {
+                String nombreFormateado = nombreIngresado.substring(0, 1).toUpperCase() + nombreIngresado.substring(1).toLowerCase();
+                categoria.setNombre(nombreFormateado);
+            }
+            if (controlCategoria.actualizar(categoria, idCategoria)) {
                 JOptionPane.showMessageDialog(null, "Categoria actualizada");
                 txtCategoria.setText("");
                 this.cargarCategoriasEnTabla();
-            }else{
+            } else {
                 JOptionPane.showMessageDialog(null, "Error al actualizar categoria");
             }
-            
-        }else{
+
+        } else {
             JOptionPane.showMessageDialog(null, "Seleccione una categoria");
         }
     }//GEN-LAST:event_btnActualizarActionPerformed
@@ -224,55 +227,59 @@ public class JPanelCategoria extends javax.swing.JPanel {
         DefaultTableModel model = new DefaultTableModel();
         String sql = "select idCategoria, descripcionCategoria, estado from categoria";
         Statement st;
-        
-        try{
+
+        try {
             st = con.createStatement();
             ResultSet rs = st.executeQuery(sql);
             JPanelCategoria.tableCategoria = new JTable(model);
             JPanelCategoria.jScrollPane1.setViewportView(JPanelCategoria.tableCategoria);
-            
+
             model.addColumn("IdCategoria");
             model.addColumn("Descripcion");
             model.addColumn("Estado");
-            
-            while(rs.next()){
+
+            while (rs.next()) {
                 Object fila[] = new Object[3];
-                for(int i=0; i<3; i++){
-                    fila[i] = rs.getObject(i+1);
-                }
+                fila[0] = rs.getInt("idCategoria");
+                fila[1] = rs.getString("descripcionCategoria");
+
+                int estadoValor = rs.getInt("estado");
+                fila[2] = (estadoValor == 1) ? "Activo" : "Inactivo";
+
                 model.addRow(fila);
             }
+
             con.close();
-        }catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println("Error al llenar la tabla categorias: " + e);
         }
-        tableCategoria.addMouseListener(new MouseAdapter(){
+        tableCategoria.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked (MouseEvent e){
+            public void mouseClicked(MouseEvent e) {
                 int fila_point = tableCategoria.rowAtPoint(e.getPoint());
                 int columna_point = 0;
-                
-                if(fila_point >-1){
+
+                if (fila_point > -1) {
                     idCategoria = (int) model.getValueAt(fila_point, columna_point);
                     enviarDatosCategoria(idCategoria);
                 }
             }
         });
     }
-   
-    private void enviarDatosCategoria(int idCategoria){
-        try{
+
+    private void enviarDatosCategoria(int idCategoria) {
+        try {
             Connection con = Conexion.conectar();
             PreparedStatement pst = con.prepareStatement("select * from categoria where idCategoria= '" + idCategoria + "'");
             ResultSet rs = pst.executeQuery();
-            
-            if(rs.next()){
+
+            if (rs.next()) {
                 txtCategoria.setText(rs.getString("descripcionCategoria"));
             }
             con.close();
-        }catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println("Error al seleccionar categorias: " + e);
         }
     }
-    
+
 }
