@@ -100,42 +100,42 @@ public class JPanelProducto extends javax.swing.JPanel {
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel5.setText("Nombre del producto:");
-        add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 220, -1, -1));
+        add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 220, -1, -1));
 
         jLabel6.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel6.setText("Categoria:");
-        add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 220, -1, -1));
-        add(txtNombreProducto, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 240, 190, -1));
+        add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 220, -1, -1));
+        add(txtNombreProducto, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 240, 190, -1));
 
         jLabel9.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel9.setText("Precio:");
-        add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 320, -1, -1));
+        add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 320, -1, -1));
 
         jLabel10.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel10.setText("Cantidad en stock:");
-        add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 270, -1, -1));
+        add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 270, -1, -1));
 
         jLabel11.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel11.setText("Descripción:");
-        add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 270, -1, -1));
+        add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 270, -1, -1));
 
         cboxProveedor.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione proveedor", "Item 1", "Item 2", "Item 3", "Item 4" }));
-        add(cboxProveedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 240, 300, -1));
-        add(txtStock, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 290, 190, -1));
-        add(txtPrecio, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 340, 190, -1));
+        add(cboxProveedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 240, 300, -1));
+        add(txtStock, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 290, 190, -1));
+        add(txtPrecio, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 340, 190, -1));
 
         textAreaDescripcion.setColumns(20);
         textAreaDescripcion.setRows(5);
         jScrollPane2.setViewportView(textAreaDescripcion);
 
-        add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 290, 320, 70));
+        add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 290, 320, 70));
 
         jLabel7.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel7.setText("Proveedor:");
-        add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 220, -1, -1));
+        add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 220, -1, -1));
 
         cboxCategoria.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione categoria", "Item 1", "Item 2", "Item 3", "Item 4" }));
-        add(cboxCategoria, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 240, 290, -1));
+        add(cboxCategoria, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 240, 290, -1));
 
         jScrollPane3.setPreferredSize(new java.awt.Dimension(450, 80));
 
@@ -152,7 +152,7 @@ public class JPanelProducto extends javax.swing.JPanel {
         ));
         jScrollPane3.setViewportView(tableProducto);
 
-        add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 70, 690, 140));
+        add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, 690, 140));
 
         btnLimpiar.setBackground(new java.awt.Color(204, 204, 255));
         btnLimpiar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -162,7 +162,7 @@ public class JPanelProducto extends javax.swing.JPanel {
                 btnLimpiarActionPerformed(evt);
             }
         });
-        add(btnLimpiar, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 300, 90, 30));
+        add(btnLimpiar, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 300, 90, 30));
 
         btnGuardar.setBackground(new java.awt.Color(204, 204, 255));
         btnGuardar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -172,7 +172,7 @@ public class JPanelProducto extends javax.swing.JPanel {
                 btnGuardarActionPerformed(evt);
             }
         });
-        add(btnGuardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(740, 300, 90, 30));
+        add(btnGuardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 300, 90, 30));
 
         btnActualizar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         btnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/editar-producto.png"))); // NOI18N
@@ -182,7 +182,7 @@ public class JPanelProducto extends javax.swing.JPanel {
                 btnActualizarActionPerformed(evt);
             }
         });
-        add(btnActualizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(740, 160, 140, 30));
+        add(btnActualizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 160, 140, 30));
 
         btnActivar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         btnActivar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/activar.png"))); // NOI18N
@@ -192,7 +192,7 @@ public class JPanelProducto extends javax.swing.JPanel {
                 btnActivarActionPerformed(evt);
             }
         });
-        add(btnActivar, new org.netbeans.lib.awtextra.AbsoluteConstraints(740, 80, 140, 30));
+        add(btnActivar, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 80, 140, 30));
 
         btnEliminar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/desactivar.png"))); // NOI18N
@@ -202,7 +202,7 @@ public class JPanelProducto extends javax.swing.JPanel {
                 btnEliminarActionPerformed(evt);
             }
         });
-        add(btnEliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(740, 120, 140, 30));
+        add(btnEliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 120, 140, 30));
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
@@ -444,9 +444,6 @@ public class JPanelProducto extends javax.swing.JPanel {
         try {
             st = con.createStatement();
             ResultSet rs = st.executeQuery(sql);
-
-//            JPanelProducto.tableProducto = new JTable(model);
-//            JPanelProducto.jScrollPane3.setViewportView(JPanelProducto.tableProducto);
 
             model.addColumn("ID");
             model.addColumn("Nombre");

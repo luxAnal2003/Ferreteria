@@ -13,19 +13,16 @@ public class EmpleadoController {
         boolean respuesta = false;
         Connection cn = Conexion.conectar();
 
-        String sql = "INSERT INTO empleado (idRol, cedula, nombre, apellido, telefono, direccion, correo, estado) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO empleado (idRol, cedula, direccion,estado,idUsuario) "
+                + "VALUES (?, ?, ?, ?, ?)";
 
         try {
             PreparedStatement consulta = cn.prepareStatement(sql);
             consulta.setInt(1, empleado.getIdRol());
             consulta.setString(2, empleado.getCedula());
-            consulta.setString(3, empleado.getNombre());
-            consulta.setString(4, empleado.getApellido());
-            consulta.setString(5, empleado.getTelefono());
-            consulta.setString(6, empleado.getDireccion());
-            consulta.setString(7, empleado.getCorreo());
-            consulta.setInt(8, empleado.getEstado());
+            consulta.setString(3, empleado.getDireccion());
+            consulta.setInt(4, empleado.getEstado());
+            consulta.setInt(5, empleado.getIdUsuario());
 
             respuesta = consulta.executeUpdate() > 0;
             cn.close();
@@ -39,61 +36,20 @@ public class EmpleadoController {
         boolean respuesta = false;
         Connection cn = Conexion.conectar();
 
-        String sql = "UPDATE empleado SET idRol=?, cedula=?, nombre=?, apellido=?, telefono=?, direccion=?, correo=?, estado=? "
-                + "WHERE idEmpleado=?";
+        String sql = "UPDATE empleado SET idRol = ?, cedula = ?, direccion = ?, estado = ? WHERE idEmpleado = ?";
 
         try {
             PreparedStatement consulta = cn.prepareStatement(sql);
             consulta.setInt(1, empleado.getIdRol());
             consulta.setString(2, empleado.getCedula());
-            consulta.setString(3, empleado.getNombre());
-            consulta.setString(4, empleado.getApellido());
-            consulta.setString(5, empleado.getTelefono());
-            consulta.setString(6, empleado.getDireccion());
-            consulta.setString(7, empleado.getCorreo());
-            consulta.setInt(8, empleado.getEstado());
-            consulta.setInt(9, empleado.getIdEmpleado());
+            consulta.setString(3, empleado.getDireccion());
+            consulta.setInt(4, empleado.getEstado());
+            consulta.setInt(5, empleado.getIdEmpleado());
 
             respuesta = consulta.executeUpdate() > 0;
             cn.close();
         } catch (SQLException e) {
             System.out.println("Error al actualizar empleado: " + e);
-        }
-        return respuesta;
-    }
-
-    public boolean eliminar(int idEmpleado) {
-        boolean respuesta = false;
-        Connection cn = Conexion.conectar();
-
-        String sql = "UPDATE empleado SET estado = 0 WHERE idEmpleado = ?";
-
-        try {
-            PreparedStatement consulta = cn.prepareStatement(sql);
-            consulta.setInt(1, idEmpleado);
-            respuesta = consulta.executeUpdate() > 0;
-            cn.close();
-        } catch (SQLException e) {
-            System.out.println("Error al eliminar empleado: " + e);
-        }
-        return respuesta;
-    }
-
-    public boolean activar(int idEmpleado) {
-        boolean respuesta = false;
-        Connection cn = Conexion.conectar();
-
-        try {
-            PreparedStatement consulta = cn.prepareStatement("UPDATE empleado SET estado = 1 WHERE idEmpleado = ?");
-            consulta.setInt(1, idEmpleado);
-
-            if (consulta.executeUpdate() > 0) {
-                respuesta = true;
-            }
-
-            cn.close();
-        } catch (SQLException e) {
-            System.out.println("Error al activar empleado: " + e);
         }
 
         return respuesta;
@@ -149,7 +105,7 @@ public class EmpleadoController {
         return respuesta;
     }
 
-    public boolean desactivar(int idProducto) {
+    public boolean desactivar(int idEmpleado) {
         boolean respuesta = false;
         Connection cn = Conexion.conectar();
 
@@ -157,12 +113,32 @@ public class EmpleadoController {
 
         try {
             PreparedStatement pst = cn.prepareStatement(sql);
-            pst.setInt(1, idProducto);
+            pst.setInt(1, idEmpleado);
             respuesta = pst.executeUpdate() > 0;
             cn.close();
         } catch (SQLException e) {
             System.out.println("Error al desactivar empleado: " + e);
         }
+        return respuesta;
+    }
+    
+    public boolean activar(int idEmpleado) {
+        boolean respuesta = false;
+        Connection cn = Conexion.conectar();
+
+        try {
+            PreparedStatement consulta = cn.prepareStatement("UPDATE empleado SET estado = 1 WHERE idEmpleado = ?");
+            consulta.setInt(1, idEmpleado);
+
+            if (consulta.executeUpdate() > 0) {
+                respuesta = true;
+            }
+
+            cn.close();
+        } catch (SQLException e) {
+            System.out.println("Error al activar empleado: " + e);
+        }
+
         return respuesta;
     }
 }

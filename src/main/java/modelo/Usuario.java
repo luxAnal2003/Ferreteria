@@ -19,6 +19,7 @@ public class Usuario implements Serializable {
     protected String nombre;
     protected String apellido;
     protected String telefono;
+    protected String correo;
     protected int estado;
     
     public Usuario(){
@@ -30,10 +31,23 @@ public class Usuario implements Serializable {
         this.nombre = "";
         this.apellido = "";
         this.telefono = "";
+        this.correo = "";
         this.estado = 0;
     }
 
-    public Usuario(int idUsuario, int idRol, String tipoRol, String usuario, String contrasenia, String nombre, String apellido, String telefono, int estado) {
+    public Usuario(int idRol, String tipoRol, String usuario, String contrasenia, String nombre, String apellido, String telefono, String correo, int estado) {
+        this.idRol = idRol;
+        this.tipoRol = tipoRol;
+        this.usuario = usuario;
+        this.contrasenia = contrasenia;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.telefono = telefono;
+        this.correo = correo;
+        this.estado = estado;
+    }
+    
+    public Usuario(int idUsuario, int idRol, String tipoRol, String usuario, String contrasenia, String nombre, String apellido, String telefono, String correo, int estado) {
         this.idUsuario = idUsuario;
         this.idRol = idRol;
         this.tipoRol = tipoRol;
@@ -42,8 +56,10 @@ public class Usuario implements Serializable {
         this.nombre = nombre;
         this.apellido = apellido;
         this.telefono = telefono;
+        this.correo = correo;
         this.estado = estado;
     }
+    
 
     public int getIdUsuario() {
         return idUsuario;
@@ -53,6 +69,13 @@ public class Usuario implements Serializable {
         this.idUsuario = idUsuario;
     }
 
+    public String getCorreo() {
+        return correo;
+    }
+
+    public void setCorreo(String correo) {
+        this.correo = correo;
+    }
     
     public String getUsuario() {
         return usuario;

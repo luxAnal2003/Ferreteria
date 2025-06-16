@@ -307,13 +307,13 @@ public class FrmMenuAdmin extends javax.swing.JFrame {
 
     private void menuItemConsultarEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemConsultarEmpleadoActionPerformed
         content.removeAll();
-//        JPanelConsultarEmpleado empleado = new JPanelConsultarEmpleado();
-//        empleado.setSize(900, 400);
-//        empleado.setLocation(0,0);
-//        content.removeAll();
-//        content.add(empleado, BorderLayout.CENTER);
-//        content.revalidate();
-//        content.repaint();
+        JPanelConsultarEmpleado empleado = new JPanelConsultarEmpleado();
+        empleado.setSize(900, 400);
+        empleado.setLocation(0,0);
+        content.removeAll();
+        content.add(empleado, BorderLayout.CENTER);
+        content.revalidate();
+        content.repaint();
     }//GEN-LAST:event_menuItemConsultarEmpleadoActionPerformed
 
     private void menuItemGestionarEmpleado1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemGestionarEmpleado1ActionPerformed

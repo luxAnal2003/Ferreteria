@@ -15,28 +15,31 @@ public class Empleado extends Usuario{
     private int idEmpleado;
     private String cedula;
     private String direccion;
-    private String correo;
-    
+
     public Empleado(){
         this.idEmpleado = 0;
         this.cedula = "";
         this.direccion = "";
-        this.correo = "";
     }
-
-    public Empleado(int idEmpleado, String cedula, String direccion, String correo) {
+    
+    public Empleado(int idEmpleado, String cedula, String direccion) {
         this.idEmpleado = idEmpleado;
         this.cedula = cedula;
         this.direccion = direccion;
-        this.correo = correo;
     }
 
-    public Empleado(int idEmpleado, String cedula, String direccion, String correo, int idUsuario, int idRol, String tipoRol, String usuario, String contrasenia, String nombre, String apellido, String telefono, int estado) {
-        super(idUsuario, idRol, tipoRol, usuario, contrasenia, nombre, apellido, telefono, estado);
+    public Empleado(int idEmpleado, String cedula, String direccion, int idRol, String tipoRol, String usuario, String contrasenia, String nombre, String apellido, String telefono, String correo, int estado) {
+        super(idRol, tipoRol, usuario, contrasenia, nombre, apellido, telefono, correo, estado);
         this.idEmpleado = idEmpleado;
         this.cedula = cedula;
         this.direccion = direccion;
-        this.correo = correo;
+    }
+
+    public Empleado(int idEmpleado, String cedula, String direccion, int idUsuario, int idRol, String tipoRol, String usuario, String contrasenia, String nombre, String apellido, String telefono, String correo, int estado) {
+        super(idUsuario, idRol, tipoRol, usuario, contrasenia, nombre, apellido, telefono, correo, estado);
+        this.idEmpleado = idEmpleado;
+        this.cedula = cedula;
+        this.direccion = direccion;
     }
 
     public int getIdEmpleado() {
