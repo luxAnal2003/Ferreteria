@@ -30,14 +30,6 @@ public class Proveedor extends Usuario {
         this.direccion = direccion;
     }
 
-    public Proveedor(int idProveedor, String cedula, String correo, String direccion, int idUsuario, int idRol, String tipoRol, String usuario, String contrasenia, String nombre, String apellido, String telefono, int estado) {
-        super(idUsuario, idRol, tipoRol, usuario, contrasenia, nombre, apellido, telefono, estado);
-        this.idProveedor = idProveedor;
-        this.cedula = cedula;
-        this.correo = correo;
-        this.direccion = direccion;
-    }
-
     public String getCedula() {
         return cedula;
     }

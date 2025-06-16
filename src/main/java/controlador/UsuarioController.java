@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.JOptionPane;
+import modelo.Rol;
 import modelo.Usuario;
 
 /**
@@ -39,6 +40,7 @@ public class UsuarioController {
                 usuarioAutenticado.setTelefono(rs.getString("telefono"));
                 usuarioAutenticado.setEstado(rs.getInt("estado"));
                 usuarioAutenticado.setIdRol(rs.getInt("idRol"));
+                
                 usuarioAutenticado.setTipoRol(rs.getString("tipo"));
             }
         } catch (SQLException e) {

@@ -95,8 +95,8 @@ public class JPanelProducto extends javax.swing.JPanel {
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jLabel2.setText("Nuevo Producto");
-        add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 30, -1, -1));
+        jLabel2.setText("Productos");
+        add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 30, -1, -1));
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel5.setText("Nombre del producto:");
@@ -445,8 +445,8 @@ public class JPanelProducto extends javax.swing.JPanel {
             st = con.createStatement();
             ResultSet rs = st.executeQuery(sql);
 
-            JPanelProducto.tableProducto = new JTable(model);
-            JPanelProducto.jScrollPane3.setViewportView(JPanelProducto.tableProducto);
+//            JPanelProducto.tableProducto = new JTable(model);
+//            JPanelProducto.jScrollPane3.setViewportView(JPanelProducto.tableProducto);
 
             model.addColumn("ID");
             model.addColumn("Nombre");
@@ -459,26 +459,21 @@ public class JPanelProducto extends javax.swing.JPanel {
             model.addColumn("Estado");
 
             while (rs.next()) {
-                Object fila[] = new Object[9];
+                Object[] fila = new Object[9];
                 fila[0] = rs.getInt("idProducto");
                 fila[1] = rs.getString("nombre");
                 fila[2] = rs.getString("nombreProveedor");
                 fila[3] = rs.getInt("cantidad");
                 fila[4] = rs.getString("descripcion");
                 fila[5] = rs.getDouble("precio");
-
-                int porcentajeIva = rs.getInt("iva");
-                double valorIva = calcularIva(porcentajeIva);
-                fila[6] = String.format("%.2f", valorIva);
-
+                fila[6] = String.format("%.2f", rs.getInt("iva") / 100.0);
                 fila[7] = rs.getString("descripcionCategoria");
-
-                int estadoValor = rs.getInt("estado");
-                fila[8] = (estadoValor == 1) ? "Activo" : "Inactivo";
-
+                fila[8] = (rs.getInt("estado") == 1) ? "Activo" : "Inactivo";
                 model.addRow(fila);
             }
-
+            
+            tableProducto.setModel(model);
+            
             con.close();
         } catch (SQLException e) {
             System.out.println("Error al llenar la tabla productos: " + e);
@@ -496,10 +491,6 @@ public class JPanelProducto extends javax.swing.JPanel {
                 }
             }
         });
-    }
-
-    private double calcularIva(int porcentajeIva) {
-        return porcentajeIva / 100.0;
     }
 
     private void enviarDatosProducto(int idProducto) {
@@ -578,7 +569,7 @@ public class JPanelProducto extends javax.swing.JPanel {
         int fila = tableProducto.getSelectedRow();
 
         if (fila != -1) {
-            String estado = tableProducto.getValueAt(fila, 8).toString(); // Columna Estado
+            String estado = tableProducto.getValueAt(fila, 8).toString();
 
             if (estado.equalsIgnoreCase("Activo")) {
                 JOptionPane.showMessageDialog(null, "El producto ya está activo");

@@ -13,14 +13,6 @@ public class Cliente extends Usuario{
         this.correo = correo;
     }
 
-    public Cliente(int idCliente, String cedula, String direccion, String correo, int idUsuario, int idRol, String tipoRol, String usuario, String contrasenia, String nombre, String apellido, String telefono, int estado) {
-        super(idUsuario, idRol, tipoRol, usuario, contrasenia, nombre, apellido, telefono, estado);
-        this.idCliente = idCliente;
-        this.cedula = cedula;
-        this.direccion = direccion;
-        this.correo = correo;
-    }
-
     public int getIdCliente() {
         return idCliente;
     }

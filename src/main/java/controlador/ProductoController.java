@@ -32,14 +32,14 @@ public class ProductoController {
 
         try {
             PreparedStatement consulta = cn.prepareStatement(sql);
-            consulta.setInt(1, 0); // El id autoincremental (puedes usar NULL o dejar que se genere solo)
+            consulta.setInt(1, 0); 
             consulta.setString(2, producto.getNombreProducto());
             consulta.setInt(3, producto.getCantidad());
             consulta.setDouble(4, producto.getPrecio());
             consulta.setString(5, producto.getDescripcion());
             consulta.setInt(6, producto.getPorcentajeIva());
-            consulta.setInt(7, producto.getIdCategoria().getIdCategoria()); // ✅ OK
-            consulta.setInt(8, producto.getIdProveedor().getIdProveedor()); // ✅ OK
+            consulta.setInt(7, producto.getIdCategoria().getIdCategoria());
+            consulta.setInt(8, producto.getIdProveedor().getIdProveedor());
             consulta.setInt(9, producto.getEstado());
 
             if (consulta.executeUpdate() > 0) {
@@ -68,7 +68,7 @@ public class ProductoController {
             consulta.setString(6, producto.getDescripcion());
             consulta.setInt(7, producto.getPorcentajeIva());
             consulta.setInt(8, producto.getEstado());
-            consulta.setInt(9, idProducto); // este faltaba
+            consulta.setInt(9, idProducto); 
 
             if (consulta.executeUpdate() > 0) {
                 respuesta = true;
