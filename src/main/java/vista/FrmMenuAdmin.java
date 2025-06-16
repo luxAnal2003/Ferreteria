@@ -52,6 +52,7 @@ public class FrmMenuAdmin extends javax.swing.JFrame {
         menuItemEliminarProveedor = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
         menuItemGestionarProducto = new javax.swing.JMenuItem();
+        menuItemGestionarProducto1 = new javax.swing.JMenuItem();
         jMenu8 = new javax.swing.JMenu();
         menuItemGestionarCategoria = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
@@ -166,6 +167,16 @@ public class FrmMenuAdmin extends javax.swing.JFrame {
             }
         });
         jMenu3.add(menuItemGestionarProducto);
+
+        menuItemGestionarProducto1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        menuItemGestionarProducto1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/buscar.png"))); // NOI18N
+        menuItemGestionarProducto1.setText("Consultar");
+        menuItemGestionarProducto1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemGestionarProducto1ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(menuItemGestionarProducto1);
 
         jMenu8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/carrito.png"))); // NOI18N
         jMenu8.setText("Categoria");
@@ -288,6 +299,17 @@ public class FrmMenuAdmin extends javax.swing.JFrame {
         content.repaint();
     }//GEN-LAST:event_menuItemGestionarProductoActionPerformed
 
+    private void menuItemGestionarProducto1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemGestionarProducto1ActionPerformed
+        content.removeAll();
+        JPanelConsultarProducto producto = new JPanelConsultarProducto();
+        producto.setSize(900, 400);
+        producto.setLocation(0,0);
+        content.removeAll();
+        content.add(producto, BorderLayout.CENTER);
+        content.revalidate();
+        content.repaint();
+    }//GEN-LAST:event_menuItemGestionarProducto1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -344,6 +366,7 @@ public class FrmMenuAdmin extends javax.swing.JFrame {
     private javax.swing.JMenuItem menuItemEliminarVenta;
     private javax.swing.JMenuItem menuItemGestionarCategoria;
     private javax.swing.JMenuItem menuItemGestionarProducto;
+    private javax.swing.JMenuItem menuItemGestionarProducto1;
     private javax.swing.JMenuItem menuItemNuevaVenta;
     private javax.swing.JMenuItem menuItemNuevoCliente;
     private javax.swing.JMenuItem menuItemNuevoEmpleado;

@@ -9,10 +9,6 @@ package controlador;
  * @author admin
  */
 import dao.Conexion;
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -56,6 +52,54 @@ public class ProductoController {
         return respuesta;
     }
 
+    public boolean actualizar(Producto producto, int idProducto) {
+        boolean respuesta = false;
+        Connection cn = Conexion.conectar();
+
+        try {
+            PreparedStatement consulta = cn.prepareStatement(
+                    "UPDATE producto SET nombre = ?, idCategoria = ?, idProveedor = ?, precio = ?, cantidad = ?, descripcion = ?, iva = ?, estado = ? WHERE idProducto = ?"
+            );
+            consulta.setString(1, producto.getNombreProducto());
+            consulta.setInt(2, producto.getIdCategoria().getIdCategoria());
+            consulta.setInt(3, producto.getIdProveedor().getIdProveedor());
+            consulta.setDouble(4, producto.getPrecio());
+            consulta.setInt(5, producto.getCantidad());
+            consulta.setString(6, producto.getDescripcion());
+            consulta.setInt(7, producto.getPorcentajeIva());
+            consulta.setInt(8, producto.getEstado());
+            consulta.setInt(9, idProducto); // este faltaba
+
+            if (consulta.executeUpdate() > 0) {
+                respuesta = true;
+            }
+            cn.close();
+        } catch (SQLException e) {
+            System.out.println("Error al actualizar producto: " + e);
+        }
+        return respuesta;
+    }
+
+    public boolean eliminar(int idProducto) {
+        boolean respuesta = false;
+        Connection cn = Conexion.conectar();
+
+        try {
+            PreparedStatement consulta = cn.prepareStatement("DELETE FROM producto WHERE idProducto = ?");
+            consulta.setInt(1, idProducto);
+            consulta.executeUpdate();
+            int filasAfectadas = consulta.executeUpdate();
+
+            if (filasAfectadas > 0) {
+                respuesta = true;
+            }
+            cn.close();
+        } catch (SQLException e) {
+            System.out.println("Error al eliminar producto: " + e);
+        }
+        return respuesta;
+    }
+
     public boolean existeProducto(String producto) {
         boolean respuesta = false;
         String sql = "select nombre from producto where nombre = '" + producto + "'";
@@ -70,6 +114,23 @@ public class ProductoController {
             }
         } catch (SQLException e) {
             System.out.println("Error al consultar producto: " + e);
+        }
+        return respuesta;
+    }
+
+    public boolean desactivar(int idProducto) {
+        boolean respuesta = false;
+        Connection cn = Conexion.conectar();
+
+        String sql = "UPDATE producto SET estado = 0 WHERE idProducto = ?";
+
+        try {
+            PreparedStatement pst = cn.prepareStatement(sql);
+            pst.setInt(1, idProducto);
+            respuesta = pst.executeUpdate() > 0;
+            cn.close();
+        } catch (SQLException e) {
+            System.out.println("Error al desactivar producto: " + e);
         }
         return respuesta;
     }
@@ -114,4 +175,25 @@ public class ProductoController {
 
         return lista;
     }
+
+    public boolean activar(int idProducto) {
+        boolean respuesta = false;
+        Connection cn = Conexion.conectar();
+
+        try {
+            PreparedStatement consulta = cn.prepareStatement("UPDATE producto SET estado = 1 WHERE idProducto = ?");
+            consulta.setInt(1, idProducto);
+
+            if (consulta.executeUpdate() > 0) {
+                respuesta = true;
+            }
+
+            cn.close();
+        } catch (SQLException e) {
+            System.out.println("Error al activar producto: " + e);
+        }
+
+        return respuesta;
+    }
+
 }

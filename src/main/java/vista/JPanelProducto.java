@@ -26,6 +26,7 @@ import modelo.Proveedor;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import javax.swing.JTable;
+import static vista.JPanelCategoria.tableCategoria;
 
 /**
  *
@@ -35,6 +36,7 @@ public class JPanelProducto extends javax.swing.JPanel {
 
     private Categoria obtenerIdCategoria = new Categoria();
     private Proveedor obtenerIdProveedor = new Proveedor();
+    private int idProducto;
 
     /**
      * Creates new form JPanelCategoriaNuevo
@@ -46,6 +48,16 @@ public class JPanelProducto extends javax.swing.JPanel {
         cargarDatosEnComboBox("proveedor", "nombreProveedor", cboxProveedor, "Seleccionar proveedor");
 
         this.cargarProductosEnTabla();
+        tableProducto.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int filaSeleccionada = tableProducto.getSelectedRow();
+                if (filaSeleccionada != -1) {
+                    idProducto = Integer.parseInt(tableProducto.getValueAt(filaSeleccionada, 0).toString());
+                }
+            }
+        });
+
     }
 
     /**
@@ -76,6 +88,7 @@ public class JPanelProducto extends javax.swing.JPanel {
         btnLimpiar = new javax.swing.JButton();
         btnGuardar = new javax.swing.JButton();
         btnActualizar = new javax.swing.JButton();
+        btnActivar = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
@@ -87,42 +100,42 @@ public class JPanelProducto extends javax.swing.JPanel {
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel5.setText("Nombre del producto:");
-        add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 80, -1, -1));
+        add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 220, -1, -1));
 
         jLabel6.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel6.setText("Categoria:");
-        add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 130, -1, -1));
-        add(txtNombreProducto, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 100, 190, -1));
+        add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 220, -1, -1));
+        add(txtNombreProducto, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 240, 190, -1));
 
         jLabel9.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel9.setText("Precio:");
-        add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 180, -1, -1));
+        add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 320, -1, -1));
 
         jLabel10.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel10.setText("Cantidad en stock:");
-        add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 180, -1, -1));
+        add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 270, -1, -1));
 
         jLabel11.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel11.setText("Descripción:");
-        add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 230, -1, -1));
+        add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 270, -1, -1));
 
         cboxProveedor.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione proveedor", "Item 1", "Item 2", "Item 3", "Item 4" }));
-        add(cboxProveedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 100, 190, -1));
-        add(txtStock, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 200, 190, -1));
-        add(txtPrecio, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 200, 190, -1));
+        add(cboxProveedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 240, 300, -1));
+        add(txtStock, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 290, 190, -1));
+        add(txtPrecio, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 340, 190, -1));
 
         textAreaDescripcion.setColumns(20);
         textAreaDescripcion.setRows(5);
         jScrollPane2.setViewportView(textAreaDescripcion);
 
-        add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 250, 400, 70));
+        add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 290, 320, 70));
 
         jLabel7.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel7.setText("Proveedor:");
-        add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 80, -1, -1));
+        add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 220, -1, -1));
 
         cboxCategoria.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione categoria", "Item 1", "Item 2", "Item 3", "Item 4" }));
-        add(cboxCategoria, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 150, 400, -1));
+        add(cboxCategoria, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 240, 290, -1));
 
         jScrollPane3.setPreferredSize(new java.awt.Dimension(450, 80));
 
@@ -137,10 +150,9 @@ public class JPanelProducto extends javax.swing.JPanel {
                 "Producto", "Proveedor", "Categoría", "Precio", "Stock", "Estado"
             }
         ));
-        tableProducto.setPreferredSize(new java.awt.Dimension(450, 80));
         jScrollPane3.setViewportView(tableProducto);
 
-        add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 80, 410, 280));
+        add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 70, 690, 140));
 
         btnLimpiar.setBackground(new java.awt.Color(204, 204, 255));
         btnLimpiar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -150,7 +162,7 @@ public class JPanelProducto extends javax.swing.JPanel {
                 btnLimpiarActionPerformed(evt);
             }
         });
-        add(btnLimpiar, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 330, 90, 30));
+        add(btnLimpiar, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 300, 90, 30));
 
         btnGuardar.setBackground(new java.awt.Color(204, 204, 255));
         btnGuardar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -160,30 +172,42 @@ public class JPanelProducto extends javax.swing.JPanel {
                 btnGuardarActionPerformed(evt);
             }
         });
-        add(btnGuardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 330, 90, 30));
+        add(btnGuardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(740, 300, 90, 30));
 
-        btnActualizar.setBackground(new java.awt.Color(204, 204, 255));
         btnActualizar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        btnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/editar-producto.png"))); // NOI18N
         btnActualizar.setText("Actualizar");
         btnActualizar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnActualizarActionPerformed(evt);
             }
         });
-        add(btnActualizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 330, 100, 30));
+        add(btnActualizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(740, 160, 140, 30));
+
+        btnActivar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        btnActivar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/activar.png"))); // NOI18N
+        btnActivar.setText("Activar");
+        btnActivar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnActivarActionPerformed(evt);
+            }
+        });
+        add(btnActivar, new org.netbeans.lib.awtextra.AbsoluteConstraints(740, 80, 140, 30));
 
         btnEliminar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/eliminar.png"))); // NOI18N
+        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/desactivar.png"))); // NOI18N
+        btnEliminar.setText("Eliminar");
         btnEliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnEliminarActionPerformed(evt);
             }
         });
-        add(btnEliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(800, 330, 50, 30));
+        add(btnEliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(740, 120, 140, 30));
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
         this.setear();
+        this.cargarProductosEnTabla();
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
@@ -194,34 +218,27 @@ public class JPanelProducto extends javax.swing.JPanel {
         String stockTexto = txtStock.getText().trim();
         String precioTexto = txtPrecio.getText().trim();
         String descripcion = textAreaDescripcion.getText().trim();
-        String categoria = cboxCategoria.getSelectedItem().toString().trim();
-        String proveedor = cboxProveedor.getSelectedItem().toString().trim();
 
-        
         if (nombreProducto.isEmpty() || stockTexto.isEmpty() || precioTexto.isEmpty() || descripcion.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Campos obligatorios vacíos");
             return;
         }
 
-        
         if (!stockTexto.matches("\\d+")) {
             JOptionPane.showMessageDialog(null, "Formato de dato incorrecto.");
             return;
         }
 
-        
         if (!precioTexto.matches("^\\d+(\\.\\d{1,2})?$") && !precioTexto.matches("^\\d+(,\\d{1,2})?$")) {
             JOptionPane.showMessageDialog(null, "Formato de dato incorrecto.");
             return;
         }
 
-        
-        if (categoria.equalsIgnoreCase("Seleccione categoria") || proveedor.equalsIgnoreCase("Seleccione proveedor")) {
+        if (cboxCategoria.getSelectedIndex() == 0 || cboxProveedor.getSelectedIndex() == 0) {
             JOptionPane.showMessageDialog(null, "Campos obligatorios vacíos");
             return;
         }
 
-        
         if (controladorProducto.existeProducto(nombreProducto)) {
             JOptionPane.showMessageDialog(null, "El producto ya existe");
             return;
@@ -231,10 +248,8 @@ public class JPanelProducto extends javax.swing.JPanel {
             String nombreFormateado = nombreProducto.substring(0, 1).toUpperCase() + nombreProducto.substring(1).toLowerCase();
             producto.setNombreProducto(nombreFormateado);
 
-            
             producto.setCantidad(Integer.parseInt(stockTexto));
 
-            
             String precioFormateado = precioTexto.replace(",", ".");
             producto.setPrecio(Double.parseDouble(precioFormateado));
 
@@ -248,9 +263,8 @@ public class JPanelProducto extends javax.swing.JPanel {
             this.idProveedor();
             producto.setIdProveedor(obtenerIdProveedor);
 
-            
             if (controladorProducto.guardar(producto)) {
-                JOptionPane.showMessageDialog(null, "Producto guardado");
+                JOptionPane.showMessageDialog(null, "Producto guardado con iva del 12%");
 
                 this.cargarDatosEnComboBox("categoria", "descripcionCategoria", cboxCategoria, "Seleccionar categoria");
                 this.cargarDatosEnComboBox("proveedor", "nombreProveedor", cboxProveedor, "Seleccionar proveedor");
@@ -271,49 +285,109 @@ public class JPanelProducto extends javax.swing.JPanel {
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
-//        if (!txtCategoria.getText().isEmpty()) {
-//            Categoria categoria = new Categoria();
-//            CategoriaController controlCategoria = new CategoriaController();
-//
-//            String nombreIngresado = txtCategoria.getText().trim();
-//            if (!nombreIngresado.isEmpty()) {
-//                String nombreFormateado = nombreIngresado.substring(0, 1).toUpperCase() + nombreIngresado.substring(1).toLowerCase();
-//                categoria.setNombre(nombreFormateado);
-//            }
-//            if (controlCategoria.actualizar(categoria, idCategoria)) {
-//                JOptionPane.showMessageDialog(null, "Categoria actualizada");
-//                txtCategoria.setText("");
-//                this.cargarCategoriasEnTabla();
-//            } else {
-//                JOptionPane.showMessageDialog(null, "Error al actualizar categoria");
-//            }
-//
-//        } else {
-//            JOptionPane.showMessageDialog(null, "Seleccione una categoria");
-//        }
+        Producto producto = new Producto();
+        ProductoController controladorProducto = new ProductoController();
+
+        String nombreProducto = txtNombreProducto.getText().trim();
+        String stockTexto = txtStock.getText().trim();
+        String precioTexto = txtPrecio.getText().trim();
+        String descripcion = textAreaDescripcion.getText().trim();
+        String categoria = cboxCategoria.getSelectedItem().toString().trim();
+        String proveedor = cboxProveedor.getSelectedItem().toString().trim();
+
+        if (nombreProducto.isEmpty() || stockTexto.isEmpty() || precioTexto.isEmpty() || descripcion.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Campos obligatorios vacíos");
+            return;
+        }
+
+        if (!stockTexto.matches("\\d+")) {
+            JOptionPane.showMessageDialog(null, "Formato de dato incorrecto.");
+            return;
+        }
+
+        if (!precioTexto.matches("^\\d+(\\.\\d{1,2})?$") && !precioTexto.matches("^\\d+(,\\d{1,2})?$")) {
+            JOptionPane.showMessageDialog(null, "Formato de dato incorrecto.");
+            return;
+        }
+
+        if (cboxCategoria.getSelectedIndex() == 0 || cboxProveedor.getSelectedIndex() == 0) {
+            JOptionPane.showMessageDialog(null, "Campos obligatorios vacíos");
+            return;
+        }
+
+        try {
+            String nombreFormateado = nombreProducto.substring(0, 1).toUpperCase() + nombreProducto.substring(1).toLowerCase();
+            producto.setNombreProducto(nombreFormateado);
+
+            producto.setCantidad(Integer.parseInt(stockTexto));
+
+            String precioFormateado = precioTexto.replace(",", ".");
+            producto.setPrecio(Double.parseDouble(precioFormateado));
+
+            producto.setDescripcion(descripcion);
+            producto.setPorcentajeIva(12);
+            producto.setEstado(1);
+
+            this.idCategoria();
+            producto.setIdCategoria(obtenerIdCategoria);
+
+            this.idProveedor();
+            producto.setIdProveedor(obtenerIdProveedor);
+
+            if (controladorProducto.actualizar(producto, idProducto)) {
+                JOptionPane.showMessageDialog(null, "Producto actualizado con iva del 12%");
+
+                this.cargarDatosEnComboBox("categoria", "descripcionCategoria", cboxCategoria, "Seleccionar categoria");
+                this.cargarDatosEnComboBox("proveedor", "nombreProveedor", cboxProveedor, "Seleccionar proveedor");
+
+                this.cboxProveedor.setSelectedItem("Seleccione proveedor");
+                this.cboxCategoria.setSelectedItem("Seleccione categoria");
+
+                this.cargarProductosEnTabla();
+                this.setear();
+            } else {
+                JOptionPane.showMessageDialog(null, "Error al actualizar");
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error al guardar producto: " + e);
+            JOptionPane.showMessageDialog(null, "Error inesperado al actualizar el producto");
+        }
     }//GEN-LAST:event_btnActualizarActionPerformed
 
-    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-//        if (!txtCategoria.getText().isEmpty()) {
-//            Categoria producto = new Categoria();
-//            CategoriaController controlCategoria = new CategoriaController();
-//
-//            producto.setNombre(txtCategoria.getText());
-//            if (!controlCategoria.eliminar(idCategoria)) {
-//                JOptionPane.showMessageDialog(null, "Categoria eliminada");
-//                txtCategoria.setText("");
-//                this.cargarCategoriasEnTabla();
-//            } else {
-//                JOptionPane.showMessageDialog(null, "Error al eliminar producto");
-//            }
-//
-//        } else {
-//            JOptionPane.showMessageDialog(null, "Seleccione una producto");
-//        }
+    private void btnActivarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActivarActionPerformed
+        this.activar();
+    }//GEN-LAST:event_btnActivarActionPerformed
 
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        int fila = tableProducto.getSelectedRow();
+
+        if (fila != -1) {
+            String estado = tableProducto.getValueAt(fila, 8).toString();
+
+            if (estado.equalsIgnoreCase("Inactivo")) {
+                JOptionPane.showMessageDialog(null, "El producto ya ha sido desactivado anteriormente");
+                return;
+            }
+
+            idProducto = Integer.parseInt(tableProducto.getValueAt(fila, 0).toString());
+
+            ProductoController controlProducto = new ProductoController();
+
+            if (controlProducto.desactivar(idProducto)) {
+                JOptionPane.showMessageDialog(null, "Producto desactivado correctamente");
+                this.setear();
+                this.cargarProductosEnTabla();
+            } else {
+                JOptionPane.showMessageDialog(null, "Error al desactivar el producto");
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Seleccione un producto para desactivar");
+        }
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnActivar;
     private javax.swing.JButton btnActualizar;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnGuardar;
@@ -371,17 +445,16 @@ public class JPanelProducto extends javax.swing.JPanel {
             st = con.createStatement();
             ResultSet rs = st.executeQuery(sql);
 
-            // Crear tabla y asignar modelo
             JPanelProducto.tableProducto = new JTable(model);
             JPanelProducto.jScrollPane3.setViewportView(JPanelProducto.tableProducto);
 
-            model.addColumn("ID Producto");
+            model.addColumn("ID");
             model.addColumn("Nombre");
             model.addColumn("Proveedor");
             model.addColumn("Cantidad");
             model.addColumn("Descripción");
             model.addColumn("Precio");
-            model.addColumn("IVA (%)");
+            model.addColumn("IVA");
             model.addColumn("Categoría");
             model.addColumn("Estado");
 
@@ -393,7 +466,11 @@ public class JPanelProducto extends javax.swing.JPanel {
                 fila[3] = rs.getInt("cantidad");
                 fila[4] = rs.getString("descripcion");
                 fila[5] = rs.getDouble("precio");
-                fila[6] = rs.getInt("iva");
+
+                int porcentajeIva = rs.getInt("iva");
+                double valorIva = calcularIva(porcentajeIva);
+                fila[6] = String.format("%.2f", valorIva);
+
                 fila[7] = rs.getString("descripcionCategoria");
 
                 int estadoValor = rs.getInt("estado");
@@ -407,24 +484,31 @@ public class JPanelProducto extends javax.swing.JPanel {
             System.out.println("Error al llenar la tabla productos: " + e);
         }
 
-        JPanelProducto.tableProducto.addMouseListener(new MouseAdapter() {
+        tableProducto.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                int fila_point = JPanelProducto.tableProducto.rowAtPoint(e.getPoint());
+                int fila_point = tableProducto.rowAtPoint(e.getPoint());
                 int columna_point = 0;
 
                 if (fila_point > -1) {
-                    int idProducto = (int) model.getValueAt(fila_point, columna_point);
+                    idProducto = (int) model.getValueAt(fila_point, columna_point);
                     enviarDatosProducto(idProducto);
                 }
             }
         });
     }
 
+    private double calcularIva(int porcentajeIva) {
+        return porcentajeIva / 100.0;
+    }
+
     private void enviarDatosProducto(int idProducto) {
         try {
             Connection con = Conexion.conectar();
-            String sql = "SELECT * FROM producto WHERE idProducto = ?";
+            String sql = "SELECT p.*, c.descripcionCategoria, pr.nombreProveedor FROM producto p "
+                    + "INNER JOIN categoria c ON p.idCategoria = c.idCategoria "
+                    + "INNER JOIN proveedor pr ON p.idProveedor = pr.idProveedor "
+                    + "WHERE p.idProducto = ?";
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, idProducto);
             ResultSet rs = pst.executeQuery();
@@ -435,16 +519,11 @@ public class JPanelProducto extends javax.swing.JPanel {
                 textAreaDescripcion.setText(rs.getString("descripcion"));
                 txtPrecio.setText(String.valueOf(rs.getDouble("precio")));
 
-//                // Seleccionar categoría en el combo
-//                int idCategoria = rs.getInt("idCategoria");
-//                seleccionarItemComboBoxPorId(cboxCategoria, idCategoria);
-//
-//                // Seleccionar proveedor en el combo
-//                int idProveedor = rs.getInt("idProveedor");
-//                seleccionarItemComboBoxPorId(cboxProveedor, idProveedor);
-//
-//                int estado = rs.getInt("estado");
-//                chkEstado.setSelected(estado == 1);
+                String nombreCategoria = rs.getString("descripcionCategoria");
+                cboxCategoria.setSelectedItem(nombreCategoria);
+
+                String nombreProveedor = rs.getString("nombreProveedor");
+                cboxProveedor.setSelectedItem(nombreProveedor);
             }
 
             con.close();
@@ -493,5 +572,31 @@ public class JPanelProducto extends javax.swing.JPanel {
         txtPrecio.setText("");
         txtStock.setText("");
         textAreaDescripcion.setText("");
+    }
+
+    private void activar() {
+        int fila = tableProducto.getSelectedRow();
+
+        if (fila != -1) {
+            String estado = tableProducto.getValueAt(fila, 8).toString(); // Columna Estado
+
+            if (estado.equalsIgnoreCase("Activo")) {
+                JOptionPane.showMessageDialog(null, "El producto ya está activo");
+                return;
+            }
+
+            idProducto = Integer.parseInt(tableProducto.getValueAt(fila, 0).toString());
+            ProductoController controlProducto = new ProductoController();
+
+            if (controlProducto.activar(idProducto)) {
+                JOptionPane.showMessageDialog(null, "Producto activado correctamente");
+                this.setear();
+                this.cargarProductosEnTabla();
+            } else {
+                JOptionPane.showMessageDialog(null, "Error al activar el producto");
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Seleccione un producto para activar");
+        }
     }
 }
