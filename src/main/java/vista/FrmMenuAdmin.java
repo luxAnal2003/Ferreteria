@@ -14,6 +14,7 @@ import javax.swing.JFrame;
  * @author admin
  */
 public class FrmMenuAdmin extends javax.swing.JFrame {
+
     /**
      * Creates new form FrmMenuAdmin
      */
@@ -54,7 +55,6 @@ public class FrmMenuAdmin extends javax.swing.JFrame {
         menuItemGestionarCategoria = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         menuItemNuevaVenta = new javax.swing.JMenuItem();
-        menuItemEditarVenta = new javax.swing.JMenuItem();
         menuItemEliminarVenta = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
         menuItemCerrarSesion = new javax.swing.JMenuItem();
@@ -202,17 +202,12 @@ public class FrmMenuAdmin extends javax.swing.JFrame {
         menuItemNuevaVenta.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         menuItemNuevaVenta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/nueva-venta.png"))); // NOI18N
         menuItemNuevaVenta.setText("Nuevo");
-        jMenu2.add(menuItemNuevaVenta);
-
-        menuItemEditarVenta.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        menuItemEditarVenta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/editar-venta.png"))); // NOI18N
-        menuItemEditarVenta.setText("Editar");
-        menuItemEditarVenta.addActionListener(new java.awt.event.ActionListener() {
+        menuItemNuevaVenta.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuItemEditarVentaActionPerformed(evt);
+                menuItemNuevaVentaActionPerformed(evt);
             }
         });
-        jMenu2.add(menuItemEditarVenta);
+        jMenu2.add(menuItemNuevaVenta);
 
         menuItemEliminarVenta.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         menuItemEliminarVenta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/eliminar-venta.png"))); // NOI18N
@@ -253,15 +248,11 @@ public class FrmMenuAdmin extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void menuItemEditarVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemEditarVentaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_menuItemEditarVentaActionPerformed
-
     private void menuItemGestionarCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemGestionarCategoriaActionPerformed
         content.removeAll();
         JPanelCategoria categoria = new JPanelCategoria();
         categoria.setSize(900, 400);
-        categoria.setLocation(0,0);
+        categoria.setLocation(0, 0);
         content.removeAll();
         content.add(categoria, BorderLayout.CENTER);
         content.revalidate();
@@ -276,7 +267,7 @@ public class FrmMenuAdmin extends javax.swing.JFrame {
         content.removeAll();
         JPanelProducto producto = new JPanelProducto();
         producto.setSize(900, 400);
-        producto.setLocation(0,0);
+        producto.setLocation(0, 0);
         content.removeAll();
         content.add(producto, BorderLayout.CENTER);
         content.revalidate();
@@ -287,7 +278,7 @@ public class FrmMenuAdmin extends javax.swing.JFrame {
         content.removeAll();
         JPanelConsultarProducto producto = new JPanelConsultarProducto();
         producto.setSize(900, 400);
-        producto.setLocation(0,0);
+        producto.setLocation(0, 0);
         content.removeAll();
         content.add(producto, BorderLayout.CENTER);
         content.revalidate();
@@ -298,7 +289,7 @@ public class FrmMenuAdmin extends javax.swing.JFrame {
         content.removeAll();
         JPanelEmpleado empleado = new JPanelEmpleado();
         empleado.setSize(900, 400);
-        empleado.setLocation(0,0);
+        empleado.setLocation(0, 0);
         content.removeAll();
         content.add(empleado, BorderLayout.CENTER);
         content.revalidate();
@@ -309,7 +300,7 @@ public class FrmMenuAdmin extends javax.swing.JFrame {
         content.removeAll();
         JPanelConsultarEmpleado empleado = new JPanelConsultarEmpleado();
         empleado.setSize(900, 400);
-        empleado.setLocation(0,0);
+        empleado.setLocation(0, 0);
         content.removeAll();
         content.add(empleado, BorderLayout.CENTER);
         content.revalidate();
@@ -320,7 +311,7 @@ public class FrmMenuAdmin extends javax.swing.JFrame {
         content.removeAll();
         JPanelCliente cliente = new JPanelCliente();
         cliente.setSize(900, 400);
-        cliente.setLocation(0,0);
+        cliente.setLocation(0, 0);
         content.removeAll();
         content.add(cliente, BorderLayout.CENTER);
         content.revalidate();
@@ -331,7 +322,7 @@ public class FrmMenuAdmin extends javax.swing.JFrame {
         content.removeAll();
         JPanelConsultarCliente cliente = new JPanelConsultarCliente();
         cliente.setSize(900, 400);
-        cliente.setLocation(0,0);
+        cliente.setLocation(0, 0);
         content.removeAll();
         content.add(cliente, BorderLayout.CENTER);
         content.revalidate();
@@ -341,6 +332,17 @@ public class FrmMenuAdmin extends javax.swing.JFrame {
     private void menuItemConsultarProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemConsultarProveedorActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_menuItemConsultarProveedorActionPerformed
+
+    private void menuItemNuevaVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemNuevaVentaActionPerformed
+        content.removeAll();
+        JPanelVenta venta = new JPanelVenta();
+        venta.setSize(900, 400);
+        venta.setLocation(0, 0);
+        content.removeAll();
+        content.add(venta, BorderLayout.CENTER);
+        content.revalidate();
+        content.repaint();
+    }//GEN-LAST:event_menuItemNuevaVentaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -391,7 +393,6 @@ public class FrmMenuAdmin extends javax.swing.JFrame {
     private javax.swing.JMenuItem menuItemConsultarCliente;
     private javax.swing.JMenuItem menuItemConsultarEmpleado;
     private javax.swing.JMenuItem menuItemConsultarProveedor;
-    private javax.swing.JMenuItem menuItemEditarVenta;
     private javax.swing.JMenuItem menuItemEliminarVenta;
     private javax.swing.JMenuItem menuItemGestionarCategoria;
     private javax.swing.JMenuItem menuItemGestionarCliente;
