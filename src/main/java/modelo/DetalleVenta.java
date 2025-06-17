@@ -1,14 +1,14 @@
-///*
-// * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-// * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
-// */
-//package modelo;
-//
-///**
-// *
-// * @author admin
-// */
-//public class DetalleVenta {
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package modelo;
+
+/**
+ *
+ * @author admin
+ */
+public class DetalleVenta {
 //    private int idDetalleVenta;
 //    private int idVenta;
 //    private Producto producto;
@@ -76,4 +76,4 @@
 //        this.subtotal = subtotal;
 //    }
 //    
-//}
+}

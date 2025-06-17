@@ -22,7 +22,6 @@ public class ClienteController {
             consulta.setInt(4, cliente.getEstado());
             consulta.setInt(5, cliente.getIdUsuario());
 
-
             respuesta = consulta.executeUpdate() > 0;
             cn.close();
         } catch (SQLException e) {
@@ -144,4 +143,18 @@ public class ClienteController {
 
         return respuesta;
     }
+
+    public int obtenerUltimoIdInsertado() {
+        int id = -1;
+        String sql = "SELECT MAX(idCliente) FROM Cliente";
+        try (Connection con = Conexion.conectar(); PreparedStatement pst = con.prepareStatement(sql); ResultSet rs = pst.executeQuery()) {
+            if (rs.next()) {
+                id = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener último idCliente: " + e.getMessage());
+        }
+        return id;
+    }
+
 }

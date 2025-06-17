@@ -32,7 +32,7 @@ public class ProductoController {
 
         try {
             PreparedStatement consulta = cn.prepareStatement(sql);
-            consulta.setInt(1, 0); 
+            consulta.setInt(1, 0);
             consulta.setString(2, producto.getNombreProducto());
             consulta.setInt(3, producto.getCantidad());
             consulta.setDouble(4, producto.getPrecio());
@@ -68,7 +68,7 @@ public class ProductoController {
             consulta.setString(6, producto.getDescripcion());
             consulta.setInt(7, producto.getPorcentajeIva());
             consulta.setInt(8, producto.getEstado());
-            consulta.setInt(9, idProducto); 
+            consulta.setInt(9, idProducto);
 
             if (consulta.executeUpdate() > 0) {
                 respuesta = true;
@@ -139,31 +139,18 @@ public class ProductoController {
         List<Producto> lista = new ArrayList<>();
         Connection cn = Conexion.conectar();
 
-        String sql = "SELECT * FROM producto p "
-                + "INNER JOIN categoria c ON p.idCategoria = c.idCategoria "
-                + "INNER JOIN proveedor pr ON p.idProveedor = pr.idProveedor";
+        String sql = "SELECT * FROM producto WHERE estado = 1";
 
         try (PreparedStatement stmt = cn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 Producto p = new Producto();
+                p.setIdProducto(rs.getInt("idProducto"));
                 p.setNombreProducto(rs.getString("nombre"));
-
-                Proveedor proveedor = new Proveedor();
-                proveedor.setIdProveedor(rs.getInt("idProveedor"));
-                proveedor.setNombre(rs.getString("nombreProveedor"));
-                p.setIdProveedor(proveedor);
-
                 p.setCantidad(rs.getInt("cantidad"));
                 p.setDescripcion(rs.getString("descripcion"));
                 p.setPrecio(rs.getDouble("precio"));
                 p.setPorcentajeIva(rs.getInt("iva"));
-
-                Categoria categoria = new Categoria();
-                categoria.setIdCategoria(rs.getInt("idCategoria"));
-                categoria.setNombre(rs.getString("descripcionCategoria"));
-                p.setIdCategoria(categoria);
-
                 p.setEstado(rs.getInt("estado"));
 
                 lista.add(p);
@@ -194,6 +181,32 @@ public class ProductoController {
         }
 
         return respuesta;
+    }
+
+    public Producto buscarProductoPorNombre(String nombre) {
+        Producto producto = null;
+        String sql = "SELECT * FROM producto WHERE nombre LIKE ?";
+
+        try (Connection cn = Conexion.conectar(); PreparedStatement pst = cn.prepareStatement(sql)) {
+
+            pst.setString(1, "%" + nombre + "%");
+
+            ResultSet rs = pst.executeQuery();
+
+            if (rs.next()) {
+                producto = new Producto();
+                producto.setIdProducto(rs.getInt("idProducto"));
+                producto.setNombreProducto(rs.getString("nombre"));
+                producto.setPrecio(rs.getDouble("precio"));
+                producto.setCantidad(rs.getInt("cantidad"));
+                producto.setPorcentajeIva(rs.getInt("iva"));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return producto;
     }
 
 }

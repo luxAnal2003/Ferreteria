@@ -4,6 +4,7 @@ import dao.Conexion;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 import modelo.Empleado;
 import modelo.Rol;
 
@@ -71,7 +72,7 @@ public class EmpleadoController {
         }
         return respuesta;
     }
-    
+
     public boolean activar(int idEmpleado) {
         boolean respuesta = false;
         Connection cn = Conexion.conectar();
@@ -91,7 +92,7 @@ public class EmpleadoController {
 
         return respuesta;
     }
-    
+
     public List<Empleado> listar() {
         List<Empleado> lista = new ArrayList<>();
         Connection cn = Conexion.conectar();
@@ -141,4 +142,25 @@ public class EmpleadoController {
         }
         return respuesta;
     }
+
+    public int obtenerIdEmpleadoPorIdUsuario(int idUsuario) {
+        int idEmpleado = -1;
+        Connection cn = Conexion.conectar();
+
+        String sql = "SELECT idEmpleado FROM empleado WHERE idUsuario = ?";
+
+        try (PreparedStatement pst = cn.prepareStatement(sql)) {
+            pst.setInt(1, idUsuario);
+            ResultSet rs = pst.executeQuery();
+
+            if (rs.next()) {
+                idEmpleado = rs.getInt("idEmpleado");
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error al obtener idEmpleado: " + e.getMessage());
+        }
+
+        return idEmpleado;
+    }
+
 }
