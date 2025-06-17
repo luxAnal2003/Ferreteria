@@ -4,15 +4,10 @@
  */
 package vista;
 
-import com.mysql.cj.protocol.Resultset;
-import controlador.CategoriaController;
-import controlador.EmpleadoController;
-import controlador.ProductoController;
-import controlador.ProveedorController;
+import controlador.ClienteController;
 import controlador.UsuarioController;
 import dao.Conexion;
 import java.awt.Dimension;
-import java.awt.HeadlessException;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Connection;
@@ -21,38 +16,27 @@ import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import modelo.Categoria;
-import java.util.List;
-import javax.swing.JComboBox;
-import modelo.Producto;
 import modelo.Proveedor;
 import java.sql.Statement;
 import java.sql.ResultSet;
-import javax.swing.JButton;
-import javax.swing.JPasswordField;
-import javax.swing.JTable;
-import modelo.Empleado;
-import modelo.Rol;
+import modelo.Cliente;
 import modelo.Usuario;
-import static vista.JPanelCategoria.tableCategoria;
 
 /**
  *
  * @author admin
  */
-public class JPanelEmpleado extends javax.swing.JPanel {
-
-    private Categoria obtenerIdCategoria = new Categoria();
-    private Proveedor obtenerIdProveedor = new Proveedor();
-    private int idEmpleado;
+public class JPanelCliente extends javax.swing.JPanel {
+    private int idCliente;
 
     /**
      * Creates new form JPanelCategoriaNuevo
      */
-    public JPanelEmpleado() {
+    public JPanelCliente() {
         initComponents();
         this.setSize(new Dimension(900, 400));
 
-        this.cargarEmpleadosEnTabla();
+        this.cargarClientesEnTabla();
     }
 
     /**
@@ -73,7 +57,7 @@ public class JPanelEmpleado extends javax.swing.JPanel {
         txtApellidos = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        tableEmpleado = new javax.swing.JTable();
+        tableCliente = new javax.swing.JTable();
         btnLimpiar = new javax.swing.JButton();
         btnGuardar = new javax.swing.JButton();
         btnActualizar = new javax.swing.JButton();
@@ -94,7 +78,7 @@ public class JPanelEmpleado extends javax.swing.JPanel {
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jLabel2.setText("Empleados");
+        jLabel2.setText("Clientes");
         add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 30, -1, -1));
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -118,7 +102,7 @@ public class JPanelEmpleado extends javax.swing.JPanel {
 
         jScrollPane3.setPreferredSize(new java.awt.Dimension(450, 80));
 
-        tableEmpleado.setModel(new javax.swing.table.DefaultTableModel(
+        tableCliente.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null},
                 {null, null, null, null, null, null},
@@ -129,7 +113,7 @@ public class JPanelEmpleado extends javax.swing.JPanel {
                 "Producto", "Proveedor", "Categoría", "Precio", "Stock", "Estado"
             }
         ));
-        jScrollPane3.setViewportView(tableEmpleado);
+        jScrollPane3.setViewportView(tableCliente);
 
         add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, 690, 140));
 
@@ -215,13 +199,13 @@ public class JPanelEmpleado extends javax.swing.JPanel {
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
         this.setear();
-        this.cargarEmpleadosEnTabla();
+        this.cargarClientesEnTabla();
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        Empleado empleado = new Empleado();
+        Cliente cliente = new Cliente();
         Usuario usuario = new Usuario();
-        EmpleadoController controladorEmpleado = new EmpleadoController();
+        ClienteController controladorCliente = new ClienteController();
         UsuarioController controladorUsuario = new UsuarioController();
 
         String cedulaRuc = txtCedulaRuc.getText().trim();
@@ -232,7 +216,6 @@ public class JPanelEmpleado extends javax.swing.JPanel {
         String direccion = txtDireccion.getText().trim();
         String nombreUsuario = txtUsuario.getText().trim();
         String contrasenia = new String(txtContrasenia.getPassword()).trim();
-        int rol = 2;
 
         if (cedulaRuc.isEmpty() || nombres.isEmpty() || apellidos.isEmpty() || telefono.isEmpty()
                 || email.isEmpty() || direccion.isEmpty() || nombreUsuario.isEmpty() || contrasenia.isEmpty()) {
@@ -250,8 +233,8 @@ public class JPanelEmpleado extends javax.swing.JPanel {
             return;
         }
 
-        if (controladorEmpleado.existeEmpleado(cedulaRuc)) {
-            JOptionPane.showMessageDialog(null, "El empleado ya existe");
+        if (controladorCliente.existeCliente(cedulaRuc)) {
+            JOptionPane.showMessageDialog(null, "El cliente ya existe");
             return;
         }
 
@@ -263,7 +246,7 @@ public class JPanelEmpleado extends javax.swing.JPanel {
             usuario.setCorreo(email);
             usuario.setUsuario(nombreUsuario);
             usuario.setContrasenia(contrasenia);
-            usuario.setIdRol(rol);
+            usuario.setIdRol(3);
             usuario.setEstado(1);
 
             int idUsuario = controladorUsuario.guardar(usuario);
@@ -272,30 +255,30 @@ public class JPanelEmpleado extends javax.swing.JPanel {
                 return;
             }
 
-            empleado.setCedula(cedulaRuc);
-            empleado.setDireccion(direccion);
-            empleado.setIdRol(rol);
-            empleado.setEstado(1);
-            empleado.setIdUsuario(idUsuario);
+            cliente.setCedula(cedulaRuc);
+            cliente.setDireccion(direccion);
+            cliente.setIdRol(3);
+            cliente.setEstado(1);
+            cliente.setIdUsuario(idUsuario);
 
-            if (controladorEmpleado.guardar(empleado)) {
-                JOptionPane.showMessageDialog(null, "Empleado guardado correctamente");
-                this.cargarEmpleadosEnTabla();
+            if (controladorCliente.guardar(cliente)) {
+                JOptionPane.showMessageDialog(null, "Cliente guardado correctamente");
+                this.cargarClientesEnTabla();
                 this.setear();
             } else {
-                JOptionPane.showMessageDialog(null, "Error al guardar empleado");
+                JOptionPane.showMessageDialog(null, "Error al guardar cliente");
             }
         } catch (Exception e) {
-            System.out.println("Error al guardar empleado: " + e);
-            JOptionPane.showMessageDialog(null, "Error inesperado al guardar el empleado");
+            System.out.println("Error al guardar cliente: " + e);
+            JOptionPane.showMessageDialog(null, "Error inesperado al guardar el cliente");
         }
 
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
-        Empleado empleado = new Empleado();
+        Cliente cliente = new Cliente();
         Usuario usuario = new Usuario();
-        EmpleadoController controladorEmpleado = new EmpleadoController();
+        ClienteController controladorCliente = new ClienteController();
         UsuarioController controladorUsuario = new UsuarioController();
 
         String cedulaRuc = txtCedulaRuc.getText().trim();
@@ -324,14 +307,13 @@ public class JPanelEmpleado extends javax.swing.JPanel {
         }
 
         try {
-            int fila = tableEmpleado.getSelectedRow();
+            int fila = tableCliente.getSelectedRow();
             if (fila < 0) {
-                JOptionPane.showMessageDialog(null, "Selecciona un empleado para actualizar");
+                JOptionPane.showMessageDialog(null, "Selecciona un cliente para actualizar");
                 return;
             }
-
-            idEmpleado = Integer.parseInt(tableEmpleado.getValueAt(fila, 0).toString());
-            int idUsuario = Integer.parseInt(tableEmpleado.getValueAt(fila, 11).toString());
+            idCliente = Integer.parseInt(tableCliente.getValueAt(fila, 0).toString());
+            int idUsuario = Integer.parseInt(tableCliente.getValueAt(fila, 11).toString());
 
             usuario.setIdUsuario(idUsuario);
             usuario.setNombre(nombres.substring(0, 1).toUpperCase() + nombres.substring(1).toLowerCase());
@@ -340,30 +322,30 @@ public class JPanelEmpleado extends javax.swing.JPanel {
             usuario.setCorreo(email);
             usuario.setUsuario(nombreUsuario);
             usuario.setContrasenia(contrasenia);
-            usuario.setIdRol(2);
+            usuario.setIdRol(3);
             usuario.setEstado(1);
 
-            empleado.setIdEmpleado(idEmpleado);
-            empleado.setCedula(cedulaRuc);
-            empleado.setDireccion(direccion);
-            empleado.setIdRol(2);
-            empleado.setEstado(1);
-            empleado.setIdUsuario(idUsuario);
+            cliente.setIdCliente(idCliente);
+            cliente.setCedula(cedulaRuc);
+            cliente.setDireccion(direccion);
+            cliente.setIdRol(3);
+            cliente.setEstado(1);
+            cliente.setIdUsuario(idUsuario);
 
             boolean usuarioActualizado = controladorUsuario.actualizar(usuario);
-            boolean empleadoActualizado = controladorEmpleado.actualizar(empleado);
+            boolean empleadoActualizado = controladorCliente.actualizar(cliente);
 
             if (usuarioActualizado && empleadoActualizado) {
-                JOptionPane.showMessageDialog(null, "Empleado actualizado correctamente");
-                this.cargarEmpleadosEnTabla();
+                JOptionPane.showMessageDialog(null, "Cliente actualizado correctamente");
+                this.cargarClientesEnTabla();
                 this.setear();
             } else {
-                JOptionPane.showMessageDialog(null, "Error al actualizar el empleado o usuario");
+                JOptionPane.showMessageDialog(null, "Error al actualizar el cliente o usuario");
             }
 
         } catch (Exception e) {
-            System.out.println("Error al actualizar empleado: " + e);
-            JOptionPane.showMessageDialog(null, "Error inesperado al actualizar el empleado");
+            System.out.println("Error al actualizar cliente: " + e);
+            JOptionPane.showMessageDialog(null, "Error inesperado al actualizar el cliente");
         }
     }//GEN-LAST:event_btnActualizarActionPerformed
 
@@ -372,34 +354,32 @@ public class JPanelEmpleado extends javax.swing.JPanel {
     }//GEN-LAST:event_btnActivarActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-        int fila = tableEmpleado.getSelectedRow();
-
+        int fila = tableCliente.getSelectedRow();
         if (fila != -1) {
-            String estado = tableEmpleado.getValueAt(fila, 10).toString();
+            String estado = tableCliente.getValueAt(fila, 5).toString();
             if (estado.equalsIgnoreCase("Inactivo")) {
-                JOptionPane.showMessageDialog(null, "El empleado ya ha sido desactivado anteriormente");
-                this.setear();
+                JOptionPane.showMessageDialog(null, "El cliente ya ha sido desactivado");
                 return;
             }
+            
+            idCliente = Integer.parseInt(tableCliente.getValueAt(fila, 0).toString());
+            int idUsuario = Integer.parseInt(tableCliente.getValueAt(fila, 11).toString());
 
-            idEmpleado = Integer.parseInt(tableEmpleado.getValueAt(fila, 0).toString());
-            int idUsuario = Integer.parseInt(tableEmpleado.getValueAt(fila, 11).toString());
-
-            EmpleadoController controlEmpleado = new EmpleadoController();
+            ClienteController control = new ClienteController();
             UsuarioController controlUsuario = new UsuarioController();
-
-            boolean empleadoDesactivado = controlEmpleado.desactivar(idEmpleado);
+            
+            boolean clienteDesactivado = control.desactivar(idCliente);
             boolean usuarioDesactivado = controlUsuario.desactivar(idUsuario);
 
-            if (empleadoDesactivado && usuarioDesactivado) {
-                JOptionPane.showMessageDialog(null, "Empleado desactivado correctamente");
+            if (clienteDesactivado && usuarioDesactivado) {
+                JOptionPane.showMessageDialog(null, "Cliente desactivado correctamente");
                 this.setear();
-                this.cargarEmpleadosEnTabla();
+                this.cargarClientesEnTabla();
             } else {
-                JOptionPane.showMessageDialog(null, "Error al desactivar el empleado");
+                JOptionPane.showMessageDialog(null, "Error al desactivar el cliente");
             }
         } else {
-            JOptionPane.showMessageDialog(null, "Seleccione un empleado para desactivar");
+            JOptionPane.showMessageDialog(null, "Seleccione un cliente");
         }
     }//GEN-LAST:event_btnEliminarActionPerformed
 
@@ -430,7 +410,7 @@ public class JPanelEmpleado extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel9;
     public static javax.swing.JScrollPane jScrollPane3;
-    public static javax.swing.JTable tableEmpleado;
+    public static javax.swing.JTable tableCliente;
     private javax.swing.JTextField txtApellidos;
     private javax.swing.JTextField txtCedulaRuc;
     private javax.swing.JPasswordField txtContrasenia;
@@ -441,127 +421,34 @@ public class JPanelEmpleado extends javax.swing.JPanel {
     private javax.swing.JTextField txtUsuario;
     // End of variables declaration//GEN-END:variables
 
-    private void cargarEmpleadosEnTabla() {
-        DefaultTableModel model = new DefaultTableModel();
-
-        String sql = "SELECT e.idEmpleado, e.cedula, u.nombre, u.apellido, u.telefono, e.direccion, u.correo, u.usuario, u.contrasenia, r.tipo AS rol, e.estado, e.idUsuario "
-                + "FROM empleado e "
-                + "INNER JOIN usuario u ON e.idUsuario = u.idUsuario "
-                + "INNER JOIN rol r ON u.idRol = r.idRol";
-
-        try (Connection con = Conexion.conectar(); Statement st = con.createStatement(); ResultSet rs = st.executeQuery(sql)) {
-
-            model.addColumn("ID");
-            model.addColumn("Cédula");
-            model.addColumn("Nombres");
-            model.addColumn("Apellidos");
-            model.addColumn("Teléfono");
-            model.addColumn("Dirección");
-            model.addColumn("Correo");
-            model.addColumn("Usuario");
-            model.addColumn("Contraseña");
-            model.addColumn("Rol");
-            model.addColumn("Estado");
-            model.addColumn("idUsuario");
-
-            while (rs.next()) {
-                Object[] fila = new Object[12];
-                fila[0] = rs.getInt("idEmpleado");
-                fila[1] = rs.getString("cedula");
-                fila[2] = rs.getString("nombre");
-                fila[3] = rs.getString("apellido");
-                fila[4] = rs.getString("telefono");
-                fila[5] = rs.getString("direccion");
-                fila[6] = rs.getString("correo");
-                fila[7] = rs.getString("usuario");
-                fila[8] = rs.getString("contrasenia");
-                fila[9] = rs.getString("rol");
-                fila[10] = rs.getInt("estado") == 1 ? "Activo" : "Inactivo";
-                fila[11] = rs.getInt("idUsuario");
-
-                model.addRow(fila);
-            }
-
-            tableEmpleado.setModel(model);
-
-            tableEmpleado.getColumnModel().getColumn(11).setMinWidth(0);
-            tableEmpleado.getColumnModel().getColumn(11).setMaxWidth(0);
-            tableEmpleado.getColumnModel().getColumn(11).setWidth(0);
-
-        } catch (SQLException e) {
-            System.out.println("Error al llenar la tabla empleados: " + e.getMessage());
-        }
-
-        tableEmpleado.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                int fila = tableEmpleado.rowAtPoint(e.getPoint());
-                if (fila > -1) {
-                    int idEmpleado = Integer.parseInt(tableEmpleado.getValueAt(fila, 0).toString());
-                    enviarDatosEmpleado(idEmpleado);
-                }
-            }
-        });
-    }
-
-    private void enviarDatosEmpleado(int idEmpleado) {
-        String sql = "SELECT e.idEmpleado, e.cedula, e.direccion, u.idUsuario, u.nombre, u.apellido, u.usuario, u.contrasenia, u.telefono, u.correo, r.tipo "
-                + "FROM empleado e "
-                + "INNER JOIN usuario u ON e.idUsuario = u.idUsuario "
-                + "INNER JOIN rol r ON u.idRol = r.idRol "
-                + "WHERE e.idEmpleado = ?";
-
-        try (Connection con = Conexion.conectar(); PreparedStatement pst = con.prepareStatement(sql)) {
-
-            pst.setInt(1, idEmpleado);
-            ResultSet rs = pst.executeQuery();
-
-            if (rs.next()) {
-                txtCedulaRuc.setText(rs.getString("cedula"));
-                txtNombres.setText(rs.getString("nombre"));
-                txtApellidos.setText(rs.getString("apellido"));
-                txtTelefono.setText(rs.getString("telefono"));
-                txtDireccion.setText(rs.getString("direccion"));
-                txtEmail.setText(rs.getString("correo"));
-                txtUsuario.setText(rs.getString("usuario"));
-                txtContrasenia.setText(rs.getString("contrasenia"));
-            }
-
-        } catch (SQLException e) {
-            System.out.println("Error al seleccionar empleado: " + e.getMessage());
-        }
-    }
-
     private void activar() {
-        int fila = tableEmpleado.getSelectedRow();
+        int fila = tableCliente.getSelectedRow();
 
         if (fila != -1) {
-            String estado = tableEmpleado.getValueAt(fila, 10).toString();
+            String estado = tableCliente.getValueAt(fila, 10).toString();
             if (estado.equalsIgnoreCase("Activo")) {
-                JOptionPane.showMessageDialog(null, "El empleado ya está activo");
+                JOptionPane.showMessageDialog(null, "El cliente ya está activo");
                 this.setear();
                 return;
             }
+            idCliente = Integer.parseInt(tableCliente.getValueAt(fila, 0).toString());
+            int idUsuario = Integer.parseInt(tableCliente.getValueAt(fila, 11).toString());
 
-            int idEmpleado = Integer.parseInt(tableEmpleado.getValueAt(fila, 0).toString());
-            int idUsuario = Integer.parseInt(tableEmpleado.getValueAt(fila, 11).toString());
-
-            EmpleadoController controlEmpleado = new EmpleadoController();
+            ClienteController controlCliente = new ClienteController();
             UsuarioController controlUsuario = new UsuarioController();
 
-            boolean empleadoActivado = controlEmpleado.activar(idEmpleado);
+            boolean clienteActivado = controlCliente.activar(idCliente);
             boolean usuarioActivado = controlUsuario.activar(idUsuario);
 
-            if (empleadoActivado && usuarioActivado) {
-                JOptionPane.showMessageDialog(null, "Empleado activado correctamente");
+            if (clienteActivado && usuarioActivado) {
+                JOptionPane.showMessageDialog(null, "Cliente activado correctamente");
                 this.setear();
-                this.cargarEmpleadosEnTabla();
+                this.cargarClientesEnTabla();
             } else {
-                JOptionPane.showMessageDialog(null, "Error al activar el empleado");
+                JOptionPane.showMessageDialog(null, "Error al activar el cliente");
             }
-
         } else {
-            JOptionPane.showMessageDialog(null, "Seleccione un empleado para activar");
+            JOptionPane.showMessageDialog(null, "Seleccione un cliente para activar");
         }
     }
 
@@ -584,5 +471,96 @@ public class JPanelEmpleado extends javax.swing.JPanel {
         txtDireccion.setText("");
         txtUsuario.setText("");
         txtContrasenia.setText("");
+    }
+
+    private void cargarClientesEnTabla() {
+        DefaultTableModel model = new DefaultTableModel();
+
+        String sql = "SELECT c.idCliente, c.cedula, u.nombre, u.apellido, u.telefono, c.direccion, u.correo, u.usuario, u.contrasenia, r.tipo AS rol, c.estado, c.idUsuario "
+                + "FROM cliente c "
+                + "INNER JOIN usuario u ON c.idUsuario = u.idUsuario "
+                + "INNER JOIN rol r ON u.idRol = r.idRol";
+
+        try (Connection con = Conexion.conectar(); Statement st = con.createStatement(); ResultSet rs = st.executeQuery(sql)) {
+
+            model.addColumn("ID");
+            model.addColumn("Cédula");
+            model.addColumn("Nombres");
+            model.addColumn("Apellidos");
+            model.addColumn("Teléfono");
+            model.addColumn("Dirección");
+            model.addColumn("Correo");
+            model.addColumn("Usuario");
+            model.addColumn("Contraseña");
+            model.addColumn("Rol");
+            model.addColumn("Estado");
+            model.addColumn("idUsuario");
+
+            while (rs.next()) {
+                Object[] fila = new Object[12];
+                fila[0] = rs.getInt("idCliente");
+                fila[1] = rs.getString("cedula");
+                fila[2] = rs.getString("nombre");
+                fila[3] = rs.getString("apellido");
+                fila[4] = rs.getString("telefono");
+                fila[5] = rs.getString("direccion");
+                fila[6] = rs.getString("correo");
+                fila[7] = rs.getString("usuario");
+                fila[8] = rs.getString("contrasenia");
+                fila[9] = rs.getString("rol");
+                fila[10] = rs.getInt("estado") == 1 ? "Activo" : "Inactivo";
+                fila[11] = rs.getInt("idUsuario");
+
+                model.addRow(fila);
+            }
+
+            tableCliente.setModel(model);
+
+            tableCliente.getColumnModel().getColumn(11).setMinWidth(0);
+            tableCliente.getColumnModel().getColumn(11).setMaxWidth(0);
+            tableCliente.getColumnModel().getColumn(11).setWidth(0);
+
+        } catch (SQLException e) {
+            System.out.println("Error al llenar la tabla clientes: " + e.getMessage());
+        }
+        
+        tableCliente.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int fila = tableCliente.rowAtPoint(e.getPoint());
+                if (fila > -1) {
+                    int idCliente = Integer.parseInt(tableCliente.getValueAt(fila, 0).toString());
+                    enviarDatosCliente(idCliente);
+                }
+            }
+        });
+    }
+
+    private void enviarDatosCliente(int idCliente) {
+        String sql = "SELECT c.idCliente, c.cedula, c.direccion, u.idUsuario, u.nombre, u.apellido, u.usuario, u.contrasenia, u.telefono, u.correo, r.tipo "
+                + "FROM cliente c "
+                + "INNER JOIN usuario u ON c.idUsuario = u.idUsuario "
+                + "INNER JOIN rol r ON u.idRol = r.idRol "
+                + "WHERE c.idCliente = ?";
+
+        try (Connection con = Conexion.conectar(); PreparedStatement pst = con.prepareStatement(sql)) {
+
+            pst.setInt(1, idCliente);
+            ResultSet rs = pst.executeQuery();
+
+            if (rs.next()) {
+                txtCedulaRuc.setText(rs.getString("cedula"));
+                txtNombres.setText(rs.getString("nombre"));
+                txtApellidos.setText(rs.getString("apellido"));
+                txtTelefono.setText(rs.getString("telefono"));
+                txtDireccion.setText(rs.getString("direccion"));
+                txtEmail.setText(rs.getString("correo"));
+                txtUsuario.setText(rs.getString("usuario"));
+                txtContrasenia.setText(rs.getString("contrasenia"));
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error al seleccionar cliente: " + e.getMessage());
+        }
     }
 }

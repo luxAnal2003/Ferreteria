@@ -55,6 +55,43 @@ public class EmpleadoController {
         return respuesta;
     }
 
+    public boolean desactivar(int idEmpleado) {
+        boolean respuesta = false;
+        Connection cn = Conexion.conectar();
+
+        String sql = "UPDATE empleado SET estado = 0 WHERE idEmpleado = ?";
+
+        try {
+            PreparedStatement pst = cn.prepareStatement(sql);
+            pst.setInt(1, idEmpleado);
+            respuesta = pst.executeUpdate() > 0;
+            cn.close();
+        } catch (SQLException e) {
+            System.out.println("Error al desactivar empleado: " + e);
+        }
+        return respuesta;
+    }
+    
+    public boolean activar(int idEmpleado) {
+        boolean respuesta = false;
+        Connection cn = Conexion.conectar();
+
+        try {
+            PreparedStatement consulta = cn.prepareStatement("UPDATE empleado SET estado = 1 WHERE idEmpleado = ?");
+            consulta.setInt(1, idEmpleado);
+
+            if (consulta.executeUpdate() > 0) {
+                respuesta = true;
+            }
+
+            cn.close();
+        } catch (SQLException e) {
+            System.out.println("Error al activar empleado: " + e);
+        }
+
+        return respuesta;
+    }
+    
     public List<Empleado> listar() {
         List<Empleado> lista = new ArrayList<>();
         Connection cn = Conexion.conectar();
@@ -102,43 +139,6 @@ public class EmpleadoController {
         } catch (SQLException e) {
             System.out.println("Error al consultar empleado: " + e);
         }
-        return respuesta;
-    }
-
-    public boolean desactivar(int idEmpleado) {
-        boolean respuesta = false;
-        Connection cn = Conexion.conectar();
-
-        String sql = "UPDATE empleado SET estado = 0 WHERE idEmpleado = ?";
-
-        try {
-            PreparedStatement pst = cn.prepareStatement(sql);
-            pst.setInt(1, idEmpleado);
-            respuesta = pst.executeUpdate() > 0;
-            cn.close();
-        } catch (SQLException e) {
-            System.out.println("Error al desactivar empleado: " + e);
-        }
-        return respuesta;
-    }
-    
-    public boolean activar(int idEmpleado) {
-        boolean respuesta = false;
-        Connection cn = Conexion.conectar();
-
-        try {
-            PreparedStatement consulta = cn.prepareStatement("UPDATE empleado SET estado = 1 WHERE idEmpleado = ?");
-            consulta.setInt(1, idEmpleado);
-
-            if (consulta.executeUpdate() > 0) {
-                respuesta = true;
-            }
-
-            cn.close();
-        } catch (SQLException e) {
-            System.out.println("Error al activar empleado: " + e);
-        }
-
         return respuesta;
     }
 }

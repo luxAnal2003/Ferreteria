@@ -39,8 +39,8 @@ public class FrmMenuAdmin extends javax.swing.JFrame {
         content = new javax.swing.JPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu5 = new javax.swing.JMenu();
-        menuItemConsultarEmpleado1 = new javax.swing.JMenuItem();
         menuItemGestionarEmpleado1 = new javax.swing.JMenuItem();
+        menuItemConsultarEmpleado1 = new javax.swing.JMenuItem();
         jMenu6 = new javax.swing.JMenu();
         menuItemGestionarEmpleado = new javax.swing.JMenuItem();
         menuItemConsultarEmpleado = new javax.swing.JMenuItem();
@@ -79,16 +79,6 @@ public class FrmMenuAdmin extends javax.swing.JFrame {
         jMenu5.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jMenu5.setPreferredSize(new java.awt.Dimension(130, 50));
 
-        menuItemConsultarEmpleado1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        menuItemConsultarEmpleado1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/buscar.png"))); // NOI18N
-        menuItemConsultarEmpleado1.setText("Consultar");
-        menuItemConsultarEmpleado1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuItemConsultarEmpleado1ActionPerformed(evt);
-            }
-        });
-        jMenu5.add(menuItemConsultarEmpleado1);
-
         menuItemGestionarEmpleado1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         menuItemGestionarEmpleado1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/nuevo-usuario.png"))); // NOI18N
         menuItemGestionarEmpleado1.setText("Gestionar");
@@ -98,6 +88,16 @@ public class FrmMenuAdmin extends javax.swing.JFrame {
             }
         });
         jMenu5.add(menuItemGestionarEmpleado1);
+
+        menuItemConsultarEmpleado1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        menuItemConsultarEmpleado1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/buscar.png"))); // NOI18N
+        menuItemConsultarEmpleado1.setText("Consultar");
+        menuItemConsultarEmpleado1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemConsultarEmpleado1ActionPerformed(evt);
+            }
+        });
+        jMenu5.add(menuItemConsultarEmpleado1);
 
         jMenuBar1.add(jMenu5);
 
@@ -317,7 +317,14 @@ public class FrmMenuAdmin extends javax.swing.JFrame {
     }//GEN-LAST:event_menuItemConsultarEmpleadoActionPerformed
 
     private void menuItemGestionarEmpleado1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemGestionarEmpleado1ActionPerformed
-        // TODO add your handling code here:
+        content.removeAll();
+        JPanelCliente cliente = new JPanelCliente();
+        cliente.setSize(900, 400);
+        cliente.setLocation(0,0);
+        content.removeAll();
+        content.add(cliente, BorderLayout.CENTER);
+        content.revalidate();
+        content.repaint();
     }//GEN-LAST:event_menuItemGestionarEmpleado1ActionPerformed
 
     private void menuItemConsultarEmpleado1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemConsultarEmpleado1ActionPerformed

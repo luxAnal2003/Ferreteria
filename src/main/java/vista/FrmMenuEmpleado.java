@@ -109,12 +109,12 @@ public class FrmMenuEmpleado extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        jPanel1.removeAll();
-        FrmCliente panelClientes = new FrmCliente();
-        jPanel1.setLayout(new BorderLayout());
-        jPanel1.add(panelClientes, BorderLayout.CENTER);
-        jPanel1.revalidate();
-        jPanel1.repaint();
+//        jPanel1.removeAll();
+//        FrmCliente panelClientes = new FrmCliente();
+//        jPanel1.setLayout(new BorderLayout());
+//        jPanel1.add(panelClientes, BorderLayout.CENTER);
+//        jPanel1.revalidate();
+//        jPanel1.repaint();
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     /**
