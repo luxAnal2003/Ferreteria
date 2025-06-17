@@ -87,13 +87,13 @@ public class JPanelConsultarEmpleado extends javax.swing.JPanel {
 
         tableEmpleado.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "Producto", "Proveedor", "Categoría", "Precio", "Stock", "Estado"
+                "Nombre", "Apellido", "Rol", "Cedula", "Dirección", "Telefono", "Estado"
             }
         ));
         jScrollPane3.setViewportView(tableEmpleado);
