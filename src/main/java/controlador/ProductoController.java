@@ -209,4 +209,43 @@ public class ProductoController {
         return producto;
     }
 
+    public Producto buscarProductoPorId(int idProducto) {
+        Producto producto = null;
+        Connection cn = Conexion.conectar();
+
+        String sql = "SELECT * FROM producto WHERE idProducto = ?";
+        try (PreparedStatement stmt = cn.prepareStatement(sql)) {
+            stmt.setInt(1, idProducto);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                producto = new Producto();
+                producto.setIdProducto(rs.getInt("idProducto"));
+                producto.setNombreProducto(rs.getString("nombre"));
+                producto.setDescripcion(rs.getString("descripcion"));
+                producto.setPrecio(rs.getDouble("precio"));
+                producto.setCantidad(rs.getInt("cantidad"));
+                Categoria categoria = new Categoria();
+                categoria.setIdCategoria(rs.getInt("idCategoria"));
+                producto.setIdCategoria(categoria);
+
+                Proveedor proveedor = new Proveedor();
+                proveedor.setIdProveedor(rs.getInt("idProveedor"));
+                producto.setIdProveedor(proveedor);
+
+                producto.setEstado(rs.getInt("estado"));
+                producto.setPorcentajeIva(rs.getInt("iva"));
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error al buscar producto por ID: " + e.getMessage());
+        } finally {
+            try {
+                cn.close();
+            } catch (SQLException e) {
+                System.err.println("Error al cerrar la conexión: " + e.getMessage());
+            }
+        }
+        return producto;
+    }
 }

@@ -4,25 +4,22 @@
  */
 package vista;
 
+import config.Sesion;
+import controlador.VentaController;
 import controlador.ClienteController;
 import controlador.ProductoController;
 import controlador.UsuarioController;
 import dao.Conexion;
 import java.awt.Dimension;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import modelo.Categoria;
-import modelo.Proveedor;
-import java.sql.Statement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
-import modelo.CabeceraVenta;
+import modelo.Venta;
 import modelo.Cliente;
 import modelo.DetalleVenta;
 import modelo.Producto;
@@ -34,11 +31,8 @@ import modelo.Usuario;
  */
 public class JPanelVenta extends javax.swing.JPanel {
 
-    private String usuarioGenerado;
     private int idClienteSeleccionado = -1;
     private javax.swing.ButtonGroup grupoFacturacion;
-    List<DetalleVenta> listaDetallesVenta = new ArrayList<>();
-    DefaultTableModel modeloTabla;
 
     /**
      * Creates new form JPanelCategoriaNuevo
@@ -53,6 +47,7 @@ public class JPanelVenta extends javax.swing.JPanel {
         DefaultTableModel modelo = (DefaultTableModel) tableProducto.getModel();
         modelo.setRowCount(0);
         this.inicializarCamposTotales();
+        this.configurarTablaProducto();
     }
 
     /**
@@ -164,7 +159,7 @@ public class JPanelVenta extends javax.swing.JPanel {
 
         txtCedulaRuc.setEditable(false);
         txtCedulaRuc.setEnabled(false);
-        add(txtCedulaRuc, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 120, 170, -1));
+        add(txtCedulaRuc, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 120, 180, -1));
 
         jLabel12.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel12.setText("Email:");
@@ -203,8 +198,8 @@ public class JPanelVenta extends javax.swing.JPanel {
         add(radioButtonNo, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 90, -1, -1));
 
         jLabel6.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel6.setText("Cédula/RUC:");
-        add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 120, -1, -1));
+        jLabel6.setText("Cédula:");
+        add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 120, -1, -1));
         add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 230, 550, 10));
 
         jSeparator2.setOrientation(javax.swing.SwingConstants.VERTICAL);
@@ -252,13 +247,13 @@ public class JPanelVenta extends javax.swing.JPanel {
 
         tableProducto.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Producto", "Cantidad", "Precio", "Subtotal"
+                "Id", "Producto", "Cantidad", "Precio", "Subtotal"
             }
         ));
         jScrollPane3.setViewportView(tableProducto);
@@ -273,6 +268,8 @@ public class JPanelVenta extends javax.swing.JPanel {
         jLabel16.setText("Total a Pagar:");
         add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 350, -1, 20));
 
+        txtTotal.setEditable(false);
+        txtTotal.setEnabled(false);
         txtTotal.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtTotalKeyPressed(evt);
@@ -288,6 +285,8 @@ public class JPanelVenta extends javax.swing.JPanel {
         jLabel18.setText("Descuento:");
         add(jLabel18, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 320, -1, 20));
 
+        txtSubtotal.setEditable(false);
+        txtSubtotal.setEnabled(false);
         txtSubtotal.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtSubtotalKeyPressed(evt);
@@ -295,6 +294,8 @@ public class JPanelVenta extends javax.swing.JPanel {
         });
         add(txtSubtotal, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 260, 230, -1));
 
+        txtDescuento.setEditable(false);
+        txtDescuento.setEnabled(false);
         txtDescuento.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtDescuentoKeyPressed(evt);
@@ -340,6 +341,8 @@ public class JPanelVenta extends javax.swing.JPanel {
         jLabel19.setText("Iva:");
         add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 290, -1, 20));
 
+        txtIva.setEditable(false);
+        txtIva.setEnabled(false);
         txtIva.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtIvaKeyPressed(evt);
@@ -349,21 +352,7 @@ public class JPanelVenta extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnConfirmarVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmarVentaActionPerformed
-        int idClienteParaVenta;
-
-        if (radioButtonSi.isSelected()) {
-            if (idClienteSeleccionado != -1) {
-                idClienteParaVenta = idClienteSeleccionado;
-            } else {
-                JOptionPane.showMessageDialog(null, "Debe buscar o registrar un cliente antes de confirmar la venta.");
-                return;
-            }
-        } else if (radioButtonNo.isSelected()) {
-            idClienteParaVenta = 1;
-        } else {
-            JOptionPane.showMessageDialog(null, "Debe seleccionar una opción de facturación (Sí o No)");
-            return;
-        }
+        this.confirmarVenta();
     }//GEN-LAST:event_btnConfirmarVentaActionPerformed
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
@@ -413,10 +402,14 @@ public class JPanelVenta extends javax.swing.JPanel {
         double subtotal = cantidad * precio;
 
         modelo.addRow(new Object[]{
-            producto.getNombreProducto(), cantidad, precio, subtotal
+            producto.getIdProducto(),
+            producto.getNombreProducto(),
+            cantidad,
+            precio,
+            String.format("%.2f", subtotal)
         });
-
         actualizarTotales();
+
         txtBuscadorProducto.setText("");
     }//GEN-LAST:event_btnAgregarActionPerformed
 
@@ -442,7 +435,7 @@ public class JPanelVenta extends javax.swing.JPanel {
     }//GEN-LAST:event_radioButtonNoActionPerformed
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
-        // TODO add your handling code here:
+        this.limpiarCamposVenta();
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
     private void btnAumentarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAumentarActionPerformed
@@ -454,32 +447,30 @@ public class JPanelVenta extends javax.swing.JPanel {
 
         DefaultTableModel modelo = (DefaultTableModel) tableProducto.getModel();
 
-        String nombreProducto = modelo.getValueAt(filaSeleccionada, 0).toString();
+        int idProducto = Integer.parseInt(modelo.getValueAt(filaSeleccionada, 0).toString());
 
-        // Obtener el stock del producto (puedes obtenerlo desde el controlador)
         ProductoController controlador = new ProductoController();
-        Producto producto = controlador.buscarProductoPorNombre(nombreProducto);
+        Producto producto = controlador.buscarProductoPorId(idProducto);
+
         if (producto == null) {
             JOptionPane.showMessageDialog(this, "Producto no encontrado en el sistema.");
             return;
         }
 
-        int cantidadActual = Integer.parseInt(modelo.getValueAt(filaSeleccionada, 1).toString());
+        int cantidadActual = Integer.parseInt(modelo.getValueAt(filaSeleccionada, 2).toString());
 
         if (cantidadActual >= producto.getCantidad()) {
-            JOptionPane.showMessageDialog(this, "No puede aumentar más. Stock máximo alcanzado.");
+            JOptionPane.showMessageDialog(this, "No hay suficiente stock");
             return;
         }
 
-        // Incrementar la cantidad
         cantidadActual++;
 
-        double precio = Double.parseDouble(modelo.getValueAt(filaSeleccionada, 2).toString());
+        double precio = Double.parseDouble(modelo.getValueAt(filaSeleccionada, 3).toString());
         double subtotal = cantidadActual * precio;
 
-        // Actualizar tabla
-        modelo.setValueAt(cantidadActual, filaSeleccionada, 1);
-        modelo.setValueAt(subtotal, filaSeleccionada, 3);
+        modelo.setValueAt(cantidadActual, filaSeleccionada, 2);
+        modelo.setValueAt(String.format("%.2f", subtotal), filaSeleccionada, 4);
 
         actualizarTotales();
     }//GEN-LAST:event_btnAumentarActionPerformed
@@ -506,29 +497,20 @@ public class JPanelVenta extends javax.swing.JPanel {
 
         DefaultTableModel modelo = (DefaultTableModel) tableProducto.getModel();
 
-        String nombreProducto = modelo.getValueAt(filaSeleccionada, 0).toString();
+        int cantidadActual = Integer.parseInt(modelo.getValueAt(filaSeleccionada, 2).toString());
 
-        ProductoController controlador = new ProductoController();
-        Producto producto = controlador.buscarProductoPorNombre(nombreProducto);
-        if (producto == null) {
-            JOptionPane.showMessageDialog(this, "Producto no encontrado en el sistema.");
-            return;
-        }
-
-        int cantidadActual = Integer.parseInt(modelo.getValueAt(filaSeleccionada, 1).toString());
-
-        if (cantidadActual >= producto.getCantidad()) {
-            JOptionPane.showMessageDialog(this, "No puede aumentar más. Stock máximo alcanzado.");
+        if (cantidadActual <= 1) {
+            JOptionPane.showMessageDialog(this, "Limite alcanzado para disminuir");
             return;
         }
 
         cantidadActual--;
 
-        double precio = Double.parseDouble(modelo.getValueAt(filaSeleccionada, 2).toString());
+        double precio = Double.parseDouble(modelo.getValueAt(filaSeleccionada, 3).toString());
         double subtotal = cantidadActual * precio;
 
-        modelo.setValueAt(cantidadActual, filaSeleccionada, 1);
-        modelo.setValueAt(subtotal, filaSeleccionada, 3);
+        modelo.setValueAt(cantidadActual, filaSeleccionada, 2);
+        modelo.setValueAt(String.format("%.2f", subtotal), filaSeleccionada, 4);
 
         actualizarTotales();
     }//GEN-LAST:event_btnDisminuirActionPerformed
@@ -664,8 +646,12 @@ public class JPanelVenta extends javax.swing.JPanel {
             return;
         }
 
+        if (!cedula.matches("\\d{10}")) {
+            JOptionPane.showMessageDialog(null, "La cédula debe tener exactamente 10 caracteres numéricos");
+            return;
+        }
         Connection con = Conexion.conectar();
-        String sql = "SELECT u.nombre, u.apellido, u.telefono, u.correo, c.direccion "
+        String sql = "SELECT c.idCliente, u.nombre, u.apellido, u.telefono, u.correo, c.direccion "
                 + "FROM Cliente c "
                 + "INNER JOIN Usuario u ON c.idUsuario = u.idUsuario "
                 + "WHERE c.cedula = ?";
@@ -675,6 +661,7 @@ public class JPanelVenta extends javax.swing.JPanel {
             ResultSet rs = pst.executeQuery();
 
             if (rs.next()) {
+                idClienteSeleccionado = rs.getInt("idCliente");
                 txtNombres.setText(rs.getString("nombre"));
                 txtApellidos.setText(rs.getString("apellido"));
                 txtTelefono.setText(rs.getString("telefono"));
@@ -737,63 +724,38 @@ public class JPanelVenta extends javax.swing.JPanel {
         txtTelefono.setText("");
         txtEmail.setText("");
         txtDireccion.setText("");
-        inicializarCamposTotales();//priba
     }
 
     private void actualizarTotales() {
         DefaultTableModel modelo = (DefaultTableModel) tableProducto.getModel();
-
-        double subtotal = 0.0;
-        double ivaTotal = 0.0;
-
         ProductoController controlador = new ProductoController();
 
+        double subtotalGeneral = 0.0;
+        double ivaTotal = 0.0;
+        double descuentoTotal = 0.0;
+        double totalGeneral = 0.0;
+
         for (int i = 0; i < modelo.getRowCount(); i++) {
-            int cantidad = Integer.parseInt(modelo.getValueAt(i, 1).toString());
-            double precio = Double.parseDouble(modelo.getValueAt(i, 2).toString());
-            double subFila = cantidad * precio;
-            subtotal += subFila;
+            int idProducto = Integer.parseInt(modelo.getValueAt(i, 0).toString());
+            int cantidad = Integer.parseInt(modelo.getValueAt(i, 2).toString());
+            double precio = Double.parseDouble(modelo.getValueAt(i, 3).toString());
+            double subtotal = cantidad * precio;
 
-            // Buscar el IVA del producto
-            String nombreProducto = modelo.getValueAt(i, 0).toString();
-            Producto producto = controlador.buscarProductoPorNombre(nombreProducto);
-            if (producto != null) {
-                double ivaFila = subFila * producto.getPorcentajeIva() / 100.0;
-                ivaTotal += ivaFila;
-            }
+            Producto producto = controlador.buscarProductoPorId(idProducto);
+            double iva = subtotal * producto.getPorcentajeIva() / 100.0;
+            double descuento = subtotal * 0.005;
+            double total = subtotal + iva - descuento;
 
-            // Actualizar columna subtotal por fila
-            modelo.setValueAt(String.format("%.2f", subFila), i, 3);
+            subtotalGeneral += subtotal;
+            ivaTotal += iva;
+            descuentoTotal += descuento;
+            totalGeneral += total;
         }
 
-        double descuento = subtotal * 0.005;
-        double total = subtotal + ivaTotal - descuento;
-
-        txtSubtotal.setText(String.format("%.2f", subtotal));
+        txtSubtotal.setText(String.format("%.2f", subtotalGeneral));
         txtIva.setText(String.format("%.2f", ivaTotal));
-        txtDescuento.setText(String.format("%.2f", descuento));
-        txtTotal.setText(String.format("%.2f", total));
-    }
-
-    private void cargarProductosEnTabla() {
-        DefaultTableModel modelo = (DefaultTableModel) tableProducto.getModel();
-        modelo.setRowCount(0);
-
-        ProductoController controller = new ProductoController();
-        List<Producto> lista = controller.listarProductos();
-
-        if (lista.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "No hay productos en el sistema");
-            return;
-        }
-
-        for (Producto p : lista) {
-            modelo.addRow(new Object[]{
-                p.getNombreProducto(),
-                p.getPrecio(),
-                p.getCantidad()
-            });
-        }
+        txtDescuento.setText(String.format("%.2f", descuentoTotal));
+        txtTotal.setText(String.format("%.2f", totalGeneral));
     }
 
     private void inicializarCamposTotales() {
@@ -803,4 +765,100 @@ public class JPanelVenta extends javax.swing.JPanel {
         txtTotal.setText("0.00");
     }
 
+    private void confirmarVenta() {
+        int idClienteParaVenta;
+
+        if (tableProducto.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(null, "Debe agregar al menos un producto para confirmar la venta.");
+            return;
+        }
+
+        // Validación del cliente
+        if (radioButtonSi.isSelected()) {
+            String cedula = txtCedulaRuc.getText().trim();
+            String nombres = txtNombres.getText().trim();
+            String apellidos = txtApellidos.getText().trim();
+            String telefono = txtTelefono.getText().trim();
+            String correo = txtEmail.getText().trim();
+            String direccion = txtDireccion.getText().trim();
+
+            if (cedula.isEmpty() || nombres.isEmpty() || apellidos.isEmpty()
+                    || telefono.isEmpty() || correo.isEmpty() || direccion.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Debe completar todos los datos del cliente.");
+                return;
+            }
+
+            if (idClienteSeleccionado == -1) {
+                JOptionPane.showMessageDialog(null, "Debe buscar o registrar un cliente antes de confirmar la venta.");
+                return;
+            }
+
+            idClienteParaVenta = idClienteSeleccionado;
+        } else if (radioButtonNo.isSelected()) {
+            idClienteParaVenta = 1;
+        } else {
+            JOptionPane.showMessageDialog(null, "Debe seleccionar una opción de facturación (Sí o No).");
+            return;
+        }
+
+        Venta venta = new Venta();
+        venta.setIdCliente(idClienteParaVenta);
+        venta.setIdEmpleado(Sesion.getUsuarioActual().getIdUsuario());
+        venta.setTotal(Double.parseDouble(txtTotal.getText()));
+        venta.setEstado(1);
+
+        List<DetalleVenta> listaDetalles = new ArrayList<>();
+        DefaultTableModel modelo = (DefaultTableModel) tableProducto.getModel();
+
+        for (int i = 0; i < modelo.getRowCount(); i++) {
+            int idProducto = Integer.parseInt(modelo.getValueAt(i, 0).toString());
+            int cantidad = Integer.parseInt(modelo.getValueAt(i, 2).toString());
+            double precioUnitario = Double.parseDouble(modelo.getValueAt(i, 3).toString());
+            double subTotal = cantidad * precioUnitario;
+
+            double iva = subTotal * 0.12; 
+            double descuento = subTotal * 0.005;       
+            double totalPagar = subTotal + iva - descuento;
+
+            DetalleVenta detalle = new DetalleVenta();
+            detalle.setIdProducto(idProducto);
+            detalle.setCantidad(cantidad);
+            detalle.setPrecioUnitario(precioUnitario);
+            detalle.setSubTotal(subTotal);
+            detalle.setIva(iva);
+            detalle.setDescuento(descuento);
+            detalle.setTotalPagar(totalPagar);
+            detalle.setEstado(1);
+
+            listaDetalles.add(detalle);
+        }
+
+        VentaController ventaController = new VentaController();
+        boolean ventaExitosa = ventaController.guardarVentaCompleta(venta, listaDetalles);
+
+        if (ventaExitosa) {
+            JOptionPane.showMessageDialog(this, "Venta registrada exitosamente.");
+            limpiarCamposVenta(); 
+        } else {
+            JOptionPane.showMessageDialog(this, "Error al registrar la venta.");
+        }
+    }
+
+    private void limpiarCamposVenta() {
+        DefaultTableModel modelo = (DefaultTableModel) tableProducto.getModel();
+        modelo.setRowCount(0);
+        this.setear();
+        this.actualizarTotales();
+    }
+
+    private void configurarTablaProducto() {
+        DefaultTableModel modelo = new DefaultTableModel();
+        modelo.setColumnIdentifiers(new Object[]{"ID", "Nombre", "Cantidad", "Precio", "Subtotal"});
+
+        tableProducto.setModel(modelo);
+
+        tableProducto.getColumnModel().getColumn(0).setMinWidth(0);
+        tableProducto.getColumnModel().getColumn(0).setMaxWidth(0);
+        tableProducto.getColumnModel().getColumn(0).setPreferredWidth(0);
+    }
 }

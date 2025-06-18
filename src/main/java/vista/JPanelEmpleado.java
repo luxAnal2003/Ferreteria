@@ -4,15 +4,10 @@
  */
 package vista;
 
-import com.mysql.cj.protocol.Resultset;
-import controlador.CategoriaController;
 import controlador.EmpleadoController;
-import controlador.ProductoController;
-import controlador.ProveedorController;
 import controlador.UsuarioController;
 import dao.Conexion;
 import java.awt.Dimension;
-import java.awt.HeadlessException;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Connection;
@@ -21,19 +16,11 @@ import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import modelo.Categoria;
-import java.util.List;
-import javax.swing.JComboBox;
-import modelo.Producto;
 import modelo.Proveedor;
 import java.sql.Statement;
 import java.sql.ResultSet;
-import javax.swing.JButton;
-import javax.swing.JPasswordField;
-import javax.swing.JTable;
 import modelo.Empleado;
-import modelo.Rol;
 import modelo.Usuario;
-import static vista.JPanelCategoria.tableCategoria;
 
 /**
  *
@@ -543,7 +530,7 @@ public class JPanelEmpleado extends javax.swing.JPanel {
                 return;
             }
 
-            int idEmpleado = Integer.parseInt(tableEmpleado.getValueAt(fila, 0).toString());
+            idEmpleado = Integer.parseInt(tableEmpleado.getValueAt(fila, 0).toString());
             int idUsuario = Integer.parseInt(tableEmpleado.getValueAt(fila, 11).toString());
 
             EmpleadoController controlEmpleado = new EmpleadoController();
@@ -572,6 +559,8 @@ public class JPanelEmpleado extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this, "Todos los campos son obligatorios.");
             return false;
         }
+        
+        
         return true;
     }
 

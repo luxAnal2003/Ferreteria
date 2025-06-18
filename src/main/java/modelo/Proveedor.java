@@ -8,34 +8,64 @@ package modelo;
  *
  * @author admin
  */
-public class Proveedor extends Usuario {
+public class Proveedor{
 
     private int idProveedor;
-    private String cedula;
+    private String ruc;
+    private String nombre;
+    private String telefono;
     private String correo;
     private String direccion;
+    private int estado;
 
     public Proveedor() {
         super();
         this.idProveedor = 0;
-        this.cedula = "";
+        this.ruc = "";
         this.correo = "";
         this.direccion = "";
     }
 
-    public Proveedor(int idProveedor, String cedula, String correo, String direccion) {
+    public Proveedor(int idProveedor, String ruc, String nombre, String telefono, String correo, String direccion, int estado) {
         this.idProveedor = idProveedor;
-        this.cedula = cedula;
+        this.ruc = ruc;
+        this.nombre = nombre;
+        this.telefono = telefono;
         this.correo = correo;
         this.direccion = direccion;
+        this.estado = estado;
     }
 
-    public String getCedula() {
-        return cedula;
+    public int getIdProveedor() {
+        return idProveedor;
     }
 
-    public void setCedula(String cedula) {
-        this.cedula = cedula;
+    public void setIdProveedor(int idProveedor) {
+        this.idProveedor = idProveedor;
+    }
+
+    public String getRuc() {
+        return ruc;
+    }
+
+    public void setRuc(String ruc) {
+        this.ruc = ruc;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
     }
 
     public String getCorreo() {
@@ -54,70 +84,6 @@ public class Proveedor extends Usuario {
         this.direccion = direccion;
     }
 
-    public int getIdUsuario() {
-        return idUsuario;
-    }
-
-    public void setIdUsuario(int idUsuario) {
-        this.idUsuario = idUsuario;
-    }
-
-    public int getIdRol() {
-        return idRol;
-    }
-
-    public void setIdRol(int idRol) {
-        this.idRol = idRol;
-    }
-
-    public String getTipoRol() {
-        return tipoRol;
-    }
-
-    public void setTipoRol(String tipoRol) {
-        this.tipoRol = tipoRol;
-    }
-
-    public String getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(String usuario) {
-        this.usuario = usuario;
-    }
-
-    public String getContrasenia() {
-        return contrasenia;
-    }
-
-    public void setContrasenia(String contrasenia) {
-        this.contrasenia = contrasenia;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getApellido() {
-        return apellido;
-    }
-
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
-    }
-
-    public String getTelefono() {
-        return telefono;
-    }
-
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
-
     public int getEstado() {
         return estado;
     }
@@ -125,15 +91,7 @@ public class Proveedor extends Usuario {
     public void setEstado(int estado) {
         this.estado = estado;
     }
-
-    public int getIdProveedor() {
-        return idProveedor;
-    }
-
-    public void setIdProveedor(int idProveedor) {
-        this.idProveedor = idProveedor;
-    }
-
+    
     @Override
     public String toString() {
         return this.getNombre();

@@ -297,9 +297,6 @@ public class FrmLogin extends javax.swing.JFrame {
                     case "empleado":
                         new FrmMenuEmpleado().setVisible(true);
                         break;
-                    case "cliente":
-                        new FrmMenuCliente().setVisible(true);
-                        break;
                     default:
                         JOptionPane.showMessageDialog(null, "Rol desconocido.");
                 }
