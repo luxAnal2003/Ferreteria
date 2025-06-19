@@ -109,19 +109,22 @@ public class JPanelEliminarVenta extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     private void cargarVentasEnTabla() {
-        Connection con = Conexion.conectar();
+        Connection con = null;
         DefaultTableModel model = new DefaultTableModel();
 
         String sql = "SELECT cv.idCabeceraVenta, cv.fechaVenta, cv.total, "
-                + "CONCAT(uc.nombre, ' ', uc.apellido) AS nombre_cliente, "
+                + "CONCAT(cl.nombre, ' ', cl.apellido) AS nombre_cliente, " 
                 + "CONCAT(ue.nombre, ' ', ue.apellido) AS nombre_empleado, cv.estado "
                 + "FROM CabeceraVenta cv "
-                + "INNER JOIN Cliente cl ON cv.idCliente = cl.idCliente "
-                + "INNER JOIN Usuario uc ON cl.idUsuario = uc.idUsuario "
+                + "INNER JOIN Cliente cl ON cv.idCliente = cl.idCliente " 
                 + "INNER JOIN Empleado em ON cv.idEmpleado = em.idEmpleado "
                 + "INNER JOIN Usuario ue ON em.idUsuario = ue.idUsuario ";
 
-        try (Statement st = con.createStatement(); ResultSet rs = st.executeQuery(sql)) {
+        try {
+            con = Conexion.conectar();
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+
             model.addColumn("ID Venta");
             model.addColumn("Fecha");
             model.addColumn("Total");
@@ -133,9 +136,9 @@ public class JPanelEliminarVenta extends javax.swing.JPanel {
 
             while (rs.next()) {
                 hayRegistros = true;
-                Object[] fila = new Object[6];
+                Object[] fila = new Object[6]; 
                 fila[0] = rs.getInt("idCabeceraVenta");
-                fila[1] = rs.getDate("fechaVenta"); 
+                fila[1] = rs.getDate("fechaVenta");
                 fila[2] = rs.getDouble("total");
                 fila[3] = rs.getString("nombre_cliente");
                 fila[4] = rs.getString("nombre_empleado");
@@ -151,6 +154,15 @@ public class JPanelEliminarVenta extends javax.swing.JPanel {
 
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error al cargar ventas: " + e.getMessage());
+            System.err.println("Error al cargar ventas: " + e.getMessage());
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("Error al cerrar conexión: " + e.getMessage());
+            }
         }
     }
 
@@ -158,13 +170,14 @@ public class JPanelEliminarVenta extends javax.swing.JPanel {
         Connection con = null;
         try {
             con = Conexion.conectar();
-            String sql = "SELECT COUNT(*) FROM CabeceraVenta WHERE estado = 1";
+            String sql = "SELECT COUNT(*) FROM CabeceraVenta";
             try (PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
                 if (rs.next() && rs.getInt(1) == 0) {
                     JOptionPane.showMessageDialog(null, "No existen ventas en el sistema.");
                 }
             }
         } catch (SQLException e) {
+            System.err.println("Error al verificar ventas: " + e.getMessage());
             JOptionPane.showMessageDialog(null, "Error al verificar ventas: " + e.getMessage());
         } finally {
             try {
@@ -176,7 +189,7 @@ public class JPanelEliminarVenta extends javax.swing.JPanel {
             }
         }
     }
-    
+
     private void activarVenta() {
         int fila = tableVentas.getSelectedRow();
 
@@ -187,12 +200,12 @@ public class JPanelEliminarVenta extends javax.swing.JPanel {
                 return;
             }
 
-            int idVenta = Integer.parseInt(tableVentas.getValueAt(fila, 0).toString()); 
+            int idVenta = Integer.parseInt(tableVentas.getValueAt(fila, 0).toString());
 
             VentaController controller = new VentaController();
             if (controller.activar(idVenta)) {
                 JOptionPane.showMessageDialog(null, "Venta activada correctamente.");
-                cargarVentasEnTabla(); 
+                cargarVentasEnTabla();
             } else {
                 JOptionPane.showMessageDialog(null, "Error al activar la venta.");
             }
@@ -201,16 +214,13 @@ public class JPanelEliminarVenta extends javax.swing.JPanel {
         }
     }
 
-    /**
-     * Desactiva la venta seleccionada en la tabla.
-     */
     private void desactivarVenta() {
         int fila = tableVentas.getSelectedRow();
 
         if (fila != -1) {
             String estadoActual = tableVentas.getValueAt(fila, 5).toString();
             if (estadoActual.equalsIgnoreCase("Anulada")) {
-                JOptionPane.showMessageDialog(null, "La venta ya está anulada.");
+                JOptionPane.showMessageDialog(null, "La venta ya ha sido anulada.");
                 return;
             }
 
@@ -219,7 +229,7 @@ public class JPanelEliminarVenta extends javax.swing.JPanel {
             VentaController controller = new VentaController();
             if (controller.desactivar(idVenta)) {
                 JOptionPane.showMessageDialog(null, "Venta anulada correctamente.");
-                cargarVentasEnTabla(); 
+                cargarVentasEnTabla();
             } else {
                 JOptionPane.showMessageDialog(null, "Error al anular la venta.");
             }
@@ -227,5 +237,4 @@ public class JPanelEliminarVenta extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(null, "Seleccione una venta para anular.");
         }
     }
-    
 }

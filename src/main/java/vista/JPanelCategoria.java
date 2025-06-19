@@ -14,7 +14,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -53,10 +52,11 @@ public class JPanelCategoria extends javax.swing.JPanel {
         jLabel5 = new javax.swing.JLabel();
         txtCategoria = new javax.swing.JTextField();
         btnGuardar = new javax.swing.JButton();
-        btnEliminar = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        btnActualizar = new javax.swing.JButton();
         btnLimpiar = new javax.swing.JButton();
+        btnEliminar1 = new javax.swing.JButton();
+        btnActivar = new javax.swing.JButton();
+        btnActualizar1 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -82,7 +82,7 @@ public class JPanelCategoria extends javax.swing.JPanel {
         ));
         jScrollPane1.setViewportView(tableCategoria);
 
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 390, 270));
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 410, 290));
 
         add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 80, 410, 290));
 
@@ -99,29 +99,10 @@ public class JPanelCategoria extends javax.swing.JPanel {
                 btnGuardarActionPerformed(evt);
             }
         });
-        add(btnGuardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 310, 90, 30));
-
-        btnEliminar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/eliminar.png"))); // NOI18N
-        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEliminarActionPerformed(evt);
-            }
-        });
-        add(btnEliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(800, 310, 50, 30));
+        add(btnGuardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(660, 310, 90, 30));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/añadir-Categoria.png"))); // NOI18N
-        add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 80, -1, -1));
-
-        btnActualizar.setBackground(new java.awt.Color(204, 204, 255));
-        btnActualizar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        btnActualizar.setText("Actualizar");
-        btnActualizar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnActualizarActionPerformed(evt);
-            }
-        });
-        add(btnActualizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 310, 100, 30));
+        add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 90, -1, -1));
 
         btnLimpiar.setBackground(new java.awt.Color(204, 204, 255));
         btnLimpiar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -131,7 +112,37 @@ public class JPanelCategoria extends javax.swing.JPanel {
                 btnLimpiarActionPerformed(evt);
             }
         });
-        add(btnLimpiar, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 310, 90, 30));
+        add(btnLimpiar, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 310, 90, 30));
+
+        btnEliminar1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        btnEliminar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/desactivar.png"))); // NOI18N
+        btnEliminar1.setText("Eliminar");
+        btnEliminar1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminar1ActionPerformed(evt);
+            }
+        });
+        add(btnEliminar1, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 140, 140, 30));
+
+        btnActivar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        btnActivar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/activar.png"))); // NOI18N
+        btnActivar.setText("Activar");
+        btnActivar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnActivarActionPerformed(evt);
+            }
+        });
+        add(btnActivar, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 100, 140, 30));
+
+        btnActualizar1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        btnActualizar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/editar-producto.png"))); // NOI18N
+        btnActualizar1.setText("Actualizar");
+        btnActualizar1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnActualizar1ActionPerformed(evt);
+            }
+        });
+        add(btnActualizar1, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 180, 140, 30));
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
@@ -161,27 +172,66 @@ public class JPanelCategoria extends javax.swing.JPanel {
         txtCategoria.setText("");
     }//GEN-LAST:event_btnGuardarActionPerformed
 
-    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-        if (!txtCategoria.getText().isEmpty()) {
-            Categoria categoria = new Categoria();
-            CategoriaController controlCategoria = new CategoriaController();
+    private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
+        txtCategoria.setText("");
+    }//GEN-LAST:event_btnLimpiarActionPerformed
 
-            categoria.setNombre(txtCategoria.getText());
-            if (!controlCategoria.eliminar(idCategoria)) {
-                JOptionPane.showMessageDialog(null, "Categoria eliminada");
+    private void btnEliminar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminar1ActionPerformed
+        int fila = tableCategoria.getSelectedRow();
+        if (fila != -1) {
+            String estado = tableCategoria.getValueAt(fila, 2).toString();
+            if (estado.equalsIgnoreCase("Inactivo")) {
+                JOptionPane.showMessageDialog(null, "La categoría ya ha sido desactivada.");
+                return;
+            }
+
+            idCategoria = Integer.parseInt(tableCategoria.getValueAt(fila, 0).toString());
+
+            CategoriaController control = new CategoriaController();
+
+            boolean categoriaDesactivado = control.desactivar(idCategoria);
+
+            if (categoriaDesactivado) {
+                JOptionPane.showMessageDialog(null, "Categoría desactivada correctamente.");
                 txtCategoria.setText("");
                 this.cargarCategoriasEnTabla();
             } else {
-                JOptionPane.showMessageDialog(null, "Error al eliminar categoria");
+                JOptionPane.showMessageDialog(null, "Error al desactivar la categoría.");
             }
-
         } else {
-            JOptionPane.showMessageDialog(null, "Seleccione una categoria");
+            JOptionPane.showMessageDialog(null, "Seleccione una categoría para desactivar.");
         }
+    }//GEN-LAST:event_btnEliminar1ActionPerformed
 
-    }//GEN-LAST:event_btnEliminarActionPerformed
+    private void btnActivarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActivarActionPerformed
+        int fila = tableCategoria.getSelectedRow();
 
-    private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
+        if (fila != -1) {
+            String estado = tableCategoria.getValueAt(fila, 2).toString(); 
+            if (estado.equalsIgnoreCase("Activo")) {
+                JOptionPane.showMessageDialog(null, "La categoría ya está activa.");
+                txtCategoria.setText("");
+                return;
+            }
+            idCategoria = Integer.parseInt(tableCategoria.getValueAt(fila, 0).toString());
+
+            CategoriaController controlCategoria = new CategoriaController();
+
+            boolean categoriaActivado = controlCategoria.activar(idCategoria);
+
+            if (categoriaActivado) {
+                JOptionPane.showMessageDialog(null, "Categoría activada correctamente."); 
+                txtCategoria.setText("");
+               this.cargarCategoriasEnTabla();
+            } else {
+                JOptionPane.showMessageDialog(null, "Error al activar la categoría.");
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Seleccione una categoría para activar.");
+        }
+    }//GEN-LAST:event_btnActivarActionPerformed
+
+    private void btnActualizar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizar1ActionPerformed
         if (!txtCategoria.getText().isEmpty()) {
             Categoria categoria = new Categoria();
             CategoriaController controlCategoria = new CategoriaController();
@@ -202,16 +252,13 @@ public class JPanelCategoria extends javax.swing.JPanel {
         } else {
             JOptionPane.showMessageDialog(null, "Seleccione una categoria");
         }
-    }//GEN-LAST:event_btnActualizarActionPerformed
-
-    private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
-        txtCategoria.setText("");
-    }//GEN-LAST:event_btnLimpiarActionPerformed
+    }//GEN-LAST:event_btnActualizar1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnActualizar;
-    private javax.swing.JButton btnEliminar;
+    private javax.swing.JButton btnActivar;
+    private javax.swing.JButton btnActualizar1;
+    private javax.swing.JButton btnEliminar1;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnLimpiar;
     private javax.swing.JLabel jLabel1;
@@ -281,5 +328,4 @@ public class JPanelCategoria extends javax.swing.JPanel {
             System.out.println("Error al seleccionar categorias: " + e);
         }
     }
-
 }

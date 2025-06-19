@@ -15,8 +15,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import modelo.Categoria;
-import modelo.Proveedor;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import modelo.Empleado;
@@ -28,8 +26,6 @@ import modelo.Usuario;
  */
 public class JPanelEmpleado extends javax.swing.JPanel {
 
-    private Categoria obtenerIdCategoria = new Categoria();
-    private Proveedor obtenerIdProveedor = new Proveedor();
     private int idEmpleado;
 
     /**
@@ -59,8 +55,6 @@ public class JPanelEmpleado extends javax.swing.JPanel {
         txtNombres = new javax.swing.JTextField();
         txtApellidos = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        tableEmpleado = new javax.swing.JTable();
         btnLimpiar = new javax.swing.JButton();
         btnGuardar = new javax.swing.JButton();
         btnActualizar = new javax.swing.JButton();
@@ -76,6 +70,8 @@ public class JPanelEmpleado extends javax.swing.JPanel {
         txtContrasenia = new javax.swing.JPasswordField();
         txtUsuario = new javax.swing.JTextField();
         btnVer = new javax.swing.JButton();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        tableEmpleado = new javax.swing.JTable();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -102,23 +98,6 @@ public class JPanelEmpleado extends javax.swing.JPanel {
         jLabel7.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel7.setText("Telefono:");
         add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 220, -1, -1));
-
-        jScrollPane3.setPreferredSize(new java.awt.Dimension(450, 80));
-
-        tableEmpleado.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
-            },
-            new String [] {
-                "Producto", "Proveedor", "Categoría", "Precio", "Stock", "Estado"
-            }
-        ));
-        jScrollPane3.setViewportView(tableEmpleado);
-
-        add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, 690, 140));
 
         btnLimpiar.setBackground(new java.awt.Color(204, 204, 255));
         btnLimpiar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -198,6 +177,23 @@ public class JPanelEmpleado extends javax.swing.JPanel {
             }
         });
         add(btnVer, new org.netbeans.lib.awtextra.AbsoluteConstraints(660, 291, 30, 20));
+
+        jScrollPane4.setPreferredSize(new java.awt.Dimension(450, 80));
+
+        tableEmpleado.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "ID", "Nombre", "Apellido", "Rol", "Cédula", "Dirección", "Telefono", "Estado"
+            }
+        ));
+        jScrollPane4.setViewportView(tableEmpleado);
+
+        add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, 700, 130));
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
@@ -221,29 +217,16 @@ public class JPanelEmpleado extends javax.swing.JPanel {
         String contrasenia = new String(txtContrasenia.getPassword()).trim();
         int rol = 2;
 
-        if (cedulaRuc.isEmpty() || nombres.isEmpty() || apellidos.isEmpty() || telefono.isEmpty()
-                || email.isEmpty() || direccion.isEmpty() || nombreUsuario.isEmpty() || contrasenia.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Campos obligatorios vacíos");
-            return;
-        }
-
-        if (!cedulaRuc.matches("\\d{10}")) {
-            JOptionPane.showMessageDialog(null, "La cédula debe tener exactamente 10 caracteres numéricos");
-            return;
-        }
-
-        if (!telefono.matches("\\d{10}")) {
-            JOptionPane.showMessageDialog(null, "El teléfono debe tener exactamente 10 caracteres numéricos");
-            return;
-        }
-
         if (controladorEmpleado.existeEmpleado(cedulaRuc)) {
-            JOptionPane.showMessageDialog(null, "El empleado ya existe");
+            JOptionPane.showMessageDialog(null, "El empleado con esta cédula/RUC ya existe.");
             return;
         }
 
+        if (!validarCampos(cedulaRuc, nombres, apellidos, telefono, email, direccion, nombreUsuario, contrasenia)) {
+            return;
+        }
+        
         try {
-
             usuario.setNombre(nombres.substring(0, 1).toUpperCase() + nombres.substring(1).toLowerCase());
             usuario.setApellido(apellidos.substring(0, 1).toUpperCase() + apellidos.substring(1).toLowerCase());
             usuario.setTelefono(telefono);
@@ -255,7 +238,7 @@ public class JPanelEmpleado extends javax.swing.JPanel {
 
             int idUsuario = controladorUsuario.guardar(usuario);
             if (idUsuario == -1) {
-                JOptionPane.showMessageDialog(null, "Error al guardar usuario");
+                JOptionPane.showMessageDialog(null, "Error al guardar usuario.");
                 return;
             }
 
@@ -266,17 +249,19 @@ public class JPanelEmpleado extends javax.swing.JPanel {
             empleado.setIdUsuario(idUsuario);
 
             if (controladorEmpleado.guardar(empleado)) {
-                JOptionPane.showMessageDialog(null, "Empleado guardado correctamente");
+                JOptionPane.showMessageDialog(null, "Empleado guardado correctamente.");
                 this.cargarEmpleadosEnTabla();
                 this.setear();
             } else {
-                JOptionPane.showMessageDialog(null, "Error al guardar empleado");
+                JOptionPane.showMessageDialog(null, "Error al guardar empleado.");
             }
+        } catch (StringIndexOutOfBoundsException e) {
+            JOptionPane.showMessageDialog(null, "Error al procesar nombres/apellidos. Asegúrese de que no estén vacíos.");
+            System.err.println("Error de índice de cadena al guardar empleado: " + e.getMessage());
         } catch (Exception e) {
-            System.out.println("Error al guardar empleado: " + e);
-            JOptionPane.showMessageDialog(null, "Error inesperado al guardar el empleado");
+            System.err.println("Error inesperado al guardar empleado: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, "Error inesperado al guardar el empleado.");
         }
-
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
@@ -293,27 +278,16 @@ public class JPanelEmpleado extends javax.swing.JPanel {
         String direccion = txtDireccion.getText().trim();
         String nombreUsuario = txtUsuario.getText().trim();
         String contrasenia = new String(txtContrasenia.getPassword()).trim();
+        int rol = 2;
 
-        if (cedulaRuc.isEmpty() || nombres.isEmpty() || apellidos.isEmpty() || telefono.isEmpty()
-                || email.isEmpty() || direccion.isEmpty() || nombreUsuario.isEmpty() || contrasenia.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Campos obligatorios vacíos");
-            return;
-        }
-
-        if (!cedulaRuc.matches("\\d{10}")) {
-            JOptionPane.showMessageDialog(null, "La cédula debe tener exactamente 10 caracteres numéricos");
-            return;
-        }
-
-        if (!telefono.matches("\\d{10}")) {
-            JOptionPane.showMessageDialog(null, "El teléfono debe tener exactamente 10 caracteres numéricos");
+        if (!validarCampos(cedulaRuc, nombres, apellidos, telefono, email, direccion, nombreUsuario, contrasenia)) {
             return;
         }
 
         try {
             int fila = tableEmpleado.getSelectedRow();
             if (fila < 0) {
-                JOptionPane.showMessageDialog(null, "Selecciona un empleado para actualizar");
+                JOptionPane.showMessageDialog(null, "Seleccione un empleado para actualizar.");
                 return;
             }
 
@@ -327,13 +301,13 @@ public class JPanelEmpleado extends javax.swing.JPanel {
             usuario.setCorreo(email);
             usuario.setUsuario(nombreUsuario);
             usuario.setContrasenia(contrasenia);
-            usuario.setIdRol(2);
+            usuario.setIdRol(rol);
             usuario.setEstado(1);
 
             empleado.setIdEmpleado(idEmpleado);
             empleado.setCedula(cedulaRuc);
             empleado.setDireccion(direccion);
-            empleado.setIdRol(2);
+            empleado.setIdRol(rol);
             empleado.setEstado(1);
             empleado.setIdUsuario(idUsuario);
 
@@ -341,16 +315,22 @@ public class JPanelEmpleado extends javax.swing.JPanel {
             boolean empleadoActualizado = controladorEmpleado.actualizar(empleado);
 
             if (usuarioActualizado && empleadoActualizado) {
-                JOptionPane.showMessageDialog(null, "Empleado actualizado correctamente");
+                JOptionPane.showMessageDialog(null, "Empleado actualizado correctamente.");
                 this.cargarEmpleadosEnTabla();
                 this.setear();
             } else {
-                JOptionPane.showMessageDialog(null, "Error al actualizar el empleado o usuario");
+                JOptionPane.showMessageDialog(null, "Error al actualizar el empleado o usuario.");
             }
 
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(null, "Error: El ID del empleado o usuario no es un número válido.");
+            System.err.println("Error al parsear ID: " + ex.getMessage());
+        } catch (StringIndexOutOfBoundsException e) {
+            JOptionPane.showMessageDialog(null, "Error al procesar nombres/apellidos. Asegúrese de que no estén vacíos.");
+            System.err.println("Error de índice de cadena al actualizar empleado: " + e.getMessage());
         } catch (Exception e) {
-            System.out.println("Error al actualizar empleado: " + e);
-            JOptionPane.showMessageDialog(null, "Error inesperado al actualizar el empleado");
+            System.err.println("Error inesperado al actualizar empleado: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, "Error inesperado al actualizar el empleado.");
         }
     }//GEN-LAST:event_btnActualizarActionPerformed
 
@@ -416,7 +396,7 @@ public class JPanelEmpleado extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel9;
-    public static javax.swing.JScrollPane jScrollPane3;
+    public static javax.swing.JScrollPane jScrollPane4;
     public static javax.swing.JTable tableEmpleado;
     private javax.swing.JTextField txtApellidos;
     private javax.swing.JTextField txtCedulaRuc;
@@ -431,10 +411,12 @@ public class JPanelEmpleado extends javax.swing.JPanel {
     private void cargarEmpleadosEnTabla() {
         DefaultTableModel model = new DefaultTableModel();
 
-        String sql = "SELECT e.idEmpleado, e.cedula, u.nombre, u.apellido, u.telefono, e.direccion, u.correo, u.usuario, u.contrasenia, r.tipo AS rol, e.estado, e.idUsuario "
+        String sql = "SELECT e.idEmpleado, e.cedula, u.nombre, u.apellido, u.telefono, e.direccion, "
+                + "u.correo, u.usuario, u.contrasenia, r.tipo AS rol, u.estado, u.idUsuario "
                 + "FROM empleado e "
                 + "INNER JOIN usuario u ON e.idUsuario = u.idUsuario "
-                + "INNER JOIN rol r ON u.idRol = r.idRol";
+                + "INNER JOIN rol r ON u.idRol = r.idRol "
+                + "WHERE r.idRol = 2";
 
         try (Connection con = Conexion.conectar(); Statement st = con.createStatement(); ResultSet rs = st.executeQuery(sql)) {
 
@@ -451,7 +433,10 @@ public class JPanelEmpleado extends javax.swing.JPanel {
             model.addColumn("Estado");
             model.addColumn("idUsuario");
 
+            boolean hayRegistros = false;
+
             while (rs.next()) {
+                hayRegistros = true;
                 Object[] fila = new Object[12];
                 fila[0] = rs.getInt("idEmpleado");
                 fila[1] = rs.getString("cedula");
@@ -471,12 +456,21 @@ public class JPanelEmpleado extends javax.swing.JPanel {
 
             tableEmpleado.setModel(model);
 
-            tableEmpleado.getColumnModel().getColumn(11).setMinWidth(0);
-            tableEmpleado.getColumnModel().getColumn(11).setMaxWidth(0);
-            tableEmpleado.getColumnModel().getColumn(11).setWidth(0);
+            if (tableEmpleado.getColumnModel().getColumnCount() > 11) {
+                tableEmpleado.getColumnModel().getColumn(11).setMinWidth(0);
+                tableEmpleado.getColumnModel().getColumn(11).setMaxWidth(0);
+                tableEmpleado.getColumnModel().getColumn(11).setWidth(0);
+            }
+
+            jScrollPane4.setViewportView(tableEmpleado);
+
+            if (!hayRegistros) {
+                JOptionPane.showMessageDialog(null, "No existen empleados registrados actualmente.");
+            }
 
         } catch (SQLException e) {
-            System.out.println("Error al llenar la tabla empleados: " + e.getMessage());
+            System.err.println("Error al llenar la tabla empleados: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, "Error al cargar empleados: " + e.getMessage());
         }
 
         tableEmpleado.addMouseListener(new MouseAdapter() {
@@ -492,11 +486,12 @@ public class JPanelEmpleado extends javax.swing.JPanel {
     }
 
     private void enviarDatosEmpleado(int idEmpleado) {
-        String sql = "SELECT e.idEmpleado, e.cedula, e.direccion, u.idUsuario, u.nombre, u.apellido, u.usuario, u.contrasenia, u.telefono, u.correo, r.tipo "
+        String sql = "SELECT e.idEmpleado, e.cedula, e.direccion, u.idUsuario, u.nombre, u.apellido, "
+                + "u.usuario, u.contrasenia, u.telefono, u.correo, r.tipo "
                 + "FROM empleado e "
                 + "INNER JOIN usuario u ON e.idUsuario = u.idUsuario "
                 + "INNER JOIN rol r ON u.idRol = r.idRol "
-                + "WHERE e.idEmpleado = ?";
+                + "WHERE e.idEmpleado = ? AND r.idRol = 2";
 
         try (Connection con = Conexion.conectar(); PreparedStatement pst = con.prepareStatement(sql)) {
 
@@ -512,10 +507,13 @@ public class JPanelEmpleado extends javax.swing.JPanel {
                 txtEmail.setText(rs.getString("correo"));
                 txtUsuario.setText(rs.getString("usuario"));
                 txtContrasenia.setText(rs.getString("contrasenia"));
+            } else {
+                JOptionPane.showMessageDialog(null, "No se encontró el empleado seleccionado o no tiene el rol de empleado.");
             }
 
         } catch (SQLException e) {
-            System.out.println("Error al seleccionar empleado: " + e.getMessage());
+            System.err.println("Error al seleccionar empleado: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, "Error al cargar datos del empleado: " + e.getMessage());
         }
     }
 
@@ -552,18 +550,6 @@ public class JPanelEmpleado extends javax.swing.JPanel {
         }
     }
 
-    private boolean validarCampos() {
-        if (txtCedulaRuc.getText().isEmpty() || txtNombres.getText().isEmpty() || txtApellidos.getText().isEmpty()
-                || txtUsuario.getText().isEmpty() || txtContrasenia.getPassword().length == 0
-                || txtTelefono.getText().isEmpty() || txtDireccion.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Todos los campos son obligatorios.");
-            return false;
-        }
-        
-        
-        return true;
-    }
-
     private void setear() {
         txtCedulaRuc.setText("");
         txtNombres.setText("");
@@ -574,4 +560,30 @@ public class JPanelEmpleado extends javax.swing.JPanel {
         txtUsuario.setText("");
         txtContrasenia.setText("");
     }
+
+    private boolean validarCampos(String cedulaRuc, String nombres, String apellidos, String telefono, String email, String direccion, String nombreUsuario, String contrasenia) {
+        if (cedulaRuc.isEmpty() || nombres.isEmpty() || apellidos.isEmpty() || telefono.isEmpty()
+                || email.isEmpty() || direccion.isEmpty() || nombreUsuario.isEmpty() || contrasenia.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Todos los campos son obligatorios.");
+            return false;
+        }
+
+        if (!cedulaRuc.matches("\\d{10}")) {
+            JOptionPane.showMessageDialog(null, "La cédula debe tener exactamente 10 caracteres numéricos");
+            return false;
+        }
+
+        if (!telefono.matches("\\d{10}")) {
+            JOptionPane.showMessageDialog(null, "El teléfono debe tener exactamente 10 caracteres numéricos");
+            return false;
+        }
+
+        if (!email.matches("^[\\w.-]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+            JOptionPane.showMessageDialog(null, "Formato de Email inválido.");
+            return false;
+        }
+
+        return true;
+    }
+
 }

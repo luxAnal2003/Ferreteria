@@ -179,15 +179,16 @@ public class JPanelProveedor extends javax.swing.JPanel {
         String email = txtEmail.getText().trim();
         String direccion = txtDireccion.getText().trim();
 
-        if (!validarCampos(ruc, telefono)) {
-            return;
-        }
-
+        
         if (controladorProveedor.existeProveedor(ruc)) {
             JOptionPane.showMessageDialog(null, "El proveedor ya existe con ese RUC.");
             return;
         }
-
+        
+        if (!validarCampos(ruc, telefono)) {
+            return;
+        }
+        
         try {
             proveedor.setNombre(nombreComercial.substring(0, 1).toUpperCase() + nombreComercial.substring(1).toLowerCase());
             proveedor.setTelefono(telefono);

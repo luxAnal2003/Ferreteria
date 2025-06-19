@@ -6,6 +6,8 @@ package vista;
 
 import dao.Conexion;
 import java.awt.Dimension;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -39,6 +41,19 @@ public class JPanelConsultarVenta extends javax.swing.JPanel {
                 }
             }
         });
+
+        tableVentas.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int filaSeleccionada = tableVentas.getSelectedRow();
+                if (filaSeleccionada > -1) {
+                    int idCabeceraVenta = Integer.parseInt(tableVentas.getValueAt(filaSeleccionada, 0).toString());
+                    mostrarDetalleVenta(idCabeceraVenta);
+                } else {
+                    limpiarDetalleVenta();
+                }
+            }
+        });
     }
 
     /**
@@ -57,6 +72,18 @@ public class JPanelConsultarVenta extends javax.swing.JPanel {
         jLabel8 = new javax.swing.JLabel();
         txtBuscador = new javax.swing.JTextField();
         btnBuscar = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel19 = new javax.swing.JLabel();
+        jLabel18 = new javax.swing.JLabel();
+        jLabel16 = new javax.swing.JLabel();
+        txtIva = new javax.swing.JTextField();
+        txtSubtotal = new javax.swing.JTextField();
+        jLabel17 = new javax.swing.JLabel();
+        txtTotal = new javax.swing.JTextField();
+        txtDescuento = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtAreaProductos = new javax.swing.JTextArea();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -69,18 +96,18 @@ public class JPanelConsultarVenta extends javax.swing.JPanel {
 
         tableVentas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "Nombre", "Apellido", "Rol", "Cedula", "Direccion", "Telefono", "Estado"
+                "ID", "Cliente", "Empleado", "Fecha de Venta", "Total", "Estado"
             }
         ));
         jScrollPane3.setViewportView(tableVentas);
 
-        add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 110, 840, 260));
+        add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 110, 500, 260));
 
         btnLimpiar.setBackground(new java.awt.Color(204, 204, 255));
         btnLimpiar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -113,11 +140,80 @@ public class JPanelConsultarVenta extends javax.swing.JPanel {
             }
         });
         add(btnBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 60, 90, -1));
+
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabel1.setText("Detalle de Venta");
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 10, -1, -1));
+
+        jLabel19.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel19.setText("Iva:");
+        jPanel1.add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 160, -1, 20));
+
+        jLabel18.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel18.setText("Descuento:");
+        jPanel1.add(jLabel18, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 190, -1, 20));
+
+        jLabel16.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel16.setText("Total a Pagar:");
+        jPanel1.add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 220, -1, 20));
+
+        txtIva.setEditable(false);
+        txtIva.setEnabled(false);
+        txtIva.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtIvaKeyPressed(evt);
+            }
+        });
+        jPanel1.add(txtIva, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 160, 170, -1));
+
+        txtSubtotal.setEditable(false);
+        txtSubtotal.setEnabled(false);
+        txtSubtotal.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtSubtotalKeyPressed(evt);
+            }
+        });
+        jPanel1.add(txtSubtotal, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 130, 170, -1));
+
+        jLabel17.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel17.setText("Subtotal General:");
+        jPanel1.add(jLabel17, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 130, -1, 20));
+
+        txtTotal.setEditable(false);
+        txtTotal.setEnabled(false);
+        txtTotal.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtTotalKeyPressed(evt);
+            }
+        });
+        jPanel1.add(txtTotal, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 220, 170, -1));
+
+        txtDescuento.setEditable(false);
+        txtDescuento.setEnabled(false);
+        txtDescuento.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtDescuentoKeyPressed(evt);
+            }
+        });
+        jPanel1.add(txtDescuento, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 190, 170, -1));
+
+        txtAreaProductos.setColumns(20);
+        txtAreaProductos.setRows(5);
+        jScrollPane1.setViewportView(txtAreaProductos);
+
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 40, 280, 70));
+
+        add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 110, 330, 260));
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
         txtBuscador.setText("");
         this.cargarVentasEnTabla();
+        this.limpiarDetalleVenta();
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
@@ -130,31 +226,70 @@ public class JPanelConsultarVenta extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_txtBuscadorKeyPressed
 
+    private void txtSubtotalKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSubtotalKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtSubtotalKeyPressed
+
+    private void txtIvaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtIvaKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtIvaKeyPressed
+
+    private void txtDescuentoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDescuentoKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtDescuentoKeyPressed
+
+    private void txtTotalKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTotalKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtTotalKeyPressed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnLimpiar;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
     public static javax.swing.JScrollPane jScrollPane3;
     public static javax.swing.JTable tableVentas;
+    private javax.swing.JTextArea txtAreaProductos;
     private javax.swing.JTextField txtBuscador;
+    private javax.swing.JTextField txtDescuento;
+    private javax.swing.JTextField txtIva;
+    private javax.swing.JTextField txtSubtotal;
+    private javax.swing.JTextField txtTotal;
     // End of variables declaration//GEN-END:variables
 
+        private void limpiarDetalleVenta() {
+        txtAreaProductos.setText("");
+        txtSubtotal.setText("0.00");
+        txtIva.setText("0.00");
+        txtDescuento.setText("0.00");
+        txtTotal.setText("0.00");
+    }
+
     private void cargarVentasEnTabla() {
-        Connection con = Conexion.conectar();
+        Connection con = null;
         DefaultTableModel model = new DefaultTableModel();
 
         String sql = "SELECT cv.idCabeceraVenta, cv.fechaVenta, cv.total, "
-                + "CONCAT(uc.nombre, ' ', uc.apellido) AS nombre_cliente, "
+                + "CONCAT(cl.nombre, ' ', cl.apellido) AS nombre_cliente, " 
                 + "CONCAT(ue.nombre, ' ', ue.apellido) AS nombre_empleado, cv.estado "
                 + "FROM CabeceraVenta cv "
-                + "INNER JOIN Cliente cl ON cv.idCliente = cl.idCliente "
-                + "INNER JOIN Usuario uc ON cl.idUsuario = uc.idUsuario "
+                + "INNER JOIN Cliente cl ON cv.idCliente = cl.idCliente " 
                 + "INNER JOIN Empleado em ON cv.idEmpleado = em.idEmpleado "
                 + "INNER JOIN Usuario ue ON em.idUsuario = ue.idUsuario "
                 + "WHERE cv.estado = 1";
 
-        try (Statement st = con.createStatement(); ResultSet rs = st.executeQuery(sql)) {
+        try {
+            con = Conexion.conectar();
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+
             model.addColumn("ID Venta");
             model.addColumn("Fecha");
             model.addColumn("Total");
@@ -168,13 +303,14 @@ public class JPanelConsultarVenta extends javax.swing.JPanel {
                 hayRegistros = true;
                 Object[] fila = new Object[6];
                 fila[0] = rs.getInt("idCabeceraVenta");
-                fila[1] = rs.getDate("fechaVenta"); 
+                fila[1] = rs.getDate("fechaVenta");
                 fila[2] = rs.getDouble("total");
                 fila[3] = rs.getString("nombre_cliente");
                 fila[4] = rs.getString("nombre_empleado");
                 fila[5] = (rs.getInt("estado") == 1) ? "Activa" : "Anulada";
                 model.addRow(fila);
             }
+
             if (!hayRegistros) {
                 JOptionPane.showMessageDialog(null, "No existen ventas registradas actualmente.");
             }
@@ -184,11 +320,20 @@ public class JPanelConsultarVenta extends javax.swing.JPanel {
 
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error al cargar ventas: " + e.getMessage());
+            System.err.println("Error al cargar ventas: " + e.getMessage());
+        } finally {
+            try {
+                if (con != null) con.close();
+            } catch (SQLException e) {
+                System.err.println("Error al cerrar conexión: " + e.getMessage());
+            }
         }
     }
 
     private void buscarVentas() {
         String criterio = txtBuscador.getText().trim();
+
+        limpiarDetalleVenta();
 
         if (criterio.isEmpty()) {
             cargarVentasEnTabla();
@@ -203,32 +348,31 @@ public class JPanelConsultarVenta extends javax.swing.JPanel {
         model.addColumn("Empleado");
         model.addColumn("Estado");
 
-
+        Connection con = null;
         String sql = "SELECT cv.idCabeceraVenta, cv.fechaVenta, cv.total, "
-                + "CONCAT(uc.nombre, ' ', uc.apellido) AS nombre_cliente, "
+                + "CONCAT(cl.nombre, ' ', cl.apellido) AS nombre_cliente, "
                 + "CONCAT(ue.nombre, ' ', ue.apellido) AS nombre_empleado, cv.estado "
                 + "FROM CabeceraVenta cv "
                 + "INNER JOIN Cliente cl ON cv.idCliente = cl.idCliente "
-                + "INNER JOIN Usuario uc ON cl.idUsuario = uc.idUsuario "
                 + "INNER JOIN Empleado em ON cv.idEmpleado = em.idEmpleado "
                 + "INNER JOIN Usuario ue ON em.idUsuario = ue.idUsuario "
                 + "WHERE cv.estado = 1 AND ("
-                + "CONCAT(uc.nombre, ' ', uc.apellido) LIKE ?"
+                + "CONCAT(cl.nombre, ' ', cl.apellido) LIKE ? OR cl.ecedula LIKE ?"
                 + ")";
 
         try {
-            Connection con = Conexion.conectar();
+            con = Conexion.conectar();
             PreparedStatement pst = con.prepareStatement(sql);
             String busquedaLike = "%" + criterio + "%";
 
             pst.setString(1, busquedaLike);
-
+            pst.setString(2, busquedaLike); 
             ResultSet rs = pst.executeQuery();
 
             boolean hayResultados = false;
 
             while (rs.next()) {
-                hayResultados = true;
+               hayResultados = true;
                 Object[] fila = new Object[6];
                 fila[0] = rs.getInt("idCabeceraVenta");
                 fila[1] = rs.getDate("fechaVenta");
@@ -239,15 +383,92 @@ public class JPanelConsultarVenta extends javax.swing.JPanel {
                 model.addRow(fila);
             }
 
-            if (hayResultados) {
-                tableVentas.setModel(model); 
-                jScrollPane3.setViewportView(tableVentas);
-            } else {
-                JOptionPane.showMessageDialog(null, "No se encontraron resultados para la búsqueda de ventas por cliente.");
+            tableVentas.setModel(model);
+            jScrollPane3.setViewportView(tableVentas);
+
+            if (!hayResultados) {
+                JOptionPane.showMessageDialog(null, "No se encontraron resultados para la búsqueda de ventas.");
                 cargarVentasEnTabla(); 
             }
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error al buscar ventas: " + e.getMessage());
+            System.err.println("Error al buscar ventas: " + e.getMessage());
+        } finally {
+            try {
+                if (con != null) con.close();
+            } catch (SQLException e) {
+                System.err.println("Error al cerrar conexión: " + e.getMessage());
+            }
+        }
+    }
+
+    private void mostrarDetalleVenta(int idCabeceraVenta) {
+        Connection con = null;
+        try {
+            con = Conexion.conectar();
+
+            String sqlCabecera = "SELECT total FROM CabeceraVenta WHERE idCabeceraVenta = ?";
+            try (PreparedStatement pstCabecera = con.prepareStatement(sqlCabecera)) {
+                pstCabecera.setInt(1, idCabeceraVenta);
+                ResultSet rsCabecera = pstCabecera.executeQuery();
+                if (rsCabecera.next()) {
+                    txtTotal.setText(String.format("%.2f", rsCabecera.getDouble("total")));
+                } else {
+                    limpiarDetalleVenta();
+                    JOptionPane.showMessageDialog(null, "No se encontró el total para la venta seleccionada.");
+                    return; 
+                }
+            }
+
+            String sqlDetalleAndSums = "SELECT dv.cantidad, dv.precioUnitario, dv.subTotal, dv.descuento, dv.iva, p.nombre "
+                                     + "FROM DetalleVenta dv "
+                                     + "INNER JOIN Producto p ON dv.idProducto = p.idProducto "
+                                     + "WHERE dv.idCabeceraVenta = ?";
+            try (PreparedStatement pstDetalleAndSums = con.prepareStatement(sqlDetalleAndSums)) {
+                pstDetalleAndSums.setInt(1, idCabeceraVenta);
+                ResultSet rsDetalleAndSums = pstDetalleAndSums.executeQuery();
+
+                StringBuilder productosTexto = new StringBuilder("Productos:\n");
+                boolean hayProductos = false;
+                double calculatedSubtotal = 0.0;
+                double calculatedIva = 0.0;
+                double calculatedDescuento = 0.0;
+
+                while (rsDetalleAndSums.next()) {
+                    hayProductos = true;
+                    productosTexto.append("- ")
+                                  .append(rsDetalleAndSums.getString("nombre"))
+                                  .append(" (Cant: ")
+                                  .append(rsDetalleAndSums.getInt("cantidad"))
+                                  .append(", Precio Unitario: ")
+                                  .append(String.format("%.2f", rsDetalleAndSums.getDouble("precioUnitario")))
+                                  .append(")\n");
+
+                    calculatedSubtotal += rsDetalleAndSums.getDouble("subTotal");
+                    calculatedIva += rsDetalleAndSums.getDouble("iva");
+                    calculatedDescuento += rsDetalleAndSums.getDouble("descuento");
+                }
+
+                txtAreaProductos.setText(productosTexto.toString());
+                txtSubtotal.setText(String.format("%.2f", calculatedSubtotal));
+                txtIva.setText(String.format("%.2f", calculatedIva));
+                txtDescuento.setText(String.format("%.2f", calculatedDescuento));
+
+                if (!hayProductos) {
+                    txtAreaProductos.setText("No hay productos detallados para esta venta.");
+                }
+            }
+
+        } catch (SQLException e) {
+            limpiarDetalleVenta();
+            JOptionPane.showMessageDialog(null, "Error al cargar el detalle de la venta: " + e.getMessage());
+            System.err.println("Error al cargar detalle de venta: " + e.getMessage());
+        } finally {
+            try {
+                if (con != null) con.close();
+            } catch (SQLException e) {
+                System.err.println("Error al cerrar conexión: " + e.getMessage());
+            }
         }
     }
 
@@ -255,22 +476,20 @@ public class JPanelConsultarVenta extends javax.swing.JPanel {
         Connection con = null;
         try {
             con = Conexion.conectar();
-            String sql = "SELECT COUNT(*) FROM CabeceraVenta WHERE estado = 1";
+            String sql = "SELECT COUNT(*) FROM CabeceraVenta WHERE estado = 1"; 
             try (PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
                 if (rs.next() && rs.getInt(1) == 0) {
-                    JOptionPane.showMessageDialog(null, "No existen ventas en el sistema.");
+                    JOptionPane.showMessageDialog(null, "No existen ventas activas en el sistema.");
                 }
             }
         } catch (SQLException e) {
+            System.err.println("Error al verificar ventas: " + e.getMessage());
             JOptionPane.showMessageDialog(null, "Error al verificar ventas: " + e.getMessage());
         } finally {
             try {
-                if (con != null) {
-                    con.close();
-                }
+                if (con != null) con.close();
             } catch (SQLException e) {
                 System.err.println("Error al cerrar conexión: " + e.getMessage());
             }
         }
-    }
-}
+    }}

@@ -4,7 +4,6 @@
  */
 package controlador;
 
-import com.mysql.cj.xdevapi.PreparableStatement;
 import dao.Conexion;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -40,8 +39,8 @@ public class CategoriaController {
         }
         return respuesta;
     }
-    
-    public boolean actualizar (Categoria categoria, int idCategoria) {
+
+    public boolean actualizar(Categoria categoria, int idCategoria) {
         boolean respuesta = false;
         Connection cn = Conexion.conectar();
 
@@ -59,24 +58,57 @@ public class CategoriaController {
         return respuesta;
     }
 
-    public boolean eliminar(int idCategoria) {
+    public boolean desactivar(int idCategoria) {
         boolean respuesta = false;
-        Connection cn = Conexion.conectar();
+        Connection cn = null;
+
+        String sql = "UPDATE categoria SET estado = 0 WHERE idCategoria = ?";
 
         try {
-            PreparedStatement consulta = cn.prepareStatement("delete from categoria where idCategoria = '" + idCategoria + "'");
-            consulta.executeUpdate();
+            cn = Conexion.conectar();
+            PreparedStatement pst = cn.prepareStatement(sql);
+            pst.setInt(1, idCategoria);
+            respuesta = pst.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Error al desactivar categoria: " + e.getMessage());
+        } finally {
+            try {
+                if (cn != null) {
+                    cn.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("Error al cerrar conexión: " + e.getMessage());
+            }
+        }
+        return respuesta;
+    }
+
+    public boolean activar(int idCategoria) {
+        boolean respuesta = false;
+        Connection cn = null;
+
+        try {
+            cn = Conexion.conectar();
+            PreparedStatement consulta = cn.prepareStatement("UPDATE categoria SET estado = 1 WHERE idCategoria = ?");
+            consulta.setInt(1, idCategoria);
 
             if (consulta.executeUpdate() > 0) {
                 respuesta = true;
             }
-            cn.close();
         } catch (SQLException e) {
-            System.out.println("Error al eliminar categoria: " + e);
+            System.err.println("Error al activar categoria: " + e.getMessage());
+        } finally {
+            try {
+                if (cn != null) {
+                    cn.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("Error al cerrar conexión: " + e.getMessage());
+            }
         }
         return respuesta;
     }
-    
+
     public boolean existeCategoria(String categoria) {
         boolean respuesta = false;
         String sql = "select descripcionCategoria from categoria where descripcionCategoria = '" + categoria + "'";

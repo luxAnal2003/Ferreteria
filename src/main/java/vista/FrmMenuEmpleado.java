@@ -7,7 +7,6 @@ package vista;
 import config.Sesion;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -329,6 +328,8 @@ public class FrmMenuEmpleado extends javax.swing.JFrame {
         }
         //</editor-fold>
         //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -356,6 +357,7 @@ public class FrmMenuEmpleado extends javax.swing.JFrame {
     private javax.swing.JMenuItem menuItemNuevaVenta;
     private javax.swing.JMenuItem menuItemNuevaVenta1;
     // End of variables declaration//GEN-END:variables
+
     private void cerrarSesion() {
         int confirm = JOptionPane.showConfirmDialog(this, "¿Estás seguro de que quieres cerrar sesión?", "Cerrar Sesión", JOptionPane.YES_NO_OPTION);
 

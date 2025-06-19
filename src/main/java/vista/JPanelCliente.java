@@ -5,7 +5,6 @@
 package vista;
 
 import controlador.ClienteController;
-import controlador.UsuarioController;
 import dao.Conexion;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
@@ -15,18 +14,16 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import modelo.Categoria;
-import modelo.Proveedor;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import modelo.Cliente;
-import modelo.Usuario;
 
 /**
  *
  * @author admin
  */
 public class JPanelCliente extends javax.swing.JPanel {
+
     private int idCliente;
 
     /**
@@ -68,11 +65,6 @@ public class JPanelCliente extends javax.swing.JPanel {
         txtEmail = new javax.swing.JTextField();
         jLabel13 = new javax.swing.JLabel();
         txtDireccion = new javax.swing.JTextField();
-        jLabel14 = new javax.swing.JLabel();
-        jLabel15 = new javax.swing.JLabel();
-        txtContrasenia = new javax.swing.JPasswordField();
-        txtUsuario = new javax.swing.JTextField();
-        btnVer = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -84,7 +76,7 @@ public class JPanelCliente extends javax.swing.JPanel {
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel5.setText("Cédula/RUC:");
         add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 220, -1, -1));
-        add(txtTelefono, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 240, 190, -1));
+        add(txtTelefono, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 240, 300, -1));
 
         jLabel9.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel9.setText("Apellidos:");
@@ -93,24 +85,24 @@ public class JPanelCliente extends javax.swing.JPanel {
         jLabel10.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel10.setText("Nombres:");
         add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 270, -1, -1));
-        add(txtNombres, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 290, 190, -1));
-        add(txtApellidos, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 340, 190, -1));
+        add(txtNombres, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 290, 300, -1));
+        add(txtApellidos, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 340, 300, -1));
 
         jLabel7.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel7.setText("Telefono:");
-        add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 220, -1, -1));
+        add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 220, -1, -1));
 
         jScrollPane3.setPreferredSize(new java.awt.Dimension(450, 80));
 
         tableCliente.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Producto", "Proveedor", "Categoría", "Precio", "Stock", "Estado"
+                "ID cliente", "Cédula", "Nombres", "Apellidos", "Telefono", "Dirección", "Correo", "Estado"
             }
         ));
         jScrollPane3.setViewportView(tableCliente);
@@ -125,7 +117,7 @@ public class JPanelCliente extends javax.swing.JPanel {
                 btnLimpiarActionPerformed(evt);
             }
         });
-        add(btnLimpiar, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 230, 90, 30));
+        add(btnLimpiar, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 260, 90, 30));
 
         btnGuardar.setBackground(new java.awt.Color(204, 204, 255));
         btnGuardar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -135,7 +127,7 @@ public class JPanelCliente extends javax.swing.JPanel {
                 btnGuardarActionPerformed(evt);
             }
         });
-        add(btnGuardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 230, 90, 30));
+        add(btnGuardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 260, 90, 30));
 
         btnActualizar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         btnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/editar-producto.png"))); // NOI18N
@@ -166,47 +158,37 @@ public class JPanelCliente extends javax.swing.JPanel {
             }
         });
         add(btnEliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 120, 140, 30));
-        add(txtCedulaRuc, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 240, 190, -1));
+        add(txtCedulaRuc, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 240, 300, -1));
 
         jLabel12.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel12.setText("Email:");
-        add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 270, -1, -1));
-        add(txtEmail, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 290, 190, -1));
+        add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 270, -1, -1));
+        add(txtEmail, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 290, 300, -1));
 
         jLabel13.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel13.setText("Dirección:");
-        add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 320, -1, -1));
-        add(txtDireccion, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 340, 410, -1));
-
-        jLabel14.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel14.setText("Nombre de usuario:");
-        add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 220, -1, -1));
-
-        jLabel15.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel15.setText("Contraseña:");
-        add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 270, -1, -1));
-        add(txtContrasenia, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 290, 190, -1));
-        add(txtUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 240, 190, -1));
-
-        btnVer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/ver.png"))); // NOI18N
-        btnVer.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnVerActionPerformed(evt);
-            }
-        });
-        add(btnVer, new org.netbeans.lib.awtextra.AbsoluteConstraints(660, 291, 30, 20));
+        add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 320, -1, -1));
+        add(txtDireccion, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 340, 410, -1));
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Permite limpiar o setear los campos de texto del cliente
+     *
+     * @param evt evento que se realiza cuando se da click al botón
+     */
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
         this.setear();
         this.cargarClientesEnTabla();
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
+    /**
+     * Permite guardar un cliente
+     *
+     * @param evt evento que se realiza cuando se da click al botón
+     */
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         Cliente cliente = new Cliente();
-        Usuario usuario = new Usuario();
         ClienteController controladorCliente = new ClienteController();
-        UsuarioController controladorUsuario = new UsuarioController();
 
         String cedulaRuc = txtCedulaRuc.getText().trim();
         String nombres = txtNombres.getText().trim();
@@ -214,22 +196,8 @@ public class JPanelCliente extends javax.swing.JPanel {
         String telefono = txtTelefono.getText().trim();
         String email = txtEmail.getText().trim();
         String direccion = txtDireccion.getText().trim();
-        String nombreUsuario = txtUsuario.getText().trim();
-        String contrasenia = new String(txtContrasenia.getPassword()).trim();
 
-        if (cedulaRuc.isEmpty() || nombres.isEmpty() || apellidos.isEmpty() || telefono.isEmpty()
-                || email.isEmpty() || direccion.isEmpty() || nombreUsuario.isEmpty() || contrasenia.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Campos obligatorios vacíos");
-            return;
-        }
-
-        if (!cedulaRuc.matches("\\d{10}")) {
-            JOptionPane.showMessageDialog(null, "La cédula debe tener exactamente 10 caracteres numéricos");
-            return;
-        }
-
-        if (!telefono.matches("\\d{10}")) {
-            JOptionPane.showMessageDialog(null, "El teléfono debe tener exactamente 10 caracteres numéricos");
+        if (!validarCampos(cedulaRuc, nombres, apellidos, telefono, email, direccion)) {
             return;
         }
 
@@ -239,27 +207,13 @@ public class JPanelCliente extends javax.swing.JPanel {
         }
 
         try {
-
-            usuario.setNombre(nombres.substring(0, 1).toUpperCase() + nombres.substring(1).toLowerCase());
-            usuario.setApellido(apellidos.substring(0, 1).toUpperCase() + apellidos.substring(1).toLowerCase());
-            usuario.setTelefono(telefono);
-            usuario.setCorreo(email);
-            usuario.setUsuario(nombreUsuario);
-            usuario.setContrasenia(contrasenia);
-            usuario.setIdRol(3);
-            usuario.setEstado(1);
-
-            int idUsuario = controladorUsuario.guardar(usuario);
-            if (idUsuario == -1) {
-                JOptionPane.showMessageDialog(null, "Error al guardar usuario");
-                return;
-            }
-
+            cliente.setNombre(nombres.substring(0, 1).toUpperCase() + nombres.substring(1).toLowerCase());
+            cliente.setApellido(apellidos.substring(0, 1).toUpperCase() + apellidos.substring(1).toLowerCase());
+            cliente.setTelefono(telefono);
+            cliente.setCorreo(email);
             cliente.setCedula(cedulaRuc);
             cliente.setDireccion(direccion);
-            cliente.setIdRol(3);
             cliente.setEstado(1);
-            cliente.setIdUsuario(idUsuario);
 
             if (controladorCliente.guardar(cliente)) {
                 JOptionPane.showMessageDialog(null, "Cliente guardado correctamente");
@@ -277,9 +231,7 @@ public class JPanelCliente extends javax.swing.JPanel {
 
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
         Cliente cliente = new Cliente();
-        Usuario usuario = new Usuario();
         ClienteController controladorCliente = new ClienteController();
-        UsuarioController controladorUsuario = new UsuarioController();
 
         String cedulaRuc = txtCedulaRuc.getText().trim();
         String nombres = txtNombres.getText().trim();
@@ -287,22 +239,8 @@ public class JPanelCliente extends javax.swing.JPanel {
         String telefono = txtTelefono.getText().trim();
         String email = txtEmail.getText().trim();
         String direccion = txtDireccion.getText().trim();
-        String nombreUsuario = txtUsuario.getText().trim();
-        String contrasenia = new String(txtContrasenia.getPassword()).trim();
 
-        if (cedulaRuc.isEmpty() || nombres.isEmpty() || apellidos.isEmpty() || telefono.isEmpty()
-                || email.isEmpty() || direccion.isEmpty() || nombreUsuario.isEmpty() || contrasenia.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Campos obligatorios vacíos");
-            return;
-        }
-
-        if (!cedulaRuc.matches("\\d{10}")) {
-            JOptionPane.showMessageDialog(null, "La cédula debe tener exactamente 10 caracteres numéricos");
-            return;
-        }
-
-        if (!telefono.matches("\\d{10}")) {
-            JOptionPane.showMessageDialog(null, "El teléfono debe tener exactamente 10 caracteres numéricos");
+        if (!validarCampos(cedulaRuc, nombres, apellidos, telefono, email, direccion)) {
             return;
         }
 
@@ -313,29 +251,19 @@ public class JPanelCliente extends javax.swing.JPanel {
                 return;
             }
             idCliente = Integer.parseInt(tableCliente.getValueAt(fila, 0).toString());
-            int idUsuario = Integer.parseInt(tableCliente.getValueAt(fila, 11).toString());
-
-            usuario.setIdUsuario(idUsuario);
-            usuario.setNombre(nombres.substring(0, 1).toUpperCase() + nombres.substring(1).toLowerCase());
-            usuario.setApellido(apellidos.substring(0, 1).toUpperCase() + apellidos.substring(1).toLowerCase());
-            usuario.setTelefono(telefono);
-            usuario.setCorreo(email);
-            usuario.setUsuario(nombreUsuario);
-            usuario.setContrasenia(contrasenia);
-            usuario.setIdRol(3);
-            usuario.setEstado(1);
 
             cliente.setIdCliente(idCliente);
+            cliente.setNombre(nombres.substring(0, 1).toUpperCase() + nombres.substring(1).toLowerCase());
+            cliente.setApellido(apellidos.substring(0, 1).toUpperCase() + apellidos.substring(1).toLowerCase());
+            cliente.setTelefono(telefono);
+            cliente.setCorreo(email);
             cliente.setCedula(cedulaRuc);
             cliente.setDireccion(direccion);
-            cliente.setIdRol(3);
             cliente.setEstado(1);
-            cliente.setIdUsuario(idUsuario);
 
-            boolean usuarioActualizado = controladorUsuario.actualizar(usuario);
-            boolean empleadoActualizado = controladorCliente.actualizar(cliente);
+            boolean clienteActualizado = controladorCliente.actualizar(cliente);
 
-            if (usuarioActualizado && empleadoActualizado) {
+            if (clienteActualizado) {
                 JOptionPane.showMessageDialog(null, "Cliente actualizado correctamente");
                 this.cargarClientesEnTabla();
                 this.setear();
@@ -356,42 +284,29 @@ public class JPanelCliente extends javax.swing.JPanel {
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
         int fila = tableCliente.getSelectedRow();
         if (fila != -1) {
-            String estado = tableCliente.getValueAt(fila, 5).toString();
+            String estado = tableCliente.getValueAt(fila, 7).toString(); 
             if (estado.equalsIgnoreCase("Inactivo")) {
-                JOptionPane.showMessageDialog(null, "El cliente ya ha sido desactivado");
+                JOptionPane.showMessageDialog(null, "El cliente ya ha sido desactivado.");
                 return;
             }
-            
+
             idCliente = Integer.parseInt(tableCliente.getValueAt(fila, 0).toString());
-            int idUsuario = Integer.parseInt(tableCliente.getValueAt(fila, 11).toString());
 
             ClienteController control = new ClienteController();
-            UsuarioController controlUsuario = new UsuarioController();
-            
-            boolean clienteDesactivado = control.desactivar(idCliente);
-            boolean usuarioDesactivado = controlUsuario.desactivar(idUsuario);
 
-            if (clienteDesactivado && usuarioDesactivado) {
-                JOptionPane.showMessageDialog(null, "Cliente desactivado correctamente");
+            boolean clienteDesactivado = control.desactivar(idCliente);
+
+            if (clienteDesactivado) {
+                JOptionPane.showMessageDialog(null, "Cliente desactivado correctamente.");
                 this.setear();
                 this.cargarClientesEnTabla();
             } else {
-                JOptionPane.showMessageDialog(null, "Error al desactivar el cliente");
+                JOptionPane.showMessageDialog(null, "Error al desactivar el cliente.");
             }
         } else {
-            JOptionPane.showMessageDialog(null, "Seleccione un cliente");
+            JOptionPane.showMessageDialog(null, "Seleccione un cliente para desactivar.");
         }
     }//GEN-LAST:event_btnEliminarActionPerformed
-
-    private void btnVerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerActionPerformed
-        if (txtContrasenia.getEchoChar() != '\u0000') {
-            txtContrasenia.setEchoChar((char) 0);
-            btnVer.setText("Ocultar");
-        } else {
-            txtContrasenia.setEchoChar('•');
-            btnVer.setText("Mostrar");
-        }
-    }//GEN-LAST:event_btnVerActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActivar;
@@ -399,12 +314,9 @@ public class JPanelCliente extends javax.swing.JPanel {
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnLimpiar;
-    private javax.swing.JButton btnVer;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel7;
@@ -413,52 +325,57 @@ public class JPanelCliente extends javax.swing.JPanel {
     public static javax.swing.JTable tableCliente;
     private javax.swing.JTextField txtApellidos;
     private javax.swing.JTextField txtCedulaRuc;
-    private javax.swing.JPasswordField txtContrasenia;
     private javax.swing.JTextField txtDireccion;
     private javax.swing.JTextField txtEmail;
     private javax.swing.JTextField txtNombres;
     private javax.swing.JTextField txtTelefono;
-    private javax.swing.JTextField txtUsuario;
     // End of variables declaration//GEN-END:variables
 
     private void activar() {
         int fila = tableCliente.getSelectedRow();
 
         if (fila != -1) {
-            String estado = tableCliente.getValueAt(fila, 10).toString();
+            String estado = tableCliente.getValueAt(fila, 7).toString(); 
             if (estado.equalsIgnoreCase("Activo")) {
-                JOptionPane.showMessageDialog(null, "El cliente ya está activo");
+                JOptionPane.showMessageDialog(null, "El cliente ya está activo.");
                 this.setear();
                 return;
             }
             idCliente = Integer.parseInt(tableCliente.getValueAt(fila, 0).toString());
-            int idUsuario = Integer.parseInt(tableCliente.getValueAt(fila, 11).toString());
 
             ClienteController controlCliente = new ClienteController();
-            UsuarioController controlUsuario = new UsuarioController();
 
             boolean clienteActivado = controlCliente.activar(idCliente);
-            boolean usuarioActivado = controlUsuario.activar(idUsuario);
 
-            if (clienteActivado && usuarioActivado) {
-                JOptionPane.showMessageDialog(null, "Cliente activado correctamente");
+            if (clienteActivado) {
+                JOptionPane.showMessageDialog(null, "Cliente activado correctamente.");
                 this.setear();
                 this.cargarClientesEnTabla();
             } else {
-                JOptionPane.showMessageDialog(null, "Error al activar el cliente");
+                JOptionPane.showMessageDialog(null, "Error al activar el cliente.");
             }
         } else {
-            JOptionPane.showMessageDialog(null, "Seleccione un cliente para activar");
+            JOptionPane.showMessageDialog(null, "Seleccione un cliente para activar.");
         }
     }
 
-    private boolean validarCampos() {
-        if (txtCedulaRuc.getText().isEmpty() || txtNombres.getText().isEmpty() || txtApellidos.getText().isEmpty()
-                || txtUsuario.getText().isEmpty() || txtContrasenia.getPassword().length == 0
-                || txtTelefono.getText().isEmpty() || txtDireccion.getText().isEmpty()) {
+    private boolean validarCampos(String cedulaRuc, String nombres, String apellidos, String telefono, String email, String direccion) {
+        if (cedulaRuc.isEmpty() || nombres.isEmpty() || apellidos.isEmpty()
+                || telefono.isEmpty() || email.isEmpty() || direccion.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Todos los campos son obligatorios.");
             return false;
         }
+
+        if (!cedulaRuc.matches("\\d{10}")) {
+            JOptionPane.showMessageDialog(null, "La cédula debe tener exactamente 10 caracteres numéricos");
+            return false;
+        }
+
+        if (!telefono.matches("\\d{10}")) {
+            JOptionPane.showMessageDialog(null, "El teléfono debe tener exactamente 10 caracteres numéricos");
+            return false;
+        }
+
         return true;
     }
 
@@ -469,35 +386,34 @@ public class JPanelCliente extends javax.swing.JPanel {
         txtTelefono.setText("");
         txtEmail.setText("");
         txtDireccion.setText("");
-        txtUsuario.setText("");
-        txtContrasenia.setText("");
     }
 
     private void cargarClientesEnTabla() {
+        Connection con = null;
         DefaultTableModel model = new DefaultTableModel();
 
-        String sql = "SELECT c.idCliente, c.cedula, u.nombre, u.apellido, u.telefono, c.direccion, u.correo, u.usuario, u.contrasenia, r.tipo AS rol, c.estado, c.idUsuario "
-                + "FROM cliente c "
-                + "INNER JOIN usuario u ON c.idUsuario = u.idUsuario "
-                + "INNER JOIN rol r ON u.idRol = r.idRol";
+        String sql = "SELECT idCliente, nombre, apellido, telefono, correo, cedula, direccion, estado "
+                + "FROM Cliente"; 
 
-        try (Connection con = Conexion.conectar(); Statement st = con.createStatement(); ResultSet rs = st.executeQuery(sql)) {
+        try {
+            con = Conexion.conectar();
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(sql);
 
-            model.addColumn("ID");
+            model.addColumn("ID Cliente");
             model.addColumn("Cédula");
             model.addColumn("Nombres");
             model.addColumn("Apellidos");
             model.addColumn("Teléfono");
             model.addColumn("Dirección");
             model.addColumn("Correo");
-            model.addColumn("Usuario");
-            model.addColumn("Contraseña");
-            model.addColumn("Rol");
             model.addColumn("Estado");
-            model.addColumn("idUsuario");
+
+            boolean hayRegistros = false;
 
             while (rs.next()) {
-                Object[] fila = new Object[12];
+                hayRegistros = true;
+                Object[] fila = new Object[8];
                 fila[0] = rs.getInt("idCliente");
                 fila[1] = rs.getString("cedula");
                 fila[2] = rs.getString("nombre");
@@ -505,43 +421,46 @@ public class JPanelCliente extends javax.swing.JPanel {
                 fila[4] = rs.getString("telefono");
                 fila[5] = rs.getString("direccion");
                 fila[6] = rs.getString("correo");
-                fila[7] = rs.getString("usuario");
-                fila[8] = rs.getString("contrasenia");
-                fila[9] = rs.getString("rol");
-                fila[10] = rs.getInt("estado") == 1 ? "Activo" : "Inactivo";
-                fila[11] = rs.getInt("idUsuario");
+                fila[7] = (rs.getInt("estado") == 1) ? "Activo" : "Inactivo";
 
                 model.addRow(fila);
             }
 
-            tableCliente.setModel(model);
+            if (!hayRegistros) {
+                JOptionPane.showMessageDialog(null, "No existen clientes registrados actualmente.");
+            }
 
-            tableCliente.getColumnModel().getColumn(11).setMinWidth(0);
-            tableCliente.getColumnModel().getColumn(11).setMaxWidth(0);
-            tableCliente.getColumnModel().getColumn(11).setWidth(0);
+            tableCliente.setModel(model);
+            jScrollPane3.setViewportView(tableCliente);
 
         } catch (SQLException e) {
-            System.out.println("Error al llenar la tabla clientes: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, "Error al cargar clientes: " + e.getMessage());
+            System.err.println("Error al cargar clientes: " + e.getMessage());
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("Error al cerrar conexión: " + e.getMessage());
+            }
         }
-        
+
         tableCliente.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 int fila = tableCliente.rowAtPoint(e.getPoint());
                 if (fila > -1) {
-                    int idCliente = Integer.parseInt(tableCliente.getValueAt(fila, 0).toString());
-                    enviarDatosCliente(idCliente);
+                    int idClienteSeleccionado = Integer.parseInt(tableCliente.getValueAt(fila, 0).toString());
+                    enviarDatosCliente(idClienteSeleccionado);
                 }
             }
         });
     }
 
     private void enviarDatosCliente(int idCliente) {
-        String sql = "SELECT c.idCliente, c.cedula, c.direccion, u.idUsuario, u.nombre, u.apellido, u.usuario, u.contrasenia, u.telefono, u.correo, r.tipo "
-                + "FROM cliente c "
-                + "INNER JOIN usuario u ON c.idUsuario = u.idUsuario "
-                + "INNER JOIN rol r ON u.idRol = r.idRol "
-                + "WHERE c.idCliente = ?";
+        String sql = "SELECT idCliente, nombre, apellido, telefono, correo, cedula, direccion, estado "
+                + "FROM Cliente WHERE idCliente = ?";
 
         try (Connection con = Conexion.conectar(); PreparedStatement pst = con.prepareStatement(sql)) {
 
@@ -555,12 +474,11 @@ public class JPanelCliente extends javax.swing.JPanel {
                 txtTelefono.setText(rs.getString("telefono"));
                 txtDireccion.setText(rs.getString("direccion"));
                 txtEmail.setText(rs.getString("correo"));
-                txtUsuario.setText(rs.getString("usuario"));
-                txtContrasenia.setText(rs.getString("contrasenia"));
             }
 
         } catch (SQLException e) {
-            System.out.println("Error al seleccionar cliente: " + e.getMessage());
+            System.err.println("Error al seleccionar cliente: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, "Error al cargar datos del cliente: " + e.getMessage());
         }
     }
 }

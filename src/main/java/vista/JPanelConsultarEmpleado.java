@@ -4,40 +4,23 @@
  */
 package vista;
 
-import com.mysql.cj.protocol.Resultset;
-import controlador.CategoriaController;
-import controlador.ProductoController;
-import controlador.ProveedorController;
 import dao.Conexion;
 import java.awt.Dimension;
-import java.awt.HeadlessException;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import modelo.Categoria;
-import java.util.List;
-import javax.swing.JComboBox;
-import modelo.Producto;
 import modelo.Proveedor;
 import java.sql.Statement;
 import java.sql.ResultSet;
-import javax.swing.JTable;
-import static vista.JPanelCategoria.tableCategoria;
 
 /**
  *
  * @author admin
  */
 public class JPanelConsultarEmpleado extends javax.swing.JPanel {
-
-    private Categoria obtenerIdCategoria = new Categoria();
-    private Proveedor obtenerIdProveedor = new Proveedor();
-    private int idProducto;
-
     /**
      * Creates new form JPanelCategoriaNuevo
      */
@@ -87,13 +70,13 @@ public class JPanelConsultarEmpleado extends javax.swing.JPanel {
 
         tableEmpleado.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Nombre", "Apellido", "Rol", "Cedula", "Dirección", "Telefono", "Estado"
+                "ID", "Nombre", "Apellido", "Rol", "Cédula", "Dirección", "Telefono", "Estado"
             }
         ));
         jScrollPane3.setViewportView(tableEmpleado);

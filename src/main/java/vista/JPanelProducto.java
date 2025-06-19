@@ -4,13 +4,9 @@
  */
 package vista;
 
-import com.mysql.cj.protocol.Resultset;
-import controlador.CategoriaController;
 import controlador.ProductoController;
-import controlador.ProveedorController;
 import dao.Conexion;
 import java.awt.Dimension;
-import java.awt.HeadlessException;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Connection;
@@ -19,14 +15,11 @@ import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import modelo.Categoria;
-import java.util.List;
 import javax.swing.JComboBox;
 import modelo.Producto;
 import modelo.Proveedor;
 import java.sql.Statement;
 import java.sql.ResultSet;
-import javax.swing.JTable;
-import static vista.JPanelCategoria.tableCategoria;
 
 /**
  *
@@ -83,13 +76,13 @@ public class JPanelProducto extends javax.swing.JPanel {
         textAreaDescripcion = new javax.swing.JTextArea();
         jLabel7 = new javax.swing.JLabel();
         cboxCategoria = new javax.swing.JComboBox<>();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        tableProducto = new javax.swing.JTable();
         btnLimpiar = new javax.swing.JButton();
         btnGuardar = new javax.swing.JButton();
         btnActualizar = new javax.swing.JButton();
         btnActivar = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        tableProducto = new javax.swing.JTable();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -136,23 +129,6 @@ public class JPanelProducto extends javax.swing.JPanel {
 
         cboxCategoria.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione categoria", "Item 1", "Item 2", "Item 3", "Item 4" }));
         add(cboxCategoria, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 240, 290, -1));
-
-        jScrollPane3.setPreferredSize(new java.awt.Dimension(450, 80));
-
-        tableProducto.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
-            },
-            new String [] {
-                "Producto", "Proveedor", "Categoría", "Precio", "Stock", "Estado"
-            }
-        ));
-        jScrollPane3.setViewportView(tableProducto);
-
-        add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, 690, 140));
 
         btnLimpiar.setBackground(new java.awt.Color(204, 204, 255));
         btnLimpiar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -203,6 +179,23 @@ public class JPanelProducto extends javax.swing.JPanel {
             }
         });
         add(btnEliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 120, 140, 30));
+
+        jScrollPane4.setPreferredSize(new java.awt.Dimension(450, 80));
+
+        tableProducto.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "ID", "Nombre", "Proveedor", "Cantidad", "Descripción", "Precio", "Iva", "Categoria", "Estado"
+            }
+        ));
+        jScrollPane4.setViewportView(tableProducto);
+
+        add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 60, 690, 140));
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
@@ -402,7 +395,7 @@ public class JPanelProducto extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane2;
-    public static javax.swing.JScrollPane jScrollPane3;
+    public static javax.swing.JScrollPane jScrollPane4;
     public static javax.swing.JTable tableProducto;
     private javax.swing.JTextArea textAreaDescripcion;
     private javax.swing.JTextField txtNombreProducto;

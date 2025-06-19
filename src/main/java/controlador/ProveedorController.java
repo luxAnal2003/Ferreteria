@@ -55,11 +55,6 @@ public class ProveedorController {
         return respuesta;
     }
 
-    /**
-     * Verifica si un proveedor con el RUC dado ya existe en la base de datos.
-     * @param ruc El RUC a verificar.
-     * @return true si el proveedor existe, false en caso contrario.
-     */
     public boolean existeProveedor(String ruc) {
         boolean existe = false;
         Connection cn = null;
@@ -87,10 +82,6 @@ public class ProveedorController {
         return existe;
     }
 
-    /**
-     * Lista todos los proveedores de la base de datos.
-     * @return Una lista de objetos Proveedor.
-     */
     public List<Proveedor> listarProveedores() {
         List<Proveedor> lista = new ArrayList<>();
         Connection cn = null;
@@ -125,11 +116,6 @@ public class ProveedorController {
         return lista;
     }
 
-    /**
-     * Actualiza la información de un proveedor existente en la base de datos.
-     * @param proveedor El objeto Proveedor con la información actualizada.
-     * @return true si la actualización fue exitosa, false en caso contrario.
-     */
     public boolean actualizar(Proveedor proveedor) {
         boolean respuesta = false;
         Connection cn = null;
@@ -165,11 +151,6 @@ public class ProveedorController {
         return respuesta;
     }
 
-    /**
-     * Cambia el estado de un proveedor a inactivo (0).
-     * @param idProveedor El ID del proveedor a desactivar.
-     * @return true si la operación fue exitosa, false en caso contrario.
-     */
     public boolean desactivar(int idProveedor) {
         boolean respuesta = false;
         Connection cn = null;
@@ -192,11 +173,6 @@ public class ProveedorController {
         return respuesta;
     }
 
-    /**
-     * Cambia el estado de un proveedor a activo (1).
-     * @param idProveedor El ID del proveedor a activar.
-     * @return true si la operación fue exitosa, false en caso contrario.
-     */
     public boolean activar(int idProveedor) {
         boolean respuesta = false;
         Connection cn = null;

@@ -75,7 +75,7 @@ public class JPanelConsultarProveedor extends javax.swing.JPanel {
                 {null, null, null, null, null, null, null}
             },
             new String [] {
-                "Nombre", "Apellido", "Rol", "Cedula", "Dirección", "Telefono", "Estado"
+                "ID", "RUC", "Nombre comercial", "Telefono", "Email", "Dirección", "Estado"
             }
         ));
         jScrollPane3.setViewportView(tableProveedor);
@@ -173,10 +173,6 @@ public class JPanelConsultarProveedor extends javax.swing.JPanel {
                 fila[5] = rs.getString("direccionProveedor");
                 fila[6] = (rs.getInt("estado") == 1) ? "Activo" : "Inactivo"; 
                 model.addRow(fila);
-            }
-
-            if (!hayRegistros) {
-                JOptionPane.showMessageDialog(null, "No existen proveedores registrados actualmente.");
             }
 
             tableProveedor.setModel(model); 

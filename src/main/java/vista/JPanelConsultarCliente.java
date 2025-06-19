@@ -4,39 +4,21 @@
  */
 package vista;
 
-import com.mysql.cj.protocol.Resultset;
-import controlador.CategoriaController;
-import controlador.ProductoController;
-import controlador.ProveedorController;
 import dao.Conexion;
 import java.awt.Dimension;
-import java.awt.HeadlessException;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import modelo.Categoria;
-import java.util.List;
-import javax.swing.JComboBox;
-import modelo.Producto;
-import modelo.Proveedor;
 import java.sql.Statement;
 import java.sql.ResultSet;
-import javax.swing.JTable;
-import static vista.JPanelCategoria.tableCategoria;
 
 /**
  *
  * @author admin
  */
 public class JPanelConsultarCliente extends javax.swing.JPanel {
-
-    private Categoria obtenerIdCategoria = new Categoria();
-    private Proveedor obtenerIdProveedor = new Proveedor();
-    private int idProducto;
 
     /**
      * Creates new form JPanelCategoriaNuevo
@@ -93,7 +75,7 @@ public class JPanelConsultarCliente extends javax.swing.JPanel {
                 {null, null, null, null, null, null, null}
             },
             new String [] {
-                "Nombre", "Apellido", "Rol", "Cedula", "Direccion", "Telefono", "Estado"
+                "ID Cliente", "Nombres", "Apellidos", "Telefono", "Direccion", "Correo", "Estado"
             }
         ));
         jScrollPane3.setViewportView(tableCliente);
@@ -159,23 +141,24 @@ public class JPanelConsultarCliente extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     private void cargarClientesEnTabla() {
-        Connection con = Conexion.conectar();
+        Connection con = null;
         DefaultTableModel model = new DefaultTableModel();
 
-        String sql = "SELECT c.idCliente, CONCAT(u.nombre, ' ', u.apellido) AS nombre_completo, "
-                + "r.tipo AS rol, c.cedula, c.direccion, u.telefono, u.estado "
-                + "FROM Cliente c "
-                + "INNER JOIN Usuario u ON c.idUsuario = u.idUsuario "
-                + "INNER JOIN Rol r ON u.idRol = r.idRol "
-                + "WHERE u.estado = 1";
+        String sql = "SELECT idCliente, nombre, apellido, telefono, correo, cedula, direccion, estado "
+                + "FROM Cliente WHERE estado = 1"; // Filtrar por estado activo directamente
 
-        try (Statement st = con.createStatement(); ResultSet rs = st.executeQuery(sql)) {
-            model.addColumn("ID");
-            model.addColumn("Nombre Completo");
-            model.addColumn("Rol");
+        try {
+            con = Conexion.conectar();
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+
+            model.addColumn("ID Cliente");
             model.addColumn("Cédula");
-            model.addColumn("Dirección");
+            model.addColumn("Nombres");
+            model.addColumn("Apellidos");
             model.addColumn("Teléfono");
+            model.addColumn("Dirección");
+            model.addColumn("Correo");
             model.addColumn("Estado");
 
             boolean hayRegistros = false;
@@ -184,17 +167,19 @@ public class JPanelConsultarCliente extends javax.swing.JPanel {
                 hayRegistros = true;
                 Object[] fila = new Object[8];
                 fila[0] = rs.getInt("idCliente");
-                fila[1] = rs.getString("nombre_completo");
-                fila[2] = rs.getString("rol");
-                fila[3] = rs.getString("cedula");
-                fila[4] = rs.getString("direccion");
-                fila[5] = rs.getString("telefono");
-                fila[6] = (rs.getInt("estado") == 1) ? "Activo" : "Inactivo";
+                fila[1] = rs.getString("cedula");
+                fila[2] = rs.getString("nombre");
+                fila[3] = rs.getString("apellido");
+                fila[4] = rs.getString("telefono");
+                fila[5] = rs.getString("direccion");
+                fila[6] = rs.getString("correo");
+                fila[7] = (rs.getInt("estado") == 1) ? "Activo" : "Inactivo";
+
                 model.addRow(fila);
             }
 
             if (!hayRegistros) {
-                JOptionPane.showMessageDialog(null, "No existen clientes registrados actualmente.");
+                JOptionPane.showMessageDialog(null, "No existen clientes activos registrados actualmente.");
             }
 
             tableCliente.setModel(model);
@@ -202,6 +187,15 @@ public class JPanelConsultarCliente extends javax.swing.JPanel {
 
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error al cargar clientes: " + e.getMessage());
+            System.err.println("Error al cargar clientes: " + e.getMessage());
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("Error al cerrar conexión: " + e.getMessage());
+            }
         }
     }
 
@@ -214,24 +208,25 @@ public class JPanelConsultarCliente extends javax.swing.JPanel {
         }
 
         DefaultTableModel model = new DefaultTableModel();
-        model.addColumn("ID");
-        model.addColumn("Nombre Completo");
-        model.addColumn("Rol");
+        model.addColumn("ID Cliente");
         model.addColumn("Cédula");
-        model.addColumn("Dirección");
+        model.addColumn("Nombres");
+        model.addColumn("Apellidos");
         model.addColumn("Teléfono");
+        model.addColumn("Dirección");
+        model.addColumn("Correo");
         model.addColumn("Estado");
 
-        Connection con = Conexion.conectar();
+        Connection con = null;
 
-        String sql = "SELECT c.idCliente, CONCAT(u.nombre, ' ', u.apellido) AS nombre_completo, "
-                + "r.tipo AS rol, c.cedula, c.direccion, u.telefono, u.estado "
-                + "FROM Cliente c "
-                + "INNER JOIN Usuario u ON c.idUsuario = u.idUsuario "
-                + "INNER JOIN Rol r ON u.idRol = r.idRol "
-                + "WHERE u.estado = 1 AND (u.nombre LIKE ? OR u.apellido LIKE ? OR c.cedula LIKE ?)";
+        String sql = "SELECT idCliente, nombre, apellido, telefono, correo, cedula, direccion, estado "
+                + "FROM Cliente "
+                + "WHERE estado = 1 " 
+                + "AND (nombre LIKE ? OR apellido LIKE ? OR cedula LIKE ?)";
 
-        try (PreparedStatement pst = con.prepareStatement(sql)) {
+        try {
+            con = Conexion.conectar();
+            PreparedStatement pst = con.prepareStatement(sql);
             String busquedaLike = "%" + criterio + "%";
             pst.setString(1, busquedaLike);
             pst.setString(2, busquedaLike);
@@ -242,14 +237,15 @@ public class JPanelConsultarCliente extends javax.swing.JPanel {
 
             while (rs.next()) {
                 hayResultados = true;
-                Object[] fila = new Object[8];
+                Object[] fila = new Object[8]; 
                 fila[0] = rs.getInt("idCliente");
-                fila[1] = rs.getString("nombre_completo");
-                fila[2] = rs.getString("rol");
-                fila[3] = rs.getString("cedula");
-                fila[4] = rs.getString("direccion");
-                fila[5] = rs.getString("telefono");
-                fila[6] = (rs.getInt("estado") == 1) ? "Activo" : "Inactivo";
+                fila[1] = rs.getString("cedula"); 
+                fila[2] = rs.getString("nombre");
+                fila[3] = rs.getString("apellido");
+                fila[4] = rs.getString("telefono");
+                fila[5] = rs.getString("direccion");
+                fila[6] = rs.getString("correo");
+                fila[7] = (rs.getInt("estado") == 1) ? "Activo" : "Inactivo";
                 model.addRow(fila);
             }
 
@@ -257,25 +253,45 @@ public class JPanelConsultarCliente extends javax.swing.JPanel {
                 tableCliente.setModel(model);
                 jScrollPane3.setViewportView(tableCliente);
             } else {
-                JOptionPane.showMessageDialog(null, "No se encontraron resultados para la búsqueda");
-                cargarClientesEnTabla();
+                JOptionPane.showMessageDialog(null, "No se encontraron resultados para la búsqueda de clientes activos.");
+                cargarClientesEnTabla(); 
             }
 
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error al buscar clientes: " + e.getMessage());
+            System.err.println("Error al buscar clientes: " + e.getMessage());
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("Error al cerrar conexión: " + e.getMessage());
+            }
         }
     }
 
     private void verificarExistenciaClientes() {
-        try (Connection con = Conexion.conectar()) {
-            String sql = "SELECT COUNT(*) FROM Cliente c INNER JOIN Usuario u ON c.idUsuario = u.idUsuario WHERE u.estado = 1";
+        Connection con = null;
+        try {
+            con = Conexion.conectar();
+            String sql = "SELECT COUNT(*) FROM Cliente WHERE estado = 1"; 
             try (PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
                 if (rs.next() && rs.getInt(1) == 0) {
-                    JOptionPane.showMessageDialog(null, "No existen clientes en el sistema");
+                    JOptionPane.showMessageDialog(null, "No existen clientes activos en el sistema.");
                 }
             }
         } catch (SQLException e) {
+            System.err.println("Error al verificar clientes: " + e.getMessage());
             JOptionPane.showMessageDialog(null, "Error al verificar clientes: " + e.getMessage());
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("Error al cerrar conexión: " + e.getMessage());
+            }
         }
     }
 }

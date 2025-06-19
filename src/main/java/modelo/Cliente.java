@@ -1,19 +1,76 @@
 package modelo;
 
-public class Cliente extends Usuario{
+public class Cliente{
+    private String nombre;
+    private String apellido;
+    private String telefono;
+    private String correo;
+    private int estado;
     private int idCliente;
     private String cedula;
     private String direccion;
 
     public Cliente(){
+        this.nombre = "";
+        this.apellido = "";
+        this.telefono = "";
+        this.correo = "";
+        this.estado = 0;
+        this.cedula = "";
         this.idCliente = 0;
         this.cedula = "";
         this.direccion  ="";
     }
-    public Cliente(int idCliente, String cedula, String direccion) {
+
+    public Cliente(String nombre, String apellido, String telefono, String correo, int estado, int idCliente, String cedula, String direccion) {
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.telefono = telefono;
+        this.correo = correo;
+        this.estado = estado;
         this.idCliente = idCliente;
         this.cedula = cedula;
         this.direccion = direccion;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getApellido() {
+        return apellido;
+    }
+
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
+    public String getCorreo() {
+        return correo;
+    }
+
+    public void setCorreo(String correo) {
+        this.correo = correo;
+    }
+
+    public int getEstado() {
+        return estado;
+    }
+
+    public void setEstado(int estado) {
+        this.estado = estado;
     }
 
     public int getIdCliente() {
@@ -39,104 +96,5 @@ public class Cliente extends Usuario{
     public void setDireccion(String direccion) {
         this.direccion = direccion;
     }
-
-    @Override
-    public String getCorreo() {
-        return correo;
-    }
-
-    @Override
-    public void setCorreo(String correo) {
-        this.correo = correo;
-    }
-
-    @Override
-    public int getIdUsuario() {
-        return idUsuario;
-    }
-
-    @Override
-    public void setIdUsuario(int idUsuario) {
-        this.idUsuario = idUsuario;
-    }
-
-    @Override
-    public int getIdRol() {
-        return idRol;
-    }
-
-    @Override
-    public void setIdRol(int idRol) {
-        this.idRol = idRol;
-    }
-
-    @Override
-    public String getTipoRol() {
-        return tipoRol;
-    }
-
-    @Override
-    public void setTipoRol(String tipoRol) {
-        this.tipoRol = tipoRol;
-    }
-
-    @Override
-    public String getUsuario() {
-        return usuario;
-    }
-
-    @Override
-    public void setUsuario(String usuario) {
-        this.usuario = usuario;
-    }
-
-    @Override
-    public String getContrasenia() {
-        return contrasenia;
-    }
-
-    @Override
-    public void setContrasenia(String contrasenia) {
-        this.contrasenia = contrasenia;
-    }
-
-    @Override
-    public String getNombre() {
-        return nombre;
-    }
-
-    @Override
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    @Override
-    public String getApellido() {
-        return apellido;
-    }
-
-    @Override
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
-    }
-
-    @Override
-    public String getTelefono() {
-        return telefono;
-    }
-
-    @Override
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
-
-    @Override
-    public int getEstado() {
-        return estado;
-    }
-
-    @Override
-    public void setEstado(int estado) {
-        this.estado = estado;
-    }   
+    
 }

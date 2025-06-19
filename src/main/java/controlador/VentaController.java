@@ -11,8 +11,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import modelo.Venta;
 import modelo.DetalleVenta;
@@ -111,12 +109,6 @@ public class VentaController {
         return respuesta;
     }
 
-    /**
-     * Desactiva (anula) una venta cambiando su estado a 0.
-     *
-     * @param idCabeceraVenta El ID de la cabecera de venta a desactivar.
-     * @return true si la desactivación fue exitosa, false en caso contrario.
-     */
     public boolean desactivar(int idCabeceraVenta) {
         boolean respuesta = false;
         Connection cn = null;

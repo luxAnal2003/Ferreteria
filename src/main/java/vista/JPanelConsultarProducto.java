@@ -11,8 +11,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import modelo.Categoria;
-import modelo.Proveedor;
 import java.sql.Statement;
 import java.sql.ResultSet;
 
@@ -71,13 +69,13 @@ public class JPanelConsultarProducto extends javax.swing.JPanel {
 
         tableProducto.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Producto", "Proveedor", "Categoría", "Precio", "Stock", "Estado"
+                "ID", "Nombre", "Proveedor", "Cantidad", "Descripción", "Precio", "Iva", "Categoria", "Estado"
             }
         ));
         jScrollPane3.setViewportView(tableProducto);
@@ -181,10 +179,6 @@ public class JPanelConsultarProducto extends javax.swing.JPanel {
                 fila[8] = (rs.getInt("estado") == 1) ? "Activo" : "Inactivo";
 
                 model.addRow(fila);
-            }
-
-            if (!hayRegistros) {
-                JOptionPane.showMessageDialog(null, "No existen productos registrados actualmente.");
             }
 
             tableProducto.setModel(model);

@@ -571,9 +571,7 @@ public class JPanelVenta extends javax.swing.JPanel {
 
     private void guardarClienteNuevo() {
         Cliente cliente = new Cliente();
-        Usuario usuario = new Usuario();
         ClienteController controladorCliente = new ClienteController();
-        UsuarioController controladorUsuario = new UsuarioController();
 
         String cedulaRuc = txtCedulaRuc.getText().trim();
         String nombres = txtNombres.getText().trim();
@@ -582,19 +580,7 @@ public class JPanelVenta extends javax.swing.JPanel {
         String email = txtEmail.getText().trim();
         String direccion = txtDireccion.getText().trim();
 
-        if (cedulaRuc.isEmpty() || nombres.isEmpty() || apellidos.isEmpty() || telefono.isEmpty()
-                || email.isEmpty() || direccion.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Campos obligatorios vacíos");
-            return;
-        }
-
-        if (!cedulaRuc.matches("\\d{10}")) {
-            JOptionPane.showMessageDialog(null, "La cédula debe tener exactamente 10 caracteres numéricos");
-            return;
-        }
-
-        if (!telefono.matches("\\d{10}")) {
-            JOptionPane.showMessageDialog(null, "El teléfono debe tener exactamente 10 caracteres numéricos");
+        if (!validarCampos(cedulaRuc, nombres, apellidos, telefono, email, direccion)) {
             return;
         }
 
@@ -604,33 +590,18 @@ public class JPanelVenta extends javax.swing.JPanel {
         }
 
         try {
-
-            String nombreUsuario = nombres.substring(0, 1).toUpperCase() + nombres.substring(1).toLowerCase();
-            String apellidoUsuario = apellidos.substring(0, 1).toUpperCase() + apellidos.substring(1).toLowerCase();
-            usuario = generarUsuarioDesdeCampos(nombreUsuario, apellidoUsuario, telefono, email);
-
-            int idUsuario = controladorUsuario.guardar(usuario);
-            if (idUsuario == -1) {
-                JOptionPane.showMessageDialog(null, "Error al guardar usuario.");
-                return;
-            }
-
+            cliente.setNombre(nombres.substring(0, 1).toUpperCase() + nombres.substring(1).toLowerCase());
+            cliente.setApellido(apellidos.substring(0, 1).toUpperCase() + apellidos.substring(1).toLowerCase());
+            cliente.setTelefono(telefono);
+            cliente.setCorreo(email);
             cliente.setCedula(cedulaRuc);
             cliente.setDireccion(direccion);
-            cliente.setIdRol(3);
             cliente.setEstado(1);
-            cliente.setIdUsuario(idUsuario);
 
             if (controladorCliente.guardar(cliente)) {
-                idClienteSeleccionado = controladorCliente.obtenerUltimoIdInsertado();
-
-                JOptionPane.showMessageDialog(null,
-                        "Cliente guardado correctamente.\n"
-                        + "Usuario: " + usuario.getUsuario() + "\n"
-                        + "Contraseña: " + usuario.getContrasenia());
-                this.habilitarCamposCliente(false);
+                JOptionPane.showMessageDialog(null, "Cliente guardado correctamente");
             } else {
-                JOptionPane.showMessageDialog(null, "Error al guardar cliente.");
+                JOptionPane.showMessageDialog(null, "Error al guardar cliente");
             }
         } catch (Exception e) {
             System.out.println("Error al guardar cliente: " + e);
@@ -651,9 +622,8 @@ public class JPanelVenta extends javax.swing.JPanel {
             return;
         }
         Connection con = Conexion.conectar();
-        String sql = "SELECT c.idCliente, u.nombre, u.apellido, u.telefono, u.correo, c.direccion "
+        String sql = "SELECT c.idCliente, c.nombre, c.apellido, c.telefono, c.correo, c.direccion "
                 + "FROM Cliente c "
-                + "INNER JOIN Usuario u ON c.idUsuario = u.idUsuario "
                 + "WHERE c.cedula = ?";
 
         try (PreparedStatement pst = con.prepareStatement(sql)) {
@@ -682,25 +652,6 @@ public class JPanelVenta extends javax.swing.JPanel {
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Error al buscar cliente: " + e.getMessage());
         }
-    }
-
-    private Usuario generarUsuarioDesdeCampos(String nombre, String apellido, String telefono, String correo) {
-        Usuario nuevoUsuario = new Usuario();
-
-        String inicialApellido = apellido.substring(0, 1).toLowerCase();
-        String usuario = nombre.toLowerCase() + "." + inicialApellido;
-        String contrasena = "cliente" + apellido.toLowerCase();
-
-        nuevoUsuario.setNombre(nombre);
-        nuevoUsuario.setApellido(apellido);
-        nuevoUsuario.setTelefono(telefono);
-        nuevoUsuario.setCorreo(correo);
-        nuevoUsuario.setUsuario(usuario);
-        nuevoUsuario.setContrasenia(contrasena);
-        nuevoUsuario.setIdRol(3);
-        nuevoUsuario.setEstado(1);
-
-        return nuevoUsuario;
     }
 
     private void habilitarCamposCliente(boolean habilitar) {
@@ -773,7 +724,6 @@ public class JPanelVenta extends javax.swing.JPanel {
             return;
         }
 
-        // Validación del cliente
         if (radioButtonSi.isSelected()) {
             String cedula = txtCedulaRuc.getText().trim();
             String nombres = txtNombres.getText().trim();
@@ -860,5 +810,24 @@ public class JPanelVenta extends javax.swing.JPanel {
         tableProducto.getColumnModel().getColumn(0).setMinWidth(0);
         tableProducto.getColumnModel().getColumn(0).setMaxWidth(0);
         tableProducto.getColumnModel().getColumn(0).setPreferredWidth(0);
+    }
+    
+    private boolean validarCampos(String cedulaRuc, String nombres, String apellidos, String telefono, String email, String direccion) {
+        if (cedulaRuc.isEmpty() || nombres.isEmpty() || apellidos.isEmpty()
+                || telefono.isEmpty() || email.isEmpty() || direccion.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Todos los campos son obligatorios.");
+            return false;
+        }
+
+        if (!cedulaRuc.matches("\\d{10}")) {
+            JOptionPane.showMessageDialog(null, "La cédula debe tener exactamente 10 caracteres numéricos");
+            return false;
+        }
+
+        if (!telefono.matches("\\d{10}")) {
+            JOptionPane.showMessageDialog(null, "El teléfono debe tener exactamente 10 caracteres numéricos");
+            return false;
+        }
+        return true;
     }
 }
