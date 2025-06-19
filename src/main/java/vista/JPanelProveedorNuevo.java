@@ -22,14 +22,13 @@ import java.sql.ResultSet;
  *
  * @author admin
  */
-public class JPanelProveedor extends javax.swing.JPanel {
+public class JPanelProveedorNuevo extends javax.swing.JPanel {
 
     private int idProveedor;
-
     /**
      * Creates new form JPanelCategoriaNuevo
      */
-    public JPanelProveedor() {
+    public JPanelProveedorNuevo() {
         initComponents();
         this.setSize(new Dimension(900, 400));
 
@@ -55,9 +54,6 @@ public class JPanelProveedor extends javax.swing.JPanel {
         tableProveedor = new javax.swing.JTable();
         btnLimpiar = new javax.swing.JButton();
         btnGuardar = new javax.swing.JButton();
-        btnActualizar = new javax.swing.JButton();
-        btnActivar = new javax.swing.JButton();
-        btnEliminar = new javax.swing.JButton();
         txtRuc = new javax.swing.JTextField();
         jLabel12 = new javax.swing.JLabel();
         txtEmail = new javax.swing.JTextField();
@@ -68,8 +64,8 @@ public class JPanelProveedor extends javax.swing.JPanel {
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jLabel2.setText("Proveedor");
-        add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 30, -1, -1));
+        jLabel2.setText("Agregar Proveedor");
+        add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 40, -1, -1));
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel5.setText("RUC:");
@@ -100,7 +96,7 @@ public class JPanelProveedor extends javax.swing.JPanel {
         ));
         jScrollPane3.setViewportView(tableProveedor);
 
-        add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, 690, 180));
+        add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, 850, 180));
 
         btnLimpiar.setBackground(new java.awt.Color(204, 204, 255));
         btnLimpiar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -110,7 +106,7 @@ public class JPanelProveedor extends javax.swing.JPanel {
                 btnLimpiarActionPerformed(evt);
             }
         });
-        add(btnLimpiar, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 330, 90, 30));
+        add(btnLimpiar, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 30, 90, 30));
 
         btnGuardar.setBackground(new java.awt.Color(204, 204, 255));
         btnGuardar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -120,37 +116,7 @@ public class JPanelProveedor extends javax.swing.JPanel {
                 btnGuardarActionPerformed(evt);
             }
         });
-        add(btnGuardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(660, 330, 90, 30));
-
-        btnActualizar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        btnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/editar-producto.png"))); // NOI18N
-        btnActualizar.setText("Actualizar");
-        btnActualizar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnActualizarActionPerformed(evt);
-            }
-        });
-        add(btnActualizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 160, 140, 30));
-
-        btnActivar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        btnActivar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/activar.png"))); // NOI18N
-        btnActivar.setText("Activar");
-        btnActivar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnActivarActionPerformed(evt);
-            }
-        });
-        add(btnActivar, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 80, 140, 30));
-
-        btnEliminar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/desactivar.png"))); // NOI18N
-        btnEliminar.setText("Eliminar");
-        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEliminarActionPerformed(evt);
-            }
-        });
-        add(btnEliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 120, 140, 30));
+        add(btnGuardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 30, 90, 30));
         add(txtRuc, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 290, 190, -1));
 
         jLabel12.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -185,7 +151,7 @@ public class JPanelProveedor extends javax.swing.JPanel {
             return;
         }
         
-        if (!validarCampos(ruc, telefono)) {
+        if (!validarCampos(ruc, nombreComercial, telefono, email, direccion)) {
             return;
         }
         
@@ -210,68 +176,7 @@ public class JPanelProveedor extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
 
-    private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
-        Proveedor proveedor = new Proveedor();
-        ProveedorController controladorProveedor = new ProveedorController();
-
-        String ruc = txtRuc.getText().trim();
-        String nombreComercial = txtNombreComercial.getText().trim();
-        String telefono = txtTelefono.getText().trim();
-        String email = txtEmail.getText().trim();
-        String direccion = txtDireccion.getText().trim();
-
-        if (!validarCampos(ruc, telefono)) {
-            return;
-        }
-
-        try {
-            int fila = tableProveedor.getSelectedRow();
-            if (fila < 0) {
-                JOptionPane.showMessageDialog(null, "Seleccione un proveedor de la tabla para actualizar.");
-                return;
-            }
-
-            idProveedor = Integer.parseInt(tableProveedor.getValueAt(fila, 0).toString());
-
-            proveedor.setIdProveedor(idProveedor); 
-            proveedor.setRuc(ruc);
-            proveedor.setNombre(nombreComercial.substring(0, 1).toUpperCase() + nombreComercial.substring(1).toLowerCase());
-            proveedor.setTelefono(telefono);
-            proveedor.setCorreo(email);
-            proveedor.setDireccion(direccion);
-            proveedor.setEstado(1); 
-
-            boolean proveedorActualizado = controladorProveedor.actualizar(proveedor);
-
-            if (proveedorActualizado) { 
-                JOptionPane.showMessageDialog(null, "Proveedor actualizado correctamente.");
-                this.cargarProveedoresEnTabla();
-                this.setear();
-            } else {
-                JOptionPane.showMessageDialog(null, "Error al actualizar el proveedor.");
-            }
-
-        } catch (NumberFormatException ex) {
-            System.err.println("Error al parsear ID de proveedor: " + ex.getMessage());
-            JOptionPane.showMessageDialog(null, "Error: El ID del proveedor no es un número válido.");
-        } catch (Exception e) {
-            System.err.println("Error inesperado al actualizar proveedor: " + e.getMessage());
-            JOptionPane.showMessageDialog(null, "Error inesperado al actualizar el proveedor.");
-        }
-    }//GEN-LAST:event_btnActualizarActionPerformed
-
-    private void btnActivarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActivarActionPerformed
-        this.activar();
-    }//GEN-LAST:event_btnActivarActionPerformed
-
-    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-        desactivarProveedor();
-    }//GEN-LAST:event_btnEliminarActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnActivar;
-    private javax.swing.JButton btnActualizar;
-    private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnLimpiar;
     private javax.swing.JLabel jLabel10;
@@ -416,9 +321,9 @@ public class JPanelProveedor extends javax.swing.JPanel {
         }
     }
 
-    private boolean validarCampos(String ruc, String telefono) {
-        if (txtRuc.getText().isEmpty() || txtNombreComercial.getText().isEmpty() || txtEmail.getText().isEmpty()
-                || txtTelefono.getText().isEmpty() || txtDireccion.getText().isEmpty()) {
+    private boolean validarCampos(String ruc,  String nombreComercial, String telefono, String email,String direccion) {
+        if (ruc.isEmpty() || txtNombreComercial.getText().isEmpty() || email.isEmpty()
+                || telefono.isEmpty() || txtDireccion.getText().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Todos los campos son obligatorios.");
             return false;
         }
@@ -432,7 +337,11 @@ public class JPanelProveedor extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(null, "El teléfono debe tener exactamente 10 caracteres numéricos");
             return false;
         }
-
+        
+        if (!email.matches("^[\\w.-]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+            JOptionPane.showMessageDialog(null, "Formato de Email inválido.");
+            return false;
+        }
         return true;
     }
 

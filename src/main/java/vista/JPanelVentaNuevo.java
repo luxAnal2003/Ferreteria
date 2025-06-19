@@ -29,7 +29,7 @@ import modelo.Usuario;
  *
  * @author admin
  */
-public class JPanelVenta extends javax.swing.JPanel {
+public class JPanelVentaNuevo extends javax.swing.JPanel {
 
     private int idClienteSeleccionado = -1;
     private javax.swing.ButtonGroup grupoFacturacion;
@@ -37,7 +37,7 @@ public class JPanelVenta extends javax.swing.JPanel {
     /**
      * Creates new form JPanelCategoriaNuevo
      */
-    public JPanelVenta() {
+    public JPanelVentaNuevo() {
         initComponents();
         this.setSize(new Dimension(900, 400));
         grupoFacturacion = new javax.swing.ButtonGroup();

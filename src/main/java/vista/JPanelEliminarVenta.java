@@ -52,7 +52,7 @@ public class JPanelEliminarVenta extends javax.swing.JPanel {
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel2.setText("Eliminar Ventas");
-        add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 30, -1, -1));
+        add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 40, -1, -1));
 
         jScrollPane3.setPreferredSize(new java.awt.Dimension(450, 80));
 
@@ -69,7 +69,7 @@ public class JPanelEliminarVenta extends javax.swing.JPanel {
         ));
         jScrollPane3.setViewportView(tableVentas);
 
-        add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 70, 680, 290));
+        add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 70, 850, 300));
 
         btnActivar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         btnActivar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/activar.png"))); // NOI18N
@@ -79,7 +79,7 @@ public class JPanelEliminarVenta extends javax.swing.JPanel {
                 btnActivarActionPerformed(evt);
             }
         });
-        add(btnActivar, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 170, 140, 30));
+        add(btnActivar, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 30, 140, 30));
 
         btnEliminar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/desactivar.png"))); // NOI18N
@@ -89,7 +89,7 @@ public class JPanelEliminarVenta extends javax.swing.JPanel {
                 btnEliminarActionPerformed(evt);
             }
         });
-        add(btnEliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 210, 140, 30));
+        add(btnEliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(740, 30, 140, 30));
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnActivarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActivarActionPerformed

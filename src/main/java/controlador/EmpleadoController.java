@@ -142,24 +142,29 @@ public class EmpleadoController {
         return respuesta;
     }
 
-    public int obtenerIdEmpleadoPorIdUsuario(int idUsuario) {
-        int idEmpleado = -1;
-        Connection cn = Conexion.conectar();
-
-        String sql = "SELECT idEmpleado FROM empleado WHERE idUsuario = ?";
-
-        try (PreparedStatement pst = cn.prepareStatement(sql)) {
-            pst.setInt(1, idUsuario);
-            ResultSet rs = pst.executeQuery();
-
-            if (rs.next()) {
-                idEmpleado = rs.getInt("idEmpleado");
+    public int obtenerIdUsuarioPorIdEmpleado(int idEmpleado) {
+        Connection con = null;
+        int idUsuario = -1;
+        String sql = "SELECT idUsuario FROM Empleado WHERE idEmpleado = ?";
+        try {
+            con = Conexion.conectar();
+            try (PreparedStatement pst = con.prepareStatement(sql)) {
+                pst.setInt(1, idEmpleado);
+                ResultSet rs = pst.executeQuery();
+                if (rs.next()) {
+                    idUsuario = rs.getInt("idUsuario");
+                }
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error al obtener idEmpleado: " + e.getMessage());
+            System.err.println("Error al obtener idUsuario por idEmpleado: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, "Error al obtener ID de usuario: " + e.getMessage());
+        } finally {
+            try {
+                if (con != null) con.close();
+            } catch (SQLException e) {
+                System.err.println("Error al cerrar conexión: " + e.getMessage());
+            }
         }
-
-        return idEmpleado;
+        return idUsuario;
     }
-
 }

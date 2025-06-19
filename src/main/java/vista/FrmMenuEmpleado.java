@@ -9,6 +9,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 /**
  *
@@ -39,18 +40,23 @@ public class FrmMenuEmpleado extends javax.swing.JFrame {
     private void initComponents() {
 
         content = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu7 = new javax.swing.JMenu();
-        menuItemGestionarProveedor = new javax.swing.JMenuItem();
+        menuItemNuevoProveedor = new javax.swing.JMenuItem();
+        menuItemEditarProveedor = new javax.swing.JMenuItem();
+        menuItemEliminarProveedor = new javax.swing.JMenuItem();
         menuItemConsultarProveedor = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
-        menuItemGestionarProducto = new javax.swing.JMenuItem();
+        menuItemNuevoProducto = new javax.swing.JMenuItem();
+        menuItemEditarProducto = new javax.swing.JMenuItem();
+        menuItemEliminarProducto = new javax.swing.JMenuItem();
         menuItemGestionarProducto1 = new javax.swing.JMenuItem();
         jMenu8 = new javax.swing.JMenu();
         menuItemGestionarCategoria = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         menuItemNuevaVenta = new javax.swing.JMenuItem();
-        menuItemNuevaVenta1 = new javax.swing.JMenuItem();
+        menuItemConsultar = new javax.swing.JMenuItem();
         menuItemEliminarVenta = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
         menuItemCerrarSesion = new javax.swing.JMenuItem();
@@ -59,15 +65,23 @@ public class FrmMenuEmpleado extends javax.swing.JFrame {
 
         content.setBackground(new java.awt.Color(255, 255, 255));
 
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/login.png"))); // NOI18N
+
         javax.swing.GroupLayout contentLayout = new javax.swing.GroupLayout(content);
         content.setLayout(contentLayout);
         contentLayout.setHorizontalGroup(
             contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 900, Short.MAX_VALUE)
+            .addGroup(contentLayout.createSequentialGroup()
+                .addGap(343, 343, 343)
+                .addComponent(jLabel1)
+                .addContainerGap(357, Short.MAX_VALUE))
         );
         contentLayout.setVerticalGroup(
             contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 449, Short.MAX_VALUE)
+            .addGroup(contentLayout.createSequentialGroup()
+                .addGap(119, 119, 119)
+                .addComponent(jLabel1)
+                .addContainerGap(130, Short.MAX_VALUE))
         );
 
         jMenu7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/proveedor.png"))); // NOI18N
@@ -75,15 +89,35 @@ public class FrmMenuEmpleado extends javax.swing.JFrame {
         jMenu7.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jMenu7.setPreferredSize(new java.awt.Dimension(150, 50));
 
-        menuItemGestionarProveedor.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        menuItemGestionarProveedor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/nuevo-usuario.png"))); // NOI18N
-        menuItemGestionarProveedor.setText("Gestionar");
-        menuItemGestionarProveedor.addActionListener(new java.awt.event.ActionListener() {
+        menuItemNuevoProveedor.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        menuItemNuevoProveedor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/nuevo-usuario.png"))); // NOI18N
+        menuItemNuevoProveedor.setText("Nuevo");
+        menuItemNuevoProveedor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuItemGestionarProveedorActionPerformed(evt);
+                menuItemNuevoProveedorActionPerformed(evt);
             }
         });
-        jMenu7.add(menuItemGestionarProveedor);
+        jMenu7.add(menuItemNuevoProveedor);
+
+        menuItemEditarProveedor.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        menuItemEditarProveedor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/editar-usuario.png"))); // NOI18N
+        menuItemEditarProveedor.setText("Editar");
+        menuItemEditarProveedor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemEditarProveedorActionPerformed(evt);
+            }
+        });
+        jMenu7.add(menuItemEditarProveedor);
+
+        menuItemEliminarProveedor.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        menuItemEliminarProveedor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/eliminar-usuario.png"))); // NOI18N
+        menuItemEliminarProveedor.setText("Eliminar");
+        menuItemEliminarProveedor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemEliminarProveedorActionPerformed(evt);
+            }
+        });
+        jMenu7.add(menuItemEliminarProveedor);
 
         menuItemConsultarProveedor.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         menuItemConsultarProveedor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/buscar.png"))); // NOI18N
@@ -102,15 +136,35 @@ public class FrmMenuEmpleado extends javax.swing.JFrame {
         jMenu3.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jMenu3.setPreferredSize(new java.awt.Dimension(150, 50));
 
-        menuItemGestionarProducto.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        menuItemGestionarProducto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/agregar-producto.png"))); // NOI18N
-        menuItemGestionarProducto.setText("Gestionar");
-        menuItemGestionarProducto.addActionListener(new java.awt.event.ActionListener() {
+        menuItemNuevoProducto.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        menuItemNuevoProducto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/agregar-producto.png"))); // NOI18N
+        menuItemNuevoProducto.setText("Nuevo");
+        menuItemNuevoProducto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuItemGestionarProductoActionPerformed(evt);
+                menuItemNuevoProductoActionPerformed(evt);
             }
         });
-        jMenu3.add(menuItemGestionarProducto);
+        jMenu3.add(menuItemNuevoProducto);
+
+        menuItemEditarProducto.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        menuItemEditarProducto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/editar-producto.png"))); // NOI18N
+        menuItemEditarProducto.setText("Editar");
+        menuItemEditarProducto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemEditarProductoActionPerformed(evt);
+            }
+        });
+        jMenu3.add(menuItemEditarProducto);
+
+        menuItemEliminarProducto.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        menuItemEliminarProducto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/eliminar-producto.png"))); // NOI18N
+        menuItemEliminarProducto.setText("Eliminar");
+        menuItemEliminarProducto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemEliminarProductoActionPerformed(evt);
+            }
+        });
+        jMenu3.add(menuItemEliminarProducto);
 
         menuItemGestionarProducto1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         menuItemGestionarProducto1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/buscar.png"))); // NOI18N
@@ -156,15 +210,15 @@ public class FrmMenuEmpleado extends javax.swing.JFrame {
         });
         jMenu2.add(menuItemNuevaVenta);
 
-        menuItemNuevaVenta1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        menuItemNuevaVenta1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/buscar.png"))); // NOI18N
-        menuItemNuevaVenta1.setText("Consultar");
-        menuItemNuevaVenta1.addActionListener(new java.awt.event.ActionListener() {
+        menuItemConsultar.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        menuItemConsultar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/buscar.png"))); // NOI18N
+        menuItemConsultar.setText("Consultar");
+        menuItemConsultar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuItemNuevaVenta1ActionPerformed(evt);
+                menuItemConsultarActionPerformed(evt);
             }
         });
-        jMenu2.add(menuItemNuevaVenta1);
+        jMenu2.add(menuItemConsultar);
 
         menuItemEliminarVenta.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         menuItemEliminarVenta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/eliminar-venta.png"))); // NOI18N
@@ -213,93 +267,78 @@ public class FrmMenuEmpleado extends javax.swing.JFrame {
     private void menuItemGestionarCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemGestionarCategoriaActionPerformed
         content.removeAll();
         JPanelCategoria categoria = new JPanelCategoria();
-        categoria.setSize(900, 400);
-        categoria.setLocation(0, 0);
-        content.removeAll();
-        content.add(categoria, BorderLayout.CENTER);
-        content.revalidate();
-        content.repaint();
+        ShowPanel(categoria);
     }//GEN-LAST:event_menuItemGestionarCategoriaActionPerformed
 
     private void menuItemCerrarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemCerrarSesionActionPerformed
         this.cerrarSesion();
     }//GEN-LAST:event_menuItemCerrarSesionActionPerformed
 
-    private void menuItemGestionarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemGestionarProductoActionPerformed
+    private void menuItemNuevoProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemNuevoProductoActionPerformed
         content.removeAll();
-        JPanelProducto producto = new JPanelProducto();
-        producto.setSize(900, 400);
-        producto.setLocation(0, 0);
-        content.removeAll();
-        content.add(producto, BorderLayout.CENTER);
-        content.revalidate();
-        content.repaint();
-    }//GEN-LAST:event_menuItemGestionarProductoActionPerformed
+        JPanelProductoNuevo producto = new JPanelProductoNuevo();
+        ShowPanel(producto);
+    }//GEN-LAST:event_menuItemNuevoProductoActionPerformed
 
     private void menuItemGestionarProducto1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemGestionarProducto1ActionPerformed
         content.removeAll();
         JPanelConsultarProducto producto = new JPanelConsultarProducto();
-        producto.setSize(900, 400);
-        producto.setLocation(0, 0);
-        content.removeAll();
-        content.add(producto, BorderLayout.CENTER);
-        content.revalidate();
-        content.repaint();
+        ShowPanel(producto);
     }//GEN-LAST:event_menuItemGestionarProducto1ActionPerformed
 
     private void menuItemConsultarProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemConsultarProveedorActionPerformed
         content.removeAll();
         JPanelConsultarProveedor proveedor = new JPanelConsultarProveedor();
-        proveedor.setSize(900, 400);
-        proveedor.setLocation(0, 0);
-        content.removeAll();
-        content.add(proveedor, BorderLayout.CENTER);
-        content.revalidate();
-        content.repaint();
+        ShowPanel(proveedor);
     }//GEN-LAST:event_menuItemConsultarProveedorActionPerformed
 
     private void menuItemNuevaVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemNuevaVentaActionPerformed
         content.removeAll();
-        JPanelVenta venta = new JPanelVenta();
-        venta.setSize(900, 400);
-        venta.setLocation(0, 0);
-        content.removeAll();
-        content.add(venta, BorderLayout.CENTER);
-        content.revalidate();
-        content.repaint();
+        JPanelVentaNuevo venta = new JPanelVentaNuevo();
+        ShowPanel(venta);
     }//GEN-LAST:event_menuItemNuevaVentaActionPerformed
 
-    private void menuItemNuevaVenta1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemNuevaVenta1ActionPerformed
+    private void menuItemConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemConsultarActionPerformed
         content.removeAll();
         JPanelConsultarVenta venta = new JPanelConsultarVenta();
-        venta.setSize(900, 400);
-        venta.setLocation(0, 0);
-        content.removeAll();
-        content.add(venta, BorderLayout.CENTER);
-        content.revalidate();
-        content.repaint();
-    }//GEN-LAST:event_menuItemNuevaVenta1ActionPerformed
-
-    private void menuItemGestionarProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemGestionarProveedorActionPerformed
-        content.removeAll();
-        JPanelProveedor proveedor = new JPanelProveedor();
-        proveedor.setSize(900, 400);
-        proveedor.setLocation(0, 0);
-        content.removeAll();
-        content.add(proveedor, BorderLayout.CENTER);
-        content.revalidate();
-        content.repaint();    }//GEN-LAST:event_menuItemGestionarProveedorActionPerformed
+        ShowPanel(venta);
+    }//GEN-LAST:event_menuItemConsultarActionPerformed
 
     private void menuItemEliminarVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemEliminarVentaActionPerformed
         content.removeAll();
         JPanelEliminarVenta venta = new JPanelEliminarVenta();
-        venta.setSize(900, 400);
-        venta.setLocation(0, 0);
-        content.removeAll();
-        content.add(venta, BorderLayout.CENTER);
-        content.revalidate();
-        content.repaint();
+        ShowPanel(venta);
     }//GEN-LAST:event_menuItemEliminarVentaActionPerformed
+
+    private void menuItemNuevoProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemNuevoProveedorActionPerformed
+        content.removeAll();
+        JPanelProveedorNuevo proveedor = new JPanelProveedorNuevo();
+        ShowPanel(proveedor);
+    }//GEN-LAST:event_menuItemNuevoProveedorActionPerformed
+
+    private void menuItemEditarProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemEditarProveedorActionPerformed
+        content.removeAll();
+        JPanelProveedorEditar proveedor = new JPanelProveedorEditar();
+        ShowPanel(proveedor);
+    }//GEN-LAST:event_menuItemEditarProveedorActionPerformed
+
+    private void menuItemEliminarProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemEliminarProveedorActionPerformed
+        content.removeAll();
+        JPanelProveedorEliminar proveedor = new JPanelProveedorEliminar();
+        ShowPanel(proveedor);
+    }//GEN-LAST:event_menuItemEliminarProveedorActionPerformed
+
+    private void menuItemEditarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemEditarProductoActionPerformed
+        content.removeAll();
+        JPanelProductoEditar producto = new JPanelProductoEditar();
+        ShowPanel(producto);
+    }//GEN-LAST:event_menuItemEditarProductoActionPerformed
+
+    private void menuItemEliminarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemEliminarProductoActionPerformed
+        content.removeAll();
+        JPanelProductoEliminar producto = new JPanelProductoEliminar();
+        ShowPanel(producto);
+    }//GEN-LAST:event_menuItemEliminarProductoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -328,8 +367,6 @@ public class FrmMenuEmpleado extends javax.swing.JFrame {
         }
         //</editor-fold>
         //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -341,6 +378,7 @@ public class FrmMenuEmpleado extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel content;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
@@ -348,26 +386,41 @@ public class FrmMenuEmpleado extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu8;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem menuItemCerrarSesion;
+    private javax.swing.JMenuItem menuItemConsultar;
     private javax.swing.JMenuItem menuItemConsultarProveedor;
+    private javax.swing.JMenuItem menuItemEditarProducto;
+    private javax.swing.JMenuItem menuItemEditarProveedor;
+    private javax.swing.JMenuItem menuItemEliminarProducto;
+    private javax.swing.JMenuItem menuItemEliminarProveedor;
     private javax.swing.JMenuItem menuItemEliminarVenta;
     private javax.swing.JMenuItem menuItemGestionarCategoria;
-    private javax.swing.JMenuItem menuItemGestionarProducto;
     private javax.swing.JMenuItem menuItemGestionarProducto1;
-    private javax.swing.JMenuItem menuItemGestionarProveedor;
     private javax.swing.JMenuItem menuItemNuevaVenta;
-    private javax.swing.JMenuItem menuItemNuevaVenta1;
+    private javax.swing.JMenuItem menuItemNuevoProducto;
+    private javax.swing.JMenuItem menuItemNuevoProveedor;
     // End of variables declaration//GEN-END:variables
 
     private void cerrarSesion() {
         int confirm = JOptionPane.showConfirmDialog(this, "¿Estás seguro de que quieres cerrar sesión?", "Cerrar Sesión", JOptionPane.YES_NO_OPTION);
 
         if (confirm == JOptionPane.YES_OPTION) {
-            Sesion.cerrarSesion(); 
+            Sesion.cerrarSesion();
 
             this.dispose();
 
             FrmLogin loginFrame = new FrmLogin();
             loginFrame.setVisible(true);
         }
+    }
+
+    private void ShowPanel(JPanel p) {
+        p.setSize(900, 400);
+        p.setLocation(0, 0);
+        
+        content.removeAll();
+        content.add(p, BorderLayout.CENTER);
+        content.revalidate();
+        content.repaint();
+
     }
 }

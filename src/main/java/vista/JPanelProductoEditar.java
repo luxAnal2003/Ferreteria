@@ -25,7 +25,7 @@ import java.sql.ResultSet;
  *
  * @author admin
  */
-public class JPanelProducto extends javax.swing.JPanel {
+public class JPanelProductoEditar extends javax.swing.JPanel {
 
     private Categoria obtenerIdCategoria = new Categoria();
     private Proveedor obtenerIdProveedor = new Proveedor();
@@ -34,22 +34,22 @@ public class JPanelProducto extends javax.swing.JPanel {
     /**
      * Creates new form JPanelCategoriaNuevo
      */
-    public JPanelProducto() {
+    public JPanelProductoEditar() {
         initComponents();
         this.setSize(new Dimension(900, 400));
         cargarDatosEnComboBox("categoria", "descripcionCategoria", cboxCategoria, "Seleccionar categoria");
         cargarDatosEnComboBox("proveedor", "nombreProveedor", cboxProveedor, "Seleccionar proveedor");
 
         this.cargarProductosEnTabla();
-        tableProducto.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                int filaSeleccionada = tableProducto.getSelectedRow();
-                if (filaSeleccionada != -1) {
-                    idProducto = Integer.parseInt(tableProducto.getValueAt(filaSeleccionada, 0).toString());
-                }
-            }
-        });
+//        tableProducto.addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//                int filaSeleccionada = tableProducto.getSelectedRow();
+//                if (filaSeleccionada != -1) {
+//                    idProducto = Integer.parseInt(tableProducto.getValueAt(filaSeleccionada, 0).toString());
+//                }
+//            }
+//        });
 
     }
 
@@ -77,10 +77,7 @@ public class JPanelProducto extends javax.swing.JPanel {
         jLabel7 = new javax.swing.JLabel();
         cboxCategoria = new javax.swing.JComboBox<>();
         btnLimpiar = new javax.swing.JButton();
-        btnGuardar = new javax.swing.JButton();
         btnActualizar = new javax.swing.JButton();
-        btnActivar = new javax.swing.JButton();
-        btnEliminar = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
         tableProducto = new javax.swing.JTable();
 
@@ -88,8 +85,8 @@ public class JPanelProducto extends javax.swing.JPanel {
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jLabel2.setText("Productos");
-        add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 30, -1, -1));
+        jLabel2.setText("Actualizar Productos");
+        add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 30, -1, -1));
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel5.setText("Nombre del producto:");
@@ -98,6 +95,9 @@ public class JPanelProducto extends javax.swing.JPanel {
         jLabel6.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel6.setText("Categoria:");
         add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 220, -1, -1));
+
+        txtNombreProducto.setEditable(false);
+        txtNombreProducto.setEnabled(false);
         add(txtNombreProducto, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 240, 190, -1));
 
         jLabel9.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -121,14 +121,14 @@ public class JPanelProducto extends javax.swing.JPanel {
         textAreaDescripcion.setRows(5);
         jScrollPane2.setViewportView(textAreaDescripcion);
 
-        add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 290, 320, 70));
+        add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 290, 630, 70));
 
         jLabel7.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel7.setText("Proveedor:");
         add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 220, -1, -1));
 
         cboxCategoria.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione categoria", "Item 1", "Item 2", "Item 3", "Item 4" }));
-        add(cboxCategoria, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 240, 290, -1));
+        add(cboxCategoria, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 240, 310, -1));
 
         btnLimpiar.setBackground(new java.awt.Color(204, 204, 255));
         btnLimpiar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -138,17 +138,7 @@ public class JPanelProducto extends javax.swing.JPanel {
                 btnLimpiarActionPerformed(evt);
             }
         });
-        add(btnLimpiar, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 300, 90, 30));
-
-        btnGuardar.setBackground(new java.awt.Color(204, 204, 255));
-        btnGuardar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        btnGuardar.setText("Guardar");
-        btnGuardar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGuardarActionPerformed(evt);
-            }
-        });
-        add(btnGuardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 300, 90, 30));
+        add(btnLimpiar, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 20, 90, 30));
 
         btnActualizar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         btnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/editar-producto.png"))); // NOI18N
@@ -158,27 +148,7 @@ public class JPanelProducto extends javax.swing.JPanel {
                 btnActualizarActionPerformed(evt);
             }
         });
-        add(btnActualizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 160, 140, 30));
-
-        btnActivar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        btnActivar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/activar.png"))); // NOI18N
-        btnActivar.setText("Activar");
-        btnActivar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnActivarActionPerformed(evt);
-            }
-        });
-        add(btnActivar, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 80, 140, 30));
-
-        btnEliminar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/desactivar.png"))); // NOI18N
-        btnEliminar.setText("Eliminar");
-        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEliminarActionPerformed(evt);
-            }
-        });
-        add(btnEliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 120, 140, 30));
+        add(btnActualizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 20, 140, 30));
 
         jScrollPane4.setPreferredSize(new java.awt.Dimension(450, 80));
 
@@ -195,87 +165,13 @@ public class JPanelProducto extends javax.swing.JPanel {
         ));
         jScrollPane4.setViewportView(tableProducto);
 
-        add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 60, 690, 140));
+        add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 60, 850, 140));
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
         this.setear();
         this.cargarProductosEnTabla();
     }//GEN-LAST:event_btnLimpiarActionPerformed
-
-    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        Producto producto = new Producto();
-        ProductoController controladorProducto = new ProductoController();
-
-        String nombreProducto = txtNombreProducto.getText().trim();
-        String stockTexto = txtStock.getText().trim();
-        String precioTexto = txtPrecio.getText().trim();
-        String descripcion = textAreaDescripcion.getText().trim();
-
-        if (nombreProducto.isEmpty() || stockTexto.isEmpty() || precioTexto.isEmpty() || descripcion.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Campos obligatorios vacíos");
-            return;
-        }
-
-        if (!stockTexto.matches("\\d+")) {
-            JOptionPane.showMessageDialog(null, "Formato de dato incorrecto.");
-            return;
-        }
-
-        if (!precioTexto.matches("^\\d+(\\.\\d{1,2})?$") && !precioTexto.matches("^\\d+(,\\d{1,2})?$")) {
-            JOptionPane.showMessageDialog(null, "Formato de dato incorrecto.");
-            return;
-        }
-
-        if (cboxCategoria.getSelectedIndex() == 0 || cboxProveedor.getSelectedIndex() == 0) {
-            JOptionPane.showMessageDialog(null, "Campos obligatorios vacíos");
-            return;
-        }
-
-        if (controladorProducto.existeProducto(nombreProducto)) {
-            JOptionPane.showMessageDialog(null, "El producto ya existe");
-            return;
-        }
-
-        try {
-            String nombreFormateado = nombreProducto.substring(0, 1).toUpperCase() + nombreProducto.substring(1).toLowerCase();
-            producto.setNombreProducto(nombreFormateado);
-
-            producto.setCantidad(Integer.parseInt(stockTexto));
-
-            String precioFormateado = precioTexto.replace(",", ".");
-            producto.setPrecio(Double.parseDouble(precioFormateado));
-
-            producto.setDescripcion(descripcion);
-            producto.setPorcentajeIva(12);
-            producto.setEstado(1);
-
-            this.idCategoria();
-            producto.setIdCategoria(obtenerIdCategoria);
-
-            this.idProveedor();
-            producto.setIdProveedor(obtenerIdProveedor);
-
-            if (controladorProducto.guardar(producto)) {
-                JOptionPane.showMessageDialog(null, "Producto guardado con iva del 12%");
-
-                this.cargarDatosEnComboBox("categoria", "descripcionCategoria", cboxCategoria, "Seleccionar categoria");
-                this.cargarDatosEnComboBox("proveedor", "nombreProveedor", cboxProveedor, "Seleccionar proveedor");
-
-                this.cboxProveedor.setSelectedItem("Seleccione proveedor");
-                this.cboxCategoria.setSelectedItem("Seleccione categoria");
-
-                this.cargarProductosEnTabla();
-                this.setear();
-            } else {
-                JOptionPane.showMessageDialog(null, "Error al guardar");
-            }
-
-        } catch (Exception e) {
-            System.out.println("Error al guardar producto: " + e);
-            JOptionPane.showMessageDialog(null, "Error inesperado al guardar el producto");
-        }
-    }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
         Producto producto = new Producto();
@@ -285,26 +181,8 @@ public class JPanelProducto extends javax.swing.JPanel {
         String stockTexto = txtStock.getText().trim();
         String precioTexto = txtPrecio.getText().trim();
         String descripcion = textAreaDescripcion.getText().trim();
-        String categoria = cboxCategoria.getSelectedItem().toString().trim();
-        String proveedor = cboxProveedor.getSelectedItem().toString().trim();
 
-        if (nombreProducto.isEmpty() || stockTexto.isEmpty() || precioTexto.isEmpty() || descripcion.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Campos obligatorios vacíos");
-            return;
-        }
-
-        if (!stockTexto.matches("\\d+")) {
-            JOptionPane.showMessageDialog(null, "Formato de dato incorrecto.");
-            return;
-        }
-
-        if (!precioTexto.matches("^\\d+(\\.\\d{1,2})?$") && !precioTexto.matches("^\\d+(,\\d{1,2})?$")) {
-            JOptionPane.showMessageDialog(null, "Formato de dato incorrecto.");
-            return;
-        }
-
-        if (cboxCategoria.getSelectedIndex() == 0 || cboxProveedor.getSelectedIndex() == 0) {
-            JOptionPane.showMessageDialog(null, "Campos obligatorios vacíos");
+        if (!validarCampos(nombreProducto, stockTexto, precioTexto, descripcion)) {
             return;
         }
 
@@ -348,42 +226,8 @@ public class JPanelProducto extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btnActualizarActionPerformed
 
-    private void btnActivarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActivarActionPerformed
-        this.activar();
-    }//GEN-LAST:event_btnActivarActionPerformed
-
-    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-        int fila = tableProducto.getSelectedRow();
-
-        if (fila != -1) {
-            String estado = tableProducto.getValueAt(fila, 8).toString();
-
-            if (estado.equalsIgnoreCase("Inactivo")) {
-                JOptionPane.showMessageDialog(null, "El producto ya ha sido desactivado anteriormente");
-                return;
-            }
-
-            idProducto = Integer.parseInt(tableProducto.getValueAt(fila, 0).toString());
-
-            ProductoController controlProducto = new ProductoController();
-
-            if (controlProducto.desactivar(idProducto)) {
-                JOptionPane.showMessageDialog(null, "Producto desactivado correctamente");
-                this.setear();
-                this.cargarProductosEnTabla();
-            } else {
-                JOptionPane.showMessageDialog(null, "Error al desactivar el producto");
-            }
-        } else {
-            JOptionPane.showMessageDialog(null, "Seleccione un producto para desactivar");
-        }
-    }//GEN-LAST:event_btnEliminarActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnActivar;
     private javax.swing.JButton btnActualizar;
-    private javax.swing.JButton btnEliminar;
-    private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnLimpiar;
     private javax.swing.JComboBox<String> cboxCategoria;
     private javax.swing.JComboBox<String> cboxProveedor;
@@ -555,29 +399,26 @@ public class JPanelProducto extends javax.swing.JPanel {
         textAreaDescripcion.setText("");
     }
 
-    private void activar() {
-        int fila = tableProducto.getSelectedRow();
-
-        if (fila != -1) {
-            String estado = tableProducto.getValueAt(fila, 8).toString();
-
-            if (estado.equalsIgnoreCase("Activo")) {
-                JOptionPane.showMessageDialog(null, "El producto ya está activo");
-                return;
-            }
-
-            idProducto = Integer.parseInt(tableProducto.getValueAt(fila, 0).toString());
-            ProductoController controlProducto = new ProductoController();
-
-            if (controlProducto.activar(idProducto)) {
-                JOptionPane.showMessageDialog(null, "Producto activado correctamente");
-                this.setear();
-                this.cargarProductosEnTabla();
-            } else {
-                JOptionPane.showMessageDialog(null, "Error al activar el producto");
-            }
-        } else {
-            JOptionPane.showMessageDialog(null, "Seleccione un producto para activar");
+    private boolean validarCampos(String nombreProducto, String stockTexto, String precioTexto, String descripcion ){
+        if (nombreProducto.isEmpty() || stockTexto.isEmpty() || precioTexto.isEmpty() || descripcion.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Campos obligatorios vacíos");
+            return false;
         }
+
+        if (!stockTexto.matches("\\d+")) {
+            JOptionPane.showMessageDialog(null, "Formato de dato incorrecto.");
+            return false;
+        }
+
+        if (!precioTexto.matches("^\\d+(\\.\\d{1,2})?$") && !precioTexto.matches("^\\d+(,\\d{1,2})?$")) {
+            JOptionPane.showMessageDialog(null, "Formato de dato incorrecto.");
+            return false;
+        }
+
+        if (cboxCategoria.getSelectedIndex() == 0 || cboxProveedor.getSelectedIndex() == 0) {
+            JOptionPane.showMessageDialog(null, "Campos obligatorios vacíos");
+            return false;
+        }
+        return true;
     }
 }
