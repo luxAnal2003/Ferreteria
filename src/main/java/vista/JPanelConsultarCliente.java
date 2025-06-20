@@ -145,7 +145,7 @@ public class JPanelConsultarCliente extends javax.swing.JPanel {
         DefaultTableModel model = new DefaultTableModel();
 
         String sql = "SELECT idCliente, nombre, apellido, telefono, correo, cedula, direccion, estado "
-                + "FROM Cliente WHERE estado = 1"; // Filtrar por estado activo directamente
+                + "FROM Cliente WHERE estado = 1"; 
 
         try {
             con = Conexion.conectar();
