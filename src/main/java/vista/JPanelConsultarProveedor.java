@@ -212,7 +212,7 @@ public class JPanelConsultarProveedor extends javax.swing.JPanel {
 
         String sql = "SELECT idProveedor, ruc, nombreProveedor, telefonoProveedor, "
                 + "correoProveedor, direccionProveedor, estado FROM proveedor "
-                + "WHERE estado = 1 AND (cedula LIKE ? OR nombreProveedor LIKE ?)";
+                + "WHERE estado = 1 AND (ruc LIKE ? OR nombreProveedor LIKE ?)";
 
         try {
             con = Conexion.conectar();

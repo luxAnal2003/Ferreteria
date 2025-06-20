@@ -357,7 +357,7 @@ public class JPanelConsultarVenta extends javax.swing.JPanel {
                 + "INNER JOIN Empleado em ON cv.idEmpleado = em.idEmpleado "
                 + "INNER JOIN Usuario ue ON em.idUsuario = ue.idUsuario "
                 + "WHERE cv.estado = 1 AND ("
-                + "CONCAT(cl.nombre, ' ', cl.apellido) LIKE ? OR cl.ecedula LIKE ?"
+                + "CONCAT(cl.nombre, ' ', cl.apellido) LIKE ? OR cl.cedula LIKE ?"
                 + ")";
 
         try {
