@@ -27,7 +27,7 @@ CREATE TABLE Cliente (
     apellido VARCHAR(30) NOT NULL,
     telefono VARCHAR(15) NOT NULL,
     correo VARCHAR(50) NOT NULL,
-    ecedula VARCHAR(10) NOT NULL,
+    cedula VARCHAR(10) NOT NULL,
     direccion VARCHAR(100) NOT NULL,
     estado INT(1) NOT NULL
 );
