@@ -4,7 +4,7 @@
  */
 package vista;
 
-import controlador.ProductoController;
+import dao.ProductoDAO;
 import dao.Conexion;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
@@ -136,7 +136,7 @@ public class JPanelProductoEliminar extends javax.swing.JPanel {
 
             idProducto = Integer.parseInt(tableProducto.getValueAt(fila, 0).toString());
 
-            ProductoController controlProducto = new ProductoController();
+            ProductoDAO controlProducto = new ProductoDAO();
 
             if (controlProducto.desactivar(idProducto)) {
                 JOptionPane.showMessageDialog(null, "Producto desactivado correctamente.");
@@ -161,7 +161,7 @@ public class JPanelProductoEliminar extends javax.swing.JPanel {
             }
 
             idProducto = Integer.parseInt(tableProducto.getValueAt(fila, 0).toString());
-            ProductoController controlProducto = new ProductoController();
+            ProductoDAO controlProducto = new ProductoDAO();
 
             if (controlProducto.activar(idProducto)) {
                 JOptionPane.showMessageDialog(null, "Producto activado correctamente.");

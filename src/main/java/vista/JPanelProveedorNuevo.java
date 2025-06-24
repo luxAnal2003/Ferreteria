@@ -4,7 +4,7 @@
  */
 package vista;
 
-import controlador.ProveedorController;
+import dao.ProveedorDAO;
 import dao.Conexion;
 import java.awt.Dimension;
 import java.sql.Connection;
@@ -134,7 +134,7 @@ public class JPanelProveedorNuevo extends javax.swing.JPanel {
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         Proveedor proveedor = new Proveedor();
-        ProveedorController controladorProveedor = new ProveedorController();
+        ProveedorDAO controladorProveedor = new ProveedorDAO();
 
         String ruc = txtRuc.getText().trim();
         String nombreComercial = txtNombreComercial.getText().trim();

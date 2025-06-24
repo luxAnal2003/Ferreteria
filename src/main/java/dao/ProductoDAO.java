@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package controlador;
+package dao;
 
 /**
  *
@@ -21,7 +21,7 @@ import modelo.Categoria;
 import modelo.Producto;
 import modelo.Proveedor;
 
-public class ProductoController {
+public class ProductoDAO {
 
     public boolean guardar(Producto producto) {
         boolean respuesta = false;

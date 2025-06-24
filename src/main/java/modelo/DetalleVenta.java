@@ -45,6 +45,14 @@ public class DetalleVenta {
         this.totalPagar = totalPagar;
         this.estado = estado;
     }
+    
+    public DetalleVenta(int idProducto, int cantidad, double precioUnitario) {
+        this.idProducto = idProducto;
+        this.cantidad = cantidad;
+        this.precioUnitario = precioUnitario;
+        this.estado = 1;
+        calcularTotales();
+    }
 
     public int getIdDetalleVenta() {
         return idDetalleVenta;
@@ -125,4 +133,12 @@ public class DetalleVenta {
     public void setEstado(int estado) {
         this.estado = estado;
     }
+    
+    private void calcularTotales() {
+        this.subTotal = cantidad * precioUnitario;
+        this.iva = subTotal * 0.12;
+        this.descuento = subTotal * 0.005;
+        this.totalPagar = subTotal + iva - descuento;
+    }
+    
 }

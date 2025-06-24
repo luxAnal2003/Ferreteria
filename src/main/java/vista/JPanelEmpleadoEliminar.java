@@ -4,8 +4,8 @@
  */
 package vista;
 
-import controlador.EmpleadoController;
-import controlador.UsuarioController;
+import dao.EmpleadoDAO;
+import dao.UsuarioDAO;
 import dao.Conexion;
 import java.awt.Dimension;
 import java.sql.Connection;
@@ -110,8 +110,8 @@ public class JPanelEmpleadoEliminar extends javax.swing.JPanel {
             idEmpleado = Integer.parseInt(tableEmpleado.getValueAt(fila, 0).toString());
             int idUsuario = Integer.parseInt(tableEmpleado.getValueAt(fila, 8).toString());
 
-            EmpleadoController controlEmpleado = new EmpleadoController();
-            UsuarioController controlUsuario = new UsuarioController();
+            EmpleadoDAO controlEmpleado = new EmpleadoDAO();
+            UsuarioDAO controlUsuario = new UsuarioDAO();
 
             boolean empleadoDesactivado = controlEmpleado.desactivar(idEmpleado);
             boolean usuarioDesactivado = controlUsuario.desactivar(idUsuario);
@@ -207,8 +207,8 @@ public class JPanelEmpleadoEliminar extends javax.swing.JPanel {
             idEmpleado = Integer.parseInt(tableEmpleado.getValueAt(fila, 0).toString());
             int idUsuario = Integer.parseInt(tableEmpleado.getValueAt(fila, 8).toString());
 
-            EmpleadoController controlEmpleado = new EmpleadoController();
-            UsuarioController controlUsuario = new UsuarioController();
+            EmpleadoDAO controlEmpleado = new EmpleadoDAO();
+            UsuarioDAO controlUsuario = new UsuarioDAO();
 
             boolean empleadoActivado = controlEmpleado.activar(idEmpleado);
             boolean usuarioActivado = controlUsuario.activar(idUsuario);

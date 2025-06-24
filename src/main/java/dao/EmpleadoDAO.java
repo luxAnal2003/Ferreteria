@@ -1,4 +1,4 @@
-package controlador;
+package dao;
 
 import dao.Conexion;
 import java.sql.*;
@@ -7,7 +7,7 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import modelo.Empleado;
 
-public class EmpleadoController {
+public class EmpleadoDAO {
 
     public boolean guardar(Empleado empleado) {
         boolean respuesta = false;

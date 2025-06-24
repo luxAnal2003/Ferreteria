@@ -4,7 +4,7 @@
  */
 package vista;
 
-import controlador.VentaController;
+import dao.VentaDAO;
 import dao.Conexion;
 import java.awt.Dimension;
 import java.sql.Connection;
@@ -202,7 +202,7 @@ public class JPanelEliminarVenta extends javax.swing.JPanel {
 
             int idVenta = Integer.parseInt(tableVentas.getValueAt(fila, 0).toString());
 
-            VentaController controller = new VentaController();
+            VentaDAO controller = new VentaDAO();
             if (controller.activar(idVenta)) {
                 JOptionPane.showMessageDialog(null, "Venta activada correctamente.");
                 cargarVentasEnTabla();
@@ -226,7 +226,7 @@ public class JPanelEliminarVenta extends javax.swing.JPanel {
 
             int idVenta = Integer.parseInt(tableVentas.getValueAt(fila, 0).toString());
 
-            VentaController controller = new VentaController();
+            VentaDAO controller = new VentaDAO();
             if (controller.desactivar(idVenta)) {
                 JOptionPane.showMessageDialog(null, "Venta anulada correctamente.");
                 cargarVentasEnTabla();

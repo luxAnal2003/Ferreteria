@@ -4,7 +4,7 @@
  */
 package vista;
 
-import controlador.ClienteController;
+import dao.ClienteDAO;
 import dao.Conexion;
 import java.awt.Dimension;
 import java.sql.Connection;
@@ -248,7 +248,7 @@ public class JPanelClienteEliminar extends javax.swing.JPanel {
 
             idCliente = Integer.parseInt(tableCliente.getValueAt(fila, 0).toString());
 
-            ClienteController control = new ClienteController();
+            ClienteDAO control = new ClienteDAO();
             boolean clienteDesactivado = control.desactivar(idCliente);
 
             if (clienteDesactivado) {

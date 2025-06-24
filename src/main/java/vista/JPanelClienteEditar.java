@@ -4,7 +4,7 @@
  */
 package vista;
 
-import controlador.ClienteController;
+import dao.ClienteDAO;
 import dao.Conexion;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
@@ -153,7 +153,7 @@ public class JPanelClienteEditar extends javax.swing.JPanel {
 
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
         Cliente cliente = new Cliente();
-        ClienteController controladorCliente = new ClienteController();
+        ClienteDAO controladorCliente = new ClienteDAO();
 
         String cedulaRuc = txtCedulaRuc.getText().trim();
         String nombres = txtNombres.getText().trim();

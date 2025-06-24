@@ -4,8 +4,8 @@
  */
 package vista;
 
-import controlador.EmpleadoController;
-import controlador.UsuarioController;
+import dao.EmpleadoDAO;
+import dao.UsuarioDAO;
 import dao.Conexion;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
@@ -171,8 +171,8 @@ public class JPanelEmpleadoNuevo extends javax.swing.JPanel {
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         Empleado empleado = new Empleado();
         Usuario usuario = new Usuario();
-        EmpleadoController controladorEmpleado = new EmpleadoController();
-        UsuarioController controladorUsuario = new UsuarioController();
+        EmpleadoDAO controladorEmpleado = new EmpleadoDAO();
+        UsuarioDAO controladorUsuario = new UsuarioDAO();
 
         String cedulaRuc = txtCedulaRuc.getText().trim();
         String nombres = txtNombres.getText().trim();

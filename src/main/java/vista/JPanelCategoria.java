@@ -4,7 +4,7 @@
  */
 package vista;
 
-import controlador.CategoriaController;
+import dao.CategoriaDAO;
 import dao.Conexion;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
@@ -147,7 +147,7 @@ public class JPanelCategoria extends javax.swing.JPanel {
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         Categoria categoria = new Categoria();
-        CategoriaController controladorCategoria = new CategoriaController();
+        CategoriaDAO controladorCategoria = new CategoriaDAO();
 
         if (txtCategoria.getText().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Complete todos los campos");
@@ -187,7 +187,7 @@ public class JPanelCategoria extends javax.swing.JPanel {
 
             idCategoria = Integer.parseInt(tableCategoria.getValueAt(fila, 0).toString());
 
-            CategoriaController control = new CategoriaController();
+            CategoriaDAO control = new CategoriaDAO();
 
             boolean categoriaDesactivado = control.desactivar(idCategoria);
 
@@ -215,7 +215,7 @@ public class JPanelCategoria extends javax.swing.JPanel {
             }
             idCategoria = Integer.parseInt(tableCategoria.getValueAt(fila, 0).toString());
 
-            CategoriaController controlCategoria = new CategoriaController();
+            CategoriaDAO controlCategoria = new CategoriaDAO();
 
             boolean categoriaActivado = controlCategoria.activar(idCategoria);
 
@@ -234,7 +234,7 @@ public class JPanelCategoria extends javax.swing.JPanel {
     private void btnActualizar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizar1ActionPerformed
         if (!txtCategoria.getText().isEmpty()) {
             Categoria categoria = new Categoria();
-            CategoriaController controlCategoria = new CategoriaController();
+            CategoriaDAO controlCategoria = new CategoriaDAO();
 
             String nombreIngresado = txtCategoria.getText().trim();
             if (!nombreIngresado.isEmpty()) {

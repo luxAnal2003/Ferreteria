@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package controlador;
+package dao;
 
 import dao.Conexion;
 import java.sql.Connection;
@@ -18,7 +18,7 @@ import modelo.Categoria;
  *
  * @author admin
  */
-public class CategoriaController {
+public class CategoriaDAO {
 
     public boolean guardar(Categoria categoria) {
         boolean respuesta = false;

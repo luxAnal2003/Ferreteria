@@ -4,7 +4,7 @@
  */
 package vista;
 
-import controlador.ProveedorController;
+import dao.ProveedorDAO;
 import dao.Conexion;
 import java.awt.Dimension;
 import java.sql.Connection;
@@ -156,7 +156,7 @@ public class JPanelProveedorEliminar extends javax.swing.JPanel {
 
             idProveedor = Integer.parseInt(tableProveedor.getValueAt(fila, 0).toString());
 
-            ProveedorController controlProveedor = new ProveedorController();
+            ProveedorDAO controlProveedor = new ProveedorDAO();
             boolean proveedorActivado = controlProveedor.activar(idProveedor);
 
             if (proveedorActivado) {
@@ -183,7 +183,7 @@ public class JPanelProveedorEliminar extends javax.swing.JPanel {
 
             idProveedor = Integer.parseInt(tableProveedor.getValueAt(fila, 0).toString());
 
-            ProveedorController controlProveedor = new ProveedorController();
+            ProveedorDAO controlProveedor = new ProveedorDAO();
             boolean proveedorDesactivado = controlProveedor.desactivar(idProveedor);
 
             if (proveedorDesactivado) {

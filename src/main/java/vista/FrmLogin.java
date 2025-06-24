@@ -4,7 +4,7 @@
  */
 package vista;
 
-import controlador.UsuarioController;
+import dao.UsuarioDAO;
 import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -279,7 +279,7 @@ public class FrmLogin extends javax.swing.JFrame {
 
     private void login() {
         if (!txtUsuario.getText().isEmpty() && !txtContrasenia.getText().isEmpty()) {
-            UsuarioController controlUsuario = new UsuarioController();
+            UsuarioDAO controlUsuario = new UsuarioDAO();
             Usuario usuario = new Usuario();
             usuario.setUsuario(txtUsuario.getText().trim());
             usuario.setContrasenia(txtContrasenia.getText().trim());

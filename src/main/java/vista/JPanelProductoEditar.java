@@ -4,7 +4,7 @@
  */
 package vista;
 
-import controlador.ProductoController;
+import dao.ProductoDAO;
 import dao.Conexion;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
@@ -175,7 +175,7 @@ public class JPanelProductoEditar extends javax.swing.JPanel {
 
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
         Producto producto = new Producto();
-        ProductoController controladorProducto = new ProductoController();
+        ProductoDAO controladorProducto = new ProductoDAO();
 
         String nombreProducto = txtNombreProducto.getText().trim();
         String stockTexto = txtStock.getText().trim();
