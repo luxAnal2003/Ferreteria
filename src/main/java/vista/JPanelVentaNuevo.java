@@ -8,7 +8,6 @@ import config.Sesion;
 import controlador.VentaController;
 import controlador.ClienteController;
 import controlador.ProductoController;
-import controlador.UsuarioController;
 import dao.Conexion;
 import java.awt.Dimension;
 import java.sql.Connection;
@@ -23,7 +22,6 @@ import modelo.Venta;
 import modelo.Cliente;
 import modelo.DetalleVenta;
 import modelo.Producto;
-import modelo.Usuario;
 
 /**
  *
@@ -599,7 +597,9 @@ public class JPanelVentaNuevo extends javax.swing.JPanel {
             cliente.setEstado(1);
 
             if (controladorCliente.guardar(cliente)) {
+                idClienteSeleccionado = controladorCliente.obtenerUltimoIdInsertado();
                 JOptionPane.showMessageDialog(null, "Cliente guardado correctamente");
+                this.habilitarCamposCliente(false);
             } else {
                 JOptionPane.showMessageDialog(null, "Error al guardar cliente");
             }

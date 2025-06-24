@@ -7,10 +7,7 @@ package vista;
 import controlador.ProveedorController;
 import dao.Conexion;
 import java.awt.Dimension;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -228,102 +225,11 @@ public class JPanelProveedorNuevo extends javax.swing.JPanel {
             System.err.println("Error al llenar la tabla de proveedores: " + e.getMessage());
             JOptionPane.showMessageDialog(null, "Error al cargar los proveedores: " + e.getMessage());
         }
-
-        tableProveedor.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                int fila = tableProveedor.rowAtPoint(e.getPoint());
-                if (fila > -1) {
-                    idProveedor = Integer.parseInt(tableProveedor.getValueAt(fila, 0).toString());
-                    enviarDatosProveedor(idProveedor);
-                }
-            }
-        });
     }
-
-    private void enviarDatosProveedor(int idProveedor) {
-        String sql = "SELECT idProveedor, ruc, nombreProveedor, telefonoProveedor, "
-                + "correoProveedor, direccionProveedor, estado FROM proveedor WHERE idProveedor = ?";
-
-        try (Connection con = Conexion.conectar(); PreparedStatement pst = con.prepareStatement(sql)) {
-
-            pst.setInt(1, idProveedor);
-            ResultSet rs = pst.executeQuery();
-
-            if (rs.next()) {
-                txtRuc.setText(rs.getString("ruc"));
-                txtNombreComercial.setText(rs.getString("nombreProveedor"));
-                txtTelefono.setText(rs.getString("telefonoProveedor"));
-                txtEmail.setText(rs.getString("correoProveedor"));
-                txtDireccion.setText(rs.getString("direccionProveedor"));
-            }
-
-        } catch (SQLException e) {
-            System.err.println("Error al seleccionar proveedor: " + e.getMessage());
-            JOptionPane.showMessageDialog(null, "Error al cargar datos del proveedor: " + e.getMessage());
-        }
-    }
-
-    private void activar() {
-        int fila = tableProveedor.getSelectedRow();
-
-        if (fila != -1) {
-            String estadoTabla = tableProveedor.getValueAt(fila, 6).toString();
-            if (estadoTabla.equalsIgnoreCase("Activo")) {
-                JOptionPane.showMessageDialog(null, "El proveedor ya está activo.");
-                this.setear();
-                return;
-            }
-
-            idProveedor = Integer.parseInt(tableProveedor.getValueAt(fila, 0).toString());
-
-            ProveedorController controlProveedor = new ProveedorController();
-            boolean proveedorActivado = controlProveedor.activar(idProveedor);
-
-            if (proveedorActivado) {
-                JOptionPane.showMessageDialog(null, "Proveedor activado correctamente.");
-                this.setear();
-                this.cargarProveedoresEnTabla();
-            } else {
-                JOptionPane.showMessageDialog(null, "Error al activar el proveedor.");
-            }
-
-        } else {
-            JOptionPane.showMessageDialog(null, "Seleccione un proveedor para activar.");
-        }
-    }
-
-    private void desactivarProveedor() {
-        int fila = tableProveedor.getSelectedRow();
-
-        if (fila != -1) {
-            String estadoTabla = tableProveedor.getValueAt(fila, 6).toString();
-            if (estadoTabla.equalsIgnoreCase("Inactivo")) {
-                JOptionPane.showMessageDialog(null, "El proveedor ya ha sido desactivado anteriormente.");
-                this.setear();
-                return;
-            }
-
-            idProveedor = Integer.parseInt(tableProveedor.getValueAt(fila, 0).toString());
-
-            ProveedorController controlProveedor = new ProveedorController();
-            boolean proveedorDesactivado = controlProveedor.desactivar(idProveedor);
-
-            if (proveedorDesactivado) {
-                JOptionPane.showMessageDialog(null, "Proveedor desactivado correctamente.");
-                this.setear();
-                this.cargarProveedoresEnTabla();
-            } else {
-                JOptionPane.showMessageDialog(null, "Error al desactivar el proveedor.");
-            }
-        } else {
-            JOptionPane.showMessageDialog(null, "Seleccione un proveedor para desactivar.");
-        }
-    }
-
+    
     private boolean validarCampos(String ruc,  String nombreComercial, String telefono, String email,String direccion) {
-        if (ruc.isEmpty() || txtNombreComercial.getText().isEmpty() || email.isEmpty()
-                || telefono.isEmpty() || txtDireccion.getText().isEmpty()) {
+        if (ruc.isEmpty() || nombreComercial.isEmpty() || email.isEmpty()
+                || telefono.isEmpty() || direccion.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Todos los campos son obligatorios.");
             return false;
         }
