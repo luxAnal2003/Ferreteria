@@ -4,6 +4,7 @@
  */
 package vista;
 
+import controlador.ProductoController;
 import dao.Conexion;
 import java.awt.Dimension;
 import java.sql.Connection;
@@ -13,6 +14,10 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import java.sql.Statement;
 import java.sql.ResultSet;
+import java.util.List;
+import modelo.Producto;
+import static vista.JPanelProductoEliminar.jScrollPane4;
+import static vista.JPanelProductoEliminar.tableProducto;
 
 /**
  *
@@ -62,8 +67,8 @@ public class JPanelConsultarProducto extends javax.swing.JPanel {
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jLabel2.setText("Consultar Producto");
-        add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 30, -1, -1));
+        jLabel2.setText("Consultar Producto - Por nombre");
+        add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 30, -1, -1));
 
         jScrollPane3.setPreferredSize(new java.awt.Dimension(450, 80));
 
@@ -125,7 +130,7 @@ public class JPanelConsultarProducto extends javax.swing.JPanel {
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void txtBuscadorKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscadorKeyPressed
-        if(evt.getKeyCode() == evt.VK_ENTER){
+        if (evt.getKeyCode() == evt.VK_ENTER) {
             this.buscarProductos();
         }
     }//GEN-LAST:event_txtBuscadorKeyPressed
@@ -141,60 +146,44 @@ public class JPanelConsultarProducto extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     private void cargarProductosEnTabla() {
-        Connection con = Conexion.conectar();
         DefaultTableModel model = new DefaultTableModel();
-        String sql = "SELECT p.idProducto, p.nombre, pr.nombreProveedor, p.cantidad, p.descripcion, p.precio, p.iva, c.descripcionCategoria, p.estado "
-                + "FROM producto p "
-                + "INNER JOIN categoria c ON p.idCategoria = c.idCategoria "
-                + "INNER JOIN proveedor pr ON p.idProveedor = pr.idProveedor "
-                + "WHERE p.estado = 1";
+        ProductoController controller = new ProductoController();
 
-        try (Statement st = con.createStatement(); ResultSet rs = st.executeQuery(sql)) {
-            model.addColumn("ID");
-            model.addColumn("Nombre");
-            model.addColumn("Proveedor");
-            model.addColumn("Cantidad");
-            model.addColumn("Descripción");
-            model.addColumn("Precio");
-            model.addColumn("IVA");
-            model.addColumn("Categoría");
-            model.addColumn("Estado");
+        model.addColumn("ID");
+        model.addColumn("Nombre");
+        model.addColumn("Proveedor");
+        model.addColumn("Cantidad");
+        model.addColumn("Descripción");
+        model.addColumn("Precio");
+        model.addColumn("IVA");
+        model.addColumn("Categoría");
+        model.addColumn("Estado");
 
-            boolean hayRegistros = false;
+        List<Producto> productos = controller.obtenerTodosLosProductos();
 
-            while (rs.next()) {
-                hayRegistros = true;
+        if (productos.isEmpty()) {
+        } else {
+            for (Producto p : productos) {
                 Object[] fila = new Object[9];
-                fila[0] = rs.getInt("idProducto");
-                fila[1] = rs.getString("nombre");
-                fila[2] = rs.getString("nombreProveedor");
-                fila[3] = rs.getInt("cantidad");
-                fila[4] = rs.getString("descripcion");
-                fila[5] = rs.getDouble("precio");
-
-                int porcentajeIva = rs.getInt("iva");
-                fila[6] = String.format("%.2f", calcularIva(porcentajeIva));
-
-                fila[7] = rs.getString("descripcionCategoria");
-                fila[8] = (rs.getInt("estado") == 1) ? "Activo" : "Inactivo";
-
+                fila[0] = p.getIdProducto();
+                fila[1] = p.getNombreProducto();
+                fila[2] = p.getIdProveedor().getNombre();
+                fila[3] = p.getCantidad();
+                fila[4] = p.getDescripcion();
+                fila[5] = p.getPrecio();
+                fila[6] = String.format("%.2f", p.getPorcentajeIva() / 100.0);
+                fila[7] = p.getIdCategoria().getNombre();
+                fila[8] = (p.getEstado() == 1) ? "Activo" : "Inactivo";
                 model.addRow(fila);
             }
-
-            tableProducto.setModel(model);
-            jScrollPane3.setViewportView(tableProducto);
-
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error al cargar productos: " + e.getMessage());
         }
-    }
-
-    private double calcularIva(int porcentajeIva) {
-        return porcentajeIva / 100.0;
+        tableProducto.setModel(model);
+        jScrollPane3.setViewportView(tableProducto);
     }
 
     private void buscarProductos() {
         String criterio = txtBuscador.getText().trim();
+        ProductoController controller = new ProductoController();
 
         if (criterio.isEmpty()) {
             cargarProductosEnTabla();
@@ -212,59 +201,33 @@ public class JPanelConsultarProducto extends javax.swing.JPanel {
         model.addColumn("Categoría");
         model.addColumn("Estado");
 
-        Connection con = Conexion.conectar();
+        Producto productoEncontrado = controller.obtenerProductoPorNombre(criterio);
 
-        String sql = "SELECT p.idProducto, p.nombre, pr.nombreProveedor, p.cantidad, p.descripcion, p.precio, p.iva, c.descripcionCategoria, p.estado "
-                + "FROM producto p "
-                + "INNER JOIN categoria c ON p.idCategoria = c.idCategoria "
-                + "INNER JOIN proveedor pr ON p.idProveedor = pr.idProveedor "
-                + "WHERE p.estado = 1 AND p.nombre LIKE ?";
+        if (productoEncontrado != null) {
+            Object[] fila = new Object[9];
+            fila[0] = productoEncontrado.getIdProducto();
+            fila[1] = productoEncontrado.getNombreProducto();
+            fila[2] = productoEncontrado.getIdProveedor().getNombre();
+            fila[3] = productoEncontrado.getCantidad();
+            fila[4] = productoEncontrado.getDescripcion();
+            fila[5] = productoEncontrado.getPrecio();
+            fila[6] = String.format("%.2f", productoEncontrado.getPorcentajeIva() / 100.0);
+            fila[7] = productoEncontrado.getIdCategoria().getNombre();
+            fila[8] = (productoEncontrado.getEstado() == 1) ? "Activo" : "Inactivo";
+            model.addRow(fila);
 
-        try (PreparedStatement pst = con.prepareStatement(sql)) {
-            pst.setString(1, "%" + criterio + "%");
-            ResultSet rs = pst.executeQuery();
-
-            boolean hayResultados = false;
-
-            while (rs.next()) {
-                hayResultados = true;
-                Object[] fila = new Object[9];
-                fila[0] = rs.getInt("idProducto");
-                fila[1] = rs.getString("nombre");
-                fila[2] = rs.getString("nombreProveedor");
-                fila[3] = rs.getInt("cantidad");
-                fila[4] = rs.getString("descripcion");
-                fila[5] = rs.getDouble("precio");
-                fila[6] = String.format("%.2f", calcularIva(rs.getInt("iva")));
-                fila[7] = rs.getString("descripcionCategoria");
-                fila[8] = (rs.getInt("estado") == 1) ? "Activo" : "Inactivo";
-
-                model.addRow(fila);
-            }
-
-            if (hayResultados) {
-                tableProducto.setModel(model);
-                jScrollPane3.setViewportView(tableProducto);
-            } else {
-                JOptionPane.showMessageDialog(null, "No se encontraron resultados para la búsqueda");
-                cargarProductosEnTabla(); 
-            }
-
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error al buscar productos: " + e.getMessage());
+            tableProducto.setModel(model);
+            jScrollPane3.setViewportView(tableProducto);
+        } else {
+            JOptionPane.showMessageDialog(null, "No se encontró el producto con ese nombre.");
+            cargarProductosEnTabla();
         }
     }
 
     private void verificarExistenciaProductos() {
-        try (Connection con = Conexion.conectar()) {
-            String sql = "SELECT COUNT(*) FROM producto WHERE estado = 1";
-            try (PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
-                if (rs.next() && rs.getInt(1) == 0) {
-                    JOptionPane.showMessageDialog(null, "No existen productos en el sistema");
-                }
-            }
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error al verificar productos: " + e.getMessage());
+        ProductoController controller = new ProductoController();
+        if (!controller.existenProductosActivos()) {
+            JOptionPane.showMessageDialog(null, "No existen productos en el sistema.");
         }
     }
 }

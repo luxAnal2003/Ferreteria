@@ -4,24 +4,18 @@
  */
 package vista;
 
-import dao.ProveedorDAO;
-import dao.Conexion;
+import controlador.ProveedorController;
 import java.awt.Dimension;
-import java.sql.Connection;
-import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import modelo.Proveedor;
-import java.sql.Statement;
-import java.sql.ResultSet;
+import java.util.List;
 
 /**
  *
  * @author admin
  */
 public class JPanelProveedorNuevo extends javax.swing.JPanel {
-
-    private int idProveedor;
     /**
      * Creates new form JPanelCategoriaNuevo
      */
@@ -30,6 +24,7 @@ public class JPanelProveedorNuevo extends javax.swing.JPanel {
         this.setSize(new Dimension(900, 400));
 
         this.cargarProveedoresEnTabla();
+        this.verificarExistenciaProveedor();
     }
 
     /**
@@ -134,7 +129,7 @@ public class JPanelProveedorNuevo extends javax.swing.JPanel {
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         Proveedor proveedor = new Proveedor();
-        ProveedorDAO controladorProveedor = new ProveedorDAO();
+        ProveedorController proveedorController = new ProveedorController();
 
         String ruc = txtRuc.getText().trim();
         String nombreComercial = txtNombreComercial.getText().trim();
@@ -142,16 +137,15 @@ public class JPanelProveedorNuevo extends javax.swing.JPanel {
         String email = txtEmail.getText().trim();
         String direccion = txtDireccion.getText().trim();
 
-        
-        if (controladorProveedor.existeProveedor(ruc)) {
+        if (proveedorController.existeProveedorPorRuc(ruc)) {
             JOptionPane.showMessageDialog(null, "El proveedor ya existe con ese RUC.");
             return;
         }
-        
+
         if (!validarCampos(ruc, nombreComercial, telefono, email, direccion)) {
             return;
         }
-        
+
         try {
             proveedor.setNombre(nombreComercial.substring(0, 1).toUpperCase() + nombreComercial.substring(1).toLowerCase());
             proveedor.setTelefono(telefono);
@@ -160,7 +154,7 @@ public class JPanelProveedorNuevo extends javax.swing.JPanel {
             proveedor.setDireccion(direccion);
             proveedor.setEstado(1);
 
-            if (controladorProveedor.guardar(proveedor)) {
+            if (proveedorController.guardarProveedor(proveedor)) {
                 JOptionPane.showMessageDialog(null, "Proveedor guardado correctamente.");
                 this.cargarProveedoresEnTabla();
                 this.setear();
@@ -168,7 +162,7 @@ public class JPanelProveedorNuevo extends javax.swing.JPanel {
                 JOptionPane.showMessageDialog(null, "Error al guardar proveedor.");
             }
         } catch (Exception e) {
-            System.err.println("Error al guardar proveedor: " + e.getMessage()); 
+            System.err.println("Error inesperado al guardar proveedor: " + e.getMessage());
             JOptionPane.showMessageDialog(null, "Error inesperado al guardar el proveedor.");
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
@@ -193,41 +187,38 @@ public class JPanelProveedorNuevo extends javax.swing.JPanel {
 
     private void cargarProveedoresEnTabla() {
         DefaultTableModel model = new DefaultTableModel();
+        ProveedorController controller = new ProveedorController(); 
 
-        String sql = "SELECT idProveedor, ruc, nombreProveedor, telefonoProveedor, "
-                + "correoProveedor, direccionProveedor, estado FROM proveedor";
+        model.addColumn("ID");
+        model.addColumn("RUC");
+        model.addColumn("Nombre Comercial");
+        model.addColumn("Teléfono");
+        model.addColumn("Email");
+        model.addColumn("Dirección");
+        model.addColumn("Estado");
 
-        try (Connection con = Conexion.conectar(); Statement st = con.createStatement(); ResultSet rs = st.executeQuery(sql)) {
+        List<Proveedor> proveedores = controller.obtenerTodosLosProveedores();
 
-            model.addColumn("ID");
-            model.addColumn("RUC");
-            model.addColumn("Nombre Comercial");
-            model.addColumn("Teléfono");
-            model.addColumn("Email");
-            model.addColumn("Dirección");
-            model.addColumn("Estado");
-
-            while (rs.next()) {
+        if (proveedores.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No existen proveedores registrados actualmente.");
+        } else {
+            for (Proveedor p : proveedores) {
                 Object[] fila = new Object[7];
-                fila[0] = rs.getInt("idProveedor");
-                fila[1] = rs.getString("ruc");
-                fila[2] = rs.getString("nombreProveedor");
-                fila[3] = rs.getString("telefonoProveedor");
-                fila[4] = rs.getString("correoProveedor");
-                fila[5] = rs.getString("direccionProveedor");
-                fila[6] = rs.getInt("estado") == 1 ? "Activo" : "Inactivo";
-
+                fila[0] = p.getIdProveedor();
+                fila[1] = p.getRuc();
+                fila[2] = p.getNombre();
+                fila[3] = p.getTelefono();
+                fila[4] = p.getCorreo();
+                fila[5] = p.getDireccion();
+                fila[6] = (p.getEstado() == 1) ? "Activo" : "Inactivo";
                 model.addRow(fila);
             }
-
-            tableProveedor.setModel(model);
-        } catch (SQLException e) {
-            System.err.println("Error al llenar la tabla de proveedores: " + e.getMessage());
-            JOptionPane.showMessageDialog(null, "Error al cargar los proveedores: " + e.getMessage());
         }
+        tableProveedor.setModel(model);
+        jScrollPane3.setViewportView(tableProveedor);
     }
-    
-    private boolean validarCampos(String ruc,  String nombreComercial, String telefono, String email,String direccion) {
+
+    private boolean validarCampos(String ruc, String nombreComercial, String telefono, String email, String direccion) {
         if (ruc.isEmpty() || nombreComercial.isEmpty() || email.isEmpty()
                 || telefono.isEmpty() || direccion.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Todos los campos son obligatorios.");
@@ -243,7 +234,7 @@ public class JPanelProveedorNuevo extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(null, "El teléfono debe tener exactamente 10 caracteres numéricos");
             return false;
         }
-        
+
         if (!email.matches("^[\\w.-]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
             JOptionPane.showMessageDialog(null, "Formato de Email inválido.");
             return false;
@@ -257,5 +248,11 @@ public class JPanelProveedorNuevo extends javax.swing.JPanel {
         txtTelefono.setText("");
         txtEmail.setText("");
         txtDireccion.setText("");
+    }
+    private void verificarExistenciaProveedor() {
+        ProveedorController controller = new ProveedorController();
+        if (!controller.existenProveedoresEnSistema()) {
+            JOptionPane.showMessageDialog(null, "No existen proveedores en el sistema.");
+        }
     }
 }

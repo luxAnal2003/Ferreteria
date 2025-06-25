@@ -4,15 +4,11 @@
  */
 package vista;
 
-import dao.ClienteDAO;
-import dao.Conexion;
+import controlador.ClienteController;
 import java.awt.Dimension;
-import java.sql.Connection;
-import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import java.sql.Statement;
-import java.sql.ResultSet;
+import java.util.List;
 import modelo.Cliente;
 
 /**
@@ -29,6 +25,7 @@ public class JPanelClienteNuevo extends javax.swing.JPanel {
         this.setSize(new Dimension(900, 400));
 
         this.cargarClientesEnTabla();
+        this.verificarExistenciaClientes();
     }
 
     /**
@@ -66,7 +63,7 @@ public class JPanelClienteNuevo extends javax.swing.JPanel {
         add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 40, -1, -1));
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel5.setText("Cédula/RUC:");
+        jLabel5.setText("Cédula:");
         add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(31, 280, 100, -1));
         add(txtTelefono, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 350, 260, -1));
 
@@ -143,14 +140,9 @@ public class JPanelClienteNuevo extends javax.swing.JPanel {
         this.cargarClientesEnTabla();
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
-    /**
-     * Permite guardar un cliente
-     *
-     * @param evt evento que se realiza cuando se da click al botón
-     */
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         Cliente cliente = new Cliente();
-        ClienteDAO controladorCliente = new ClienteDAO();
+        ClienteController clienteController = new ClienteController();
 
         String cedulaRuc = txtCedulaRuc.getText().trim();
         String nombres = txtNombres.getText().trim();
@@ -159,8 +151,8 @@ public class JPanelClienteNuevo extends javax.swing.JPanel {
         String email = txtEmail.getText().trim();
         String direccion = txtDireccion.getText().trim();
 
-        if (controladorCliente.existeCliente(cedulaRuc)) {
-            JOptionPane.showMessageDialog(null, "El cliente ya existe");
+        if (clienteController.existeClientePorCedula(cedulaRuc)) { 
+            JOptionPane.showMessageDialog(null, "El cliente con esa cédula/RUC ya existe.");
             return;
         }
 
@@ -173,22 +165,21 @@ public class JPanelClienteNuevo extends javax.swing.JPanel {
             cliente.setApellido(apellidos.substring(0, 1).toUpperCase() + apellidos.substring(1).toLowerCase());
             cliente.setTelefono(telefono);
             cliente.setCorreo(email);
-            cliente.setCedula(cedulaRuc);
+            cliente.setCedula(cedulaRuc); 
             cliente.setDireccion(direccion);
             cliente.setEstado(1);
 
-            if (controladorCliente.guardar(cliente)) {
-                JOptionPane.showMessageDialog(null, "Cliente guardado correctamente");
+            if (clienteController.guardarCliente(cliente)) {
+                JOptionPane.showMessageDialog(null, "Cliente guardado correctamente.");
                 this.cargarClientesEnTabla();
                 this.setear();
             } else {
-                JOptionPane.showMessageDialog(null, "Error al guardar cliente");
+                JOptionPane.showMessageDialog(null, "Error al guardar el cliente.");
             }
         } catch (Exception e) {
-            System.out.println("Error al guardar cliente: " + e);
-            JOptionPane.showMessageDialog(null, "Error inesperado al guardar el cliente");
+            System.out.println("Error inesperado al guardar cliente: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, "Error inesperado al guardar el cliente.");
         }
-
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -246,61 +237,51 @@ public class JPanelClienteNuevo extends javax.swing.JPanel {
     }
 
     private void cargarClientesEnTabla() {
-        Connection con = null;
         DefaultTableModel model = new DefaultTableModel();
+        ClienteController controller = new ClienteController();
 
-        String sql = "SELECT idCliente, nombre, apellido, telefono, correo, cedula, direccion, estado "
-                + "FROM Cliente"; 
+        model.addColumn("ID Cliente");
+        model.addColumn("Cédula");
+        model.addColumn("Nombres");
+        model.addColumn("Apellidos");
+        model.addColumn("Teléfono");
+        model.addColumn("Dirección");
+        model.addColumn("Correo");
+        model.addColumn("Estado");
 
-        try {
-            con = Conexion.conectar();
-            Statement st = con.createStatement();
-            ResultSet rs = st.executeQuery(sql);
+        List<Cliente> clientes = controller.obtenerTodosLosClientes();
 
-            model.addColumn("ID Cliente");
-            model.addColumn("Cédula");
-            model.addColumn("Nombres");
-            model.addColumn("Apellidos");
-            model.addColumn("Teléfono");
-            model.addColumn("Dirección");
-            model.addColumn("Correo");
-            model.addColumn("Estado");
-
-            boolean hayRegistros = false;
-
-            while (rs.next()) {
-                hayRegistros = true;
+        boolean hayRegistros = false;
+        if (!clientes.isEmpty()) {
+            hayRegistros = true;
+            for (Cliente cliente : clientes) {
                 Object[] fila = new Object[8];
-                fila[0] = rs.getInt("idCliente");
-                fila[1] = rs.getString("cedula");
-                fila[2] = rs.getString("nombre");
-                fila[3] = rs.getString("apellido");
-                fila[4] = rs.getString("telefono");
-                fila[5] = rs.getString("direccion");
-                fila[6] = rs.getString("correo");
-                fila[7] = (rs.getInt("estado") == 1) ? "Activo" : "Inactivo";
-
+                fila[0] = cliente.getIdCliente();
+                fila[1] = cliente.getCedula();
+                fila[2] = cliente.getNombre();
+                fila[3] = cliente.getApellido();
+                fila[4] = cliente.getTelefono();
+                fila[5] = cliente.getDireccion();
+                fila[6] = cliente.getCorreo();
+                fila[7] = (cliente.getEstado() == 1) ? "Activo" : "Inactivo";
                 model.addRow(fila);
             }
+        }
 
-            if (!hayRegistros) {
-                JOptionPane.showMessageDialog(null, "No existen clientes registrados actualmente.");
-            }
+        if (!hayRegistros) {
+            JOptionPane.showMessageDialog(null, "No existen clientes registrados actualmente.");
+        }
 
-            tableCliente.setModel(model);
-            jScrollPane3.setViewportView(tableCliente);
-
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error al cargar clientes: " + e.getMessage());
-            System.err.println("Error al cargar clientes: " + e.getMessage());
-        } finally {
-            try {
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-                System.err.println("Error al cerrar conexión: " + e.getMessage());
-            }
+        tableCliente.setModel(model);
+        jScrollPane3.setViewportView(tableCliente);
+    }
+    
+    
+    private void verificarExistenciaClientes() {
+        ClienteController controller = new ClienteController();
+        if (!controller.existenClientes()) {
+            JOptionPane.showMessageDialog(null, "No existen clientes en el sistema.");
         }
     }
+
 }

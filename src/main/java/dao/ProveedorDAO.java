@@ -4,7 +4,6 @@
  */
 package dao;
 
-import dao.Conexion;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,11 +20,11 @@ public class ProveedorDAO {
 
     public boolean guardar(Proveedor proveedor) {
         boolean respuesta = false;
-        Connection cn = null; 
+        Connection cn = null;
 
         try {
             cn = Conexion.conectar();
-           
+
             PreparedStatement consulta = cn.prepareStatement("""
                 INSERT INTO proveedor (ruc, nombreProveedor, telefonoProveedor, direccionProveedor,
                                       correoProveedor, estado)
@@ -34,9 +33,9 @@ public class ProveedorDAO {
 
             consulta.setString(1, proveedor.getRuc());
             consulta.setString(2, proveedor.getNombre());
-            consulta.setString(3, proveedor.getTelefono()); 
+            consulta.setString(3, proveedor.getTelefono());
             consulta.setString(4, proveedor.getDireccion());
-            consulta.setString(5, proveedor.getCorreo()); 
+            consulta.setString(5, proveedor.getCorreo());
             consulta.setInt(6, proveedor.getEstado());
 
             if (consulta.executeUpdate() > 0) {
@@ -44,12 +43,14 @@ public class ProveedorDAO {
             }
 
         } catch (SQLException e) {
-            System.err.println("Error al guardar proveedor: " + e.getMessage()); 
+            System.err.println("Error al guardar proveedor: " + e.getMessage());
         } finally {
             try {
-                if (cn != null) cn.close();
+                if (cn != null) {
+                    cn.close();
+                }
             } catch (SQLException e) {
-                System.err.println("Error al cerrar conexión en guardar proveedor: " + e.getMessage());
+                System.err.println("Error al cerrar conexión: " + e.getMessage());
             }
         }
         return respuesta;
@@ -65,7 +66,7 @@ public class ProveedorDAO {
             PreparedStatement stmt = cn.prepareStatement(sql);
             stmt.setString(1, ruc);
             ResultSet rs = stmt.executeQuery();
-            
+
             if (rs.next()) {
                 existe = true;
             }
@@ -74,9 +75,11 @@ public class ProveedorDAO {
             System.err.println("Error al verificar proveedor: " + e.getMessage());
         } finally {
             try {
-                if (cn != null) cn.close();
+                if (cn != null) {
+                    cn.close();
+                }
             } catch (SQLException e) {
-                System.err.println("Error al cerrar conexión en existeProveedor: " + e.getMessage());
+                System.err.println("Error al cerrar conexión: " + e.getMessage());
             }
         }
         return existe;
@@ -94,7 +97,7 @@ public class ProveedorDAO {
 
             while (rs.next()) {
                 Proveedor p = new Proveedor();
-                p.setIdProveedor(rs.getInt("idProveedor")); 
+                p.setIdProveedor(rs.getInt("idProveedor"));
                 p.setRuc(rs.getString("ruc"));
                 p.setNombre(rs.getString("nombreProveedor"));
                 p.setDireccion(rs.getString("direccionProveedor"));
@@ -108,9 +111,11 @@ public class ProveedorDAO {
             System.err.println("Error al listar proveedores: " + e.getMessage());
         } finally {
             try {
-                if (cn != null) cn.close();
+                if (cn != null) {
+                    cn.close();
+                }
             } catch (SQLException e) {
-                System.err.println("Error al cerrar conexión en listarProveedores: " + e.getMessage());
+                System.err.println("Error al cerrar conexión: " + e.getMessage());
             }
         }
         return lista;
@@ -119,9 +124,9 @@ public class ProveedorDAO {
     public boolean actualizar(Proveedor proveedor) {
         boolean respuesta = false;
         Connection cn = null;
-        
+
         String sql = "UPDATE proveedor SET ruc = ?, nombreProveedor = ?, telefonoProveedor = ?, "
-                   + "direccionProveedor = ?, correoProveedor = ?, estado = ? WHERE idProveedor = ?";
+                + "direccionProveedor = ?, correoProveedor = ?, estado = ? WHERE idProveedor = ?";
 
         try {
             cn = Conexion.conectar();
@@ -143,9 +148,11 @@ public class ProveedorDAO {
             System.err.println("Error al actualizar proveedor: " + e.getMessage());
         } finally {
             try {
-                if (cn != null) cn.close();
+                if (cn != null) {
+                    cn.close();
+                }
             } catch (SQLException e) {
-                System.err.println("Error al cerrar conexión en actualizar proveedor: " + e.getMessage());
+                System.err.println("Error al cerrar conexión: " + e.getMessage());
             }
         }
         return respuesta;
@@ -165,7 +172,9 @@ public class ProveedorDAO {
             System.err.println("Error al desactivar proveedor: " + e.getMessage());
         } finally {
             try {
-                if (cn != null) cn.close();
+                if (cn != null) {
+                    cn.close();
+                }
             } catch (SQLException e) {
                 System.err.println("Error al cerrar conexión en desactivar proveedor: " + e.getMessage());
             }
@@ -188,11 +197,171 @@ public class ProveedorDAO {
             System.err.println("Error al activar proveedor: " + e.getMessage());
         } finally {
             try {
-                if (cn != null) cn.close();
+                if (cn != null) {
+                    cn.close();
+                }
             } catch (SQLException e) {
                 System.err.println("Error al cerrar conexión en activar proveedor: " + e.getMessage());
             }
         }
         return respuesta;
+    }
+
+    public Proveedor obtenerProveedorPorId(int idProveedor) {
+        Proveedor proveedor = null;
+        Connection cn = null;
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+        String sql = "SELECT idProveedor, ruc, nombreProveedor, telefonoProveedor, correoProveedor, direccionProveedor, estado "
+                + "FROM proveedor WHERE idProveedor = ?";
+
+        try {
+            cn = Conexion.conectar();
+            pst = cn.prepareStatement(sql);
+            pst.setInt(1, idProveedor);
+            rs = pst.executeQuery();
+
+            if (rs.next()) {
+                proveedor = new Proveedor();
+                proveedor.setIdProveedor(rs.getInt("idProveedor"));
+                proveedor.setRuc(rs.getString("ruc"));
+                proveedor.setNombre(rs.getString("nombreProveedor"));
+                proveedor.setTelefono(rs.getString("telefonoProveedor"));
+                proveedor.setCorreo(rs.getString("correoProveedor"));
+                proveedor.setDireccion(rs.getString("direccionProveedor"));
+                proveedor.setEstado(rs.getInt("estado"));
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener proveedor por ID: " + e.getMessage());
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (pst != null) {
+                    pst.close();
+                }
+                if (cn != null) {
+                    cn.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("Error al cerrar conexión: " + e.getMessage());
+            }
+        }
+        return proveedor;
+    }
+
+    public List<Proveedor> buscarProveedores(String criterio) {
+        List<Proveedor> proveedores = new ArrayList<>();
+        Connection con = null;
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+
+        String sql = "SELECT idProveedor, ruc, nombreProveedor, telefonoProveedor, "
+                + "correoProveedor, direccionProveedor, estado FROM proveedor "
+                + "WHERE estado = 1 AND (ruc LIKE ? OR nombreProveedor LIKE ?)";
+
+        try {
+            con = Conexion.conectar();
+            pst = con.prepareStatement(sql);
+            String busquedaLike = "%" + criterio + "%";
+            pst.setString(1, busquedaLike);
+            pst.setString(2, busquedaLike);
+            rs = pst.executeQuery();
+
+            while (rs.next()) {
+                Proveedor proveedor = new Proveedor();
+                proveedor.setIdProveedor(rs.getInt("idProveedor"));
+                proveedor.setRuc(rs.getString("ruc"));
+                proveedor.setNombre(rs.getString("nombreProveedor"));
+                proveedor.setTelefono(rs.getString("telefonoProveedor"));
+                proveedor.setCorreo(rs.getString("correoProveedor"));
+                proveedor.setDireccion(rs.getString("direccionProveedor"));
+                proveedor.setEstado(rs.getInt("estado"));
+                proveedores.add(proveedor);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error SQL al buscar proveedores activos en ProveedorDAO: " + e.getMessage());
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (pst != null) {
+                    pst.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("Error al cerrar conexión en ProveedorDAO.buscarProveedoresActivos: " + e.getMessage());
+            }
+        }
+        return proveedores;
+    }
+
+    public boolean verificarExistenciaDeProveedores() {
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            con = Conexion.conectar();
+            String sql = "SELECT COUNT(*) FROM Proveedor";
+            ps = con.prepareStatement(sql);
+            rs = ps.executeQuery();
+            return rs.next() && rs.getInt(1) > 0;
+        } catch (SQLException e) {
+            System.err.println("Error SQL al verificar existencia de proveedores (count) en ProveedorDAO: " + e.getMessage());
+            return false;
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("Error al cerrar conexión en ProveedorDAO.checkProveedorExistenceCount: " + e.getMessage());
+            }
+        }
+    }
+
+    public int getIdProveedorPorNombre(String nombreProveedor) {
+        int id = -1;
+        Connection cn = null;
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+        String sql = "SELECT idProveedor FROM proveedor WHERE nombreProveedor = ?";
+
+        try {
+            cn = Conexion.conectar();
+            pst = cn.prepareStatement(sql);
+            pst.setString(1, nombreProveedor);
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                id = rs.getInt("idProveedor");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener idProveedor: " + e.getMessage());
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (pst != null) {
+                    pst.close();
+                }
+                if (cn != null) {
+                    cn.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("Error al cerrar conexión: " + e.getMessage());
+            }
+        }
+        return id;
     }
 }

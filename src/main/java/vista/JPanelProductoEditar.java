@@ -4,22 +4,20 @@
  */
 package vista;
 
-import dao.ProductoDAO;
-import dao.Conexion;
+import controlador.CategoriaController;
+import controlador.ProductoController;
+import controlador.ProveedorController;
+import dao.CategoriaDAO;
+import dao.ProveedorDAO;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import modelo.Categoria;
-import javax.swing.JComboBox;
 import modelo.Producto;
 import modelo.Proveedor;
-import java.sql.Statement;
-import java.sql.ResultSet;
+import java.util.List;
 
 /**
  *
@@ -37,20 +35,10 @@ public class JPanelProductoEditar extends javax.swing.JPanel {
     public JPanelProductoEditar() {
         initComponents();
         this.setSize(new Dimension(900, 400));
-        cargarDatosEnComboBox("categoria", "descripcionCategoria", cboxCategoria, "Seleccionar categoria");
-        cargarDatosEnComboBox("proveedor", "nombreProveedor", cboxProveedor, "Seleccionar proveedor");
+        cargarProveedoresEnComboBox();
+        cargarCategoriasEnComboBox();
 
         this.cargarProductosEnTabla();
-//        tableProducto.addMouseListener(new MouseAdapter() {
-//            @Override
-//            public void mouseClicked(MouseEvent e) {
-//                int filaSeleccionada = tableProducto.getSelectedRow();
-//                if (filaSeleccionada != -1) {
-//                    idProducto = Integer.parseInt(tableProducto.getValueAt(filaSeleccionada, 0).toString());
-//                }
-//            }
-//        });
-
     }
 
     /**
@@ -175,54 +163,65 @@ public class JPanelProductoEditar extends javax.swing.JPanel {
 
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
         Producto producto = new Producto();
-        ProductoDAO controladorProducto = new ProductoDAO();
+        ProductoController productoController = new ProductoController();
 
         String nombreProducto = txtNombreProducto.getText().trim();
         String stockTexto = txtStock.getText().trim();
         String precioTexto = txtPrecio.getText().trim();
         String descripcion = textAreaDescripcion.getText().trim();
+        String nombreCategoriaSeleccionada = cboxCategoria.getSelectedItem().toString();
+        String nombreProveedorSeleccionado = cboxProveedor.getSelectedItem().toString();
+
+        if (idProducto == 0) {
+            JOptionPane.showMessageDialog(null, "Seleccione un producto para actualizar.");
+            return;
+        }
 
         if (!validarCampos(nombreProducto, stockTexto, precioTexto, descripcion)) {
             return;
         }
 
         try {
+            Producto productoExistente = productoController.obtenerProductoPorId(idProducto);
+            if (productoExistente != null && !productoExistente.getNombreProducto().equalsIgnoreCase(nombreProducto)
+                    && productoController.existeProductoPorNombre(nombreProducto)) {
+                JOptionPane.showMessageDialog(null, "El nombre de producto '" + nombreProducto + "' ya existe.");
+                return;
+            }
+
             String nombreFormateado = nombreProducto.substring(0, 1).toUpperCase() + nombreProducto.substring(1).toLowerCase();
+            producto.setIdProducto(idProducto);
             producto.setNombreProducto(nombreFormateado);
-
             producto.setCantidad(Integer.parseInt(stockTexto));
-
             String precioFormateado = precioTexto.replace(",", ".");
             producto.setPrecio(Double.parseDouble(precioFormateado));
-
             producto.setDescripcion(descripcion);
             producto.setPorcentajeIva(12);
             producto.setEstado(1);
 
-            this.idCategoria();
+            this.obtenerIdCategoriaSeleccionada();
             producto.setIdCategoria(obtenerIdCategoria);
 
-            this.idProveedor();
+            this.obtenerIdProveedorSeleccionado();
             producto.setIdProveedor(obtenerIdProveedor);
+            
 
-            if (controladorProducto.actualizar(producto, idProducto)) {
-                JOptionPane.showMessageDialog(null, "Producto actualizado con iva del 12%");
-
-                this.cargarDatosEnComboBox("categoria", "descripcionCategoria", cboxCategoria, "Seleccionar categoria");
-                this.cargarDatosEnComboBox("proveedor", "nombreProveedor", cboxProveedor, "Seleccionar proveedor");
-
+            if (productoController.actualizarProducto(producto, nombreCategoriaSeleccionada, nombreProveedorSeleccionado, idProducto)) {
+                JOptionPane.showMessageDialog(null, "Producto actualizado correctamente.");
                 this.cboxProveedor.setSelectedItem("Seleccione proveedor");
                 this.cboxCategoria.setSelectedItem("Seleccione categoria");
-
                 this.cargarProductosEnTabla();
                 this.setear();
             } else {
-                JOptionPane.showMessageDialog(null, "Error al actualizar");
+                JOptionPane.showMessageDialog(null, "Error al actualizar el producto.");
             }
 
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Error de formato en stock o precio: " + e.getMessage());
+            System.err.println("Error de formato numérico al actualizar producto: " + e.getMessage());
         } catch (Exception e) {
-            System.out.println("Error al guardar producto: " + e);
-            JOptionPane.showMessageDialog(null, "Error inesperado al actualizar el producto");
+            System.err.println("Error inesperado al actualizar producto: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, "Error inesperado al actualizar el producto.");
         }
     }//GEN-LAST:event_btnActualizarActionPerformed
 
@@ -247,71 +246,64 @@ public class JPanelProductoEditar extends javax.swing.JPanel {
     private javax.swing.JTextField txtStock;
     // End of variables declaration//GEN-END:variables
 
-    private void cargarDatosEnComboBox(String tabla, String columnaMostrar, JComboBox<String> comboBox, String textoInicial) {
-        Connection cn = Conexion.conectar();
-        String sql = "SELECT * FROM " + tabla;
-        Statement st;
+    private void cargarCategoriasEnComboBox() {
+        CategoriaController controller = new CategoriaController();
+        List<Categoria> categorias = controller.obtenerTodasLasCategorias();
 
-        try {
-            st = cn.createStatement();
-            ResultSet rs = st.executeQuery(sql);
+        cboxCategoria.removeAllItems();
+        cboxCategoria.addItem("Seleccionar categoria");
 
-            comboBox.removeAllItems();
-            comboBox.addItem(textoInicial);
+        for (Categoria cat : categorias) {
+            cboxCategoria.addItem(cat.getNombre());
+        }
+    }
 
-            while (rs.next()) {
-                comboBox.addItem(rs.getString(columnaMostrar));
-            }
+    private void cargarProveedoresEnComboBox() {
+        ProveedorController controller = new ProveedorController();
+        List<Proveedor> proveedores = controller.obtenerTodosLosProveedores();
 
-            cn.close();
-        } catch (SQLException e) {
-            System.out.println("Error al cargar datos de " + tabla + ": " + e);
+        cboxProveedor.removeAllItems();
+        cboxProveedor.addItem("Seleccionar proveedor");
+
+        for (Proveedor prov : proveedores) {
+            cboxProveedor.addItem(prov.getNombre());
         }
     }
 
     private void cargarProductosEnTabla() {
-        Connection con = Conexion.conectar();
         DefaultTableModel model = new DefaultTableModel();
-        String sql = "SELECT p.idProducto, p.nombre, pr.nombreProveedor, p.cantidad, p.descripcion, p.precio, p.iva, c.descripcionCategoria, p.estado "
-                + "FROM producto p "
-                + "INNER JOIN categoria c ON p.idCategoria = c.idCategoria "
-                + "INNER JOIN proveedor pr ON p.idProveedor = pr.idProveedor";
-        Statement st;
+        ProductoController controller = new ProductoController();
 
-        try {
-            st = con.createStatement();
-            ResultSet rs = st.executeQuery(sql);
+        model.addColumn("ID");
+        model.addColumn("Nombre");
+        model.addColumn("Proveedor");
+        model.addColumn("Cantidad");
+        model.addColumn("Descripción");
+        model.addColumn("Precio");
+        model.addColumn("IVA");
+        model.addColumn("Categoría");
+        model.addColumn("Estado");
 
-            model.addColumn("ID");
-            model.addColumn("Nombre");
-            model.addColumn("Proveedor");
-            model.addColumn("Cantidad");
-            model.addColumn("Descripción");
-            model.addColumn("Precio");
-            model.addColumn("IVA");
-            model.addColumn("Categoría");
-            model.addColumn("Estado");
+        List<Producto> productos = controller.obtenerTodosLosProductos();
 
-            while (rs.next()) {
+        if (productos.isEmpty()) {
+        } else {
+            for (Producto p : productos) {
                 Object[] fila = new Object[9];
-                fila[0] = rs.getInt("idProducto");
-                fila[1] = rs.getString("nombre");
-                fila[2] = rs.getString("nombreProveedor");
-                fila[3] = rs.getInt("cantidad");
-                fila[4] = rs.getString("descripcion");
-                fila[5] = rs.getDouble("precio");
-                fila[6] = String.format("%.2f", rs.getInt("iva") / 100.0);
-                fila[7] = rs.getString("descripcionCategoria");
-                fila[8] = (rs.getInt("estado") == 1) ? "Activo" : "Inactivo";
+                fila[0] = p.getIdProducto();
+                fila[1] = p.getNombreProducto();
+                fila[2] = p.getIdProveedor().getNombre();
+                fila[3] = p.getCantidad();
+                fila[4] = p.getDescripcion();
+                fila[5] = p.getPrecio();
+                fila[6] = String.format("%.2f", p.getPorcentajeIva() / 100.0);
+                fila[7] = p.getIdCategoria().getNombre();
+                fila[8] = (p.getEstado() == 1) ? "Activo" : "Inactivo";
                 model.addRow(fila);
             }
-            
-            tableProducto.setModel(model);
-            
-            con.close();
-        } catch (SQLException e) {
-            System.out.println("Error al llenar la tabla productos: " + e);
         }
+        tableProducto.setModel(model);
+        jScrollPane4.setViewportView(tableProducto);
 
         tableProducto.addMouseListener(new MouseAdapter() {
             @Override
@@ -328,67 +320,48 @@ public class JPanelProductoEditar extends javax.swing.JPanel {
     }
 
     private void enviarDatosProducto(int idProducto) {
-        try {
-            Connection con = Conexion.conectar();
-            String sql = "SELECT p.*, c.descripcionCategoria, pr.nombreProveedor FROM producto p "
-                    + "INNER JOIN categoria c ON p.idCategoria = c.idCategoria "
-                    + "INNER JOIN proveedor pr ON p.idProveedor = pr.idProveedor "
-                    + "WHERE p.idProducto = ?";
-            PreparedStatement pst = con.prepareStatement(sql);
-            pst.setInt(1, idProducto);
-            ResultSet rs = pst.executeQuery();
+        ProductoController controller = new ProductoController();
+        Producto producto = controller.obtenerProductoPorId(idProducto);
 
-            if (rs.next()) {
-                txtNombreProducto.setText(rs.getString("nombre"));
-                txtStock.setText(String.valueOf(rs.getInt("cantidad")));
-                textAreaDescripcion.setText(rs.getString("descripcion"));
-                txtPrecio.setText(String.valueOf(rs.getDouble("precio")));
+        if (producto != null) {
+            txtNombreProducto.setText(producto.getNombreProducto());
+            txtStock.setText(String.valueOf(producto.getCantidad()));
+            textAreaDescripcion.setText(producto.getDescripcion());
+            txtPrecio.setText(String.valueOf(producto.getPrecio()));
 
-                String nombreCategoria = rs.getString("descripcionCategoria");
-                cboxCategoria.setSelectedItem(nombreCategoria);
+            String nombreCategoria = producto.getIdCategoria() != null ? producto.getIdCategoria().getNombre() : null;
+            String nombreProveedor = producto.getIdProveedor() != null ? producto.getIdProveedor().getNombre() : null;
 
-                String nombreProveedor = rs.getString("nombreProveedor");
-                cboxProveedor.setSelectedItem(nombreProveedor);
+            if (nombreCategoria != null) {
+                cboxCategoria.setSelectedItem(nombreCategoria.trim());
+            } else {
+                cboxCategoria.setSelectedIndex(0);
             }
 
-            con.close();
-        } catch (SQLException e) {
-            System.out.println("Error al seleccionar producto: " + e);
+            if (nombreProveedor != null) {
+                cboxProveedor.setSelectedItem(nombreProveedor.trim());
+            } else {
+                cboxProveedor.setSelectedIndex(0);
+            }
+
+        } else {
+            JOptionPane.showMessageDialog(null, "No se encontró el producto seleccionado.");
+            setear(); 
         }
     }
 
-    private int idCategoria() {
-        String sql = "select * from categoria where descripcionCategoria = '" + this.cboxCategoria.getSelectedItem() + "'";
-        Statement st;
-
-        try {
-            Connection cn = Conexion.conectar();
-            st = cn.createStatement();
-            ResultSet rs = st.executeQuery(sql);
-            while (rs.next()) {
-                obtenerIdCategoria.setIdCategoria(rs.getInt("idCategoria"));
-            }
-        } catch (Exception e) {
-            System.out.println("Error al obtener id categoria");
-        }
-        return obtenerIdCategoria.getIdCategoria();
+    private int obtenerIdCategoriaSeleccionada() {
+        String descripcion = (String) cboxCategoria.getSelectedItem();
+        CategoriaDAO dao = new CategoriaDAO();
+        return dao.getIdCategoriaPorNombre(descripcion);
     }
 
-    private int idProveedor() {
-        String sql = "SELECT * FROM proveedor WHERE nombreProveedor = '" + this.cboxProveedor.getSelectedItem() + "'";
-        Statement st;
-        try {
-            Connection cn = Conexion.conectar();
-            st = cn.createStatement();
-            ResultSet rs = st.executeQuery(sql);
-            while (rs.next()) {
-                obtenerIdProveedor.setIdProveedor(rs.getInt("idProveedor"));
-            }
-        } catch (Exception e) {
-            System.out.println("Error al obtener id proveedor: " + e);
-        }
-        return obtenerIdProveedor.getIdProveedor();
+    private int obtenerIdProveedorSeleccionado() {
+        String nombre = (String) cboxProveedor.getSelectedItem();
+        ProveedorDAO dao = new ProveedorDAO();
+        return dao.getIdProveedorPorNombre(nombre);
     }
+    
 
     private void setear() {
         txtNombreProducto.setText("");
@@ -399,26 +372,53 @@ public class JPanelProductoEditar extends javax.swing.JPanel {
         textAreaDescripcion.setText("");
     }
 
-    private boolean validarCampos(String nombreProducto, String stockTexto, String precioTexto, String descripcion ){
+//    private boolean validarCampos(String nombreProducto, String stockTexto, String precioTexto, String descripcion) {
+//        if (nombreProducto.isEmpty() || stockTexto.isEmpty() || precioTexto.isEmpty() || descripcion.isEmpty()) {
+//            JOptionPane.showMessageDialog(null, "Campos obligatorios vacíos");
+//            return false;
+//        }
+//
+//        if (!stockTexto.matches("\\d+")) {
+//            JOptionPane.showMessageDialog(null, "Formato de dato incorrecto.");
+//            return false;
+//        }
+//
+//        if (!precioTexto.matches("^\\d+(\\.\\d{1,2})?$") && !precioTexto.matches("^\\d+(,\\d{1,2})?$")) {
+//            JOptionPane.showMessageDialog(null, "Formato de dato incorrecto.");
+//            return false;
+//        }
+//
+//        if (cboxCategoria.getSelectedIndex() == 0 || cboxProveedor.getSelectedIndex() == 0) {
+//            JOptionPane.showMessageDialog(null, "Campos obligatorios vacíos");
+//            return false;
+//        }
+//        return true;
+//    }
+    private boolean validarCampos(String nombreProducto, String stockTexto, String precioTexto, String descripcion) {
         if (nombreProducto.isEmpty() || stockTexto.isEmpty() || precioTexto.isEmpty() || descripcion.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Campos obligatorios vacíos");
+            JOptionPane.showMessageDialog(null, "Campos obligatorios vacíos.");
             return false;
         }
 
         if (!stockTexto.matches("\\d+")) {
-            JOptionPane.showMessageDialog(null, "Formato de dato incorrecto.");
+            JOptionPane.showMessageDialog(null, "Formato de stock incorrecto. Debe ser un número entero.");
             return false;
         }
 
-        if (!precioTexto.matches("^\\d+(\\.\\d{1,2})?$") && !precioTexto.matches("^\\d+(,\\d{1,2})?$")) {
-            JOptionPane.showMessageDialog(null, "Formato de dato incorrecto.");
+        if (!precioTexto.matches("^\\d+(\\.\\d+)?$") && !precioTexto.matches("^\\d+(,\\d+)?$")) {
+            JOptionPane.showMessageDialog(null, "Formato de precio inválido. Use números con punto o coma decimal.");
             return false;
         }
 
-        if (cboxCategoria.getSelectedIndex() == 0 || cboxProveedor.getSelectedIndex() == 0) {
-            JOptionPane.showMessageDialog(null, "Campos obligatorios vacíos");
+        if (cboxCategoria.getSelectedIndex() == 0) {
+            JOptionPane.showMessageDialog(null, "Debe seleccionar una categoría.");
             return false;
         }
+        if (cboxProveedor.getSelectedIndex() == 0) {
+            JOptionPane.showMessageDialog(null, "Debe seleccionar un proveedor.");
+            return false;
+        }
+
         return true;
     }
 }

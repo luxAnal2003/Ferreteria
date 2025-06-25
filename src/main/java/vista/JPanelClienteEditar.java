@@ -4,18 +4,13 @@
  */
 package vista;
 
-import dao.ClienteDAO;
-import dao.Conexion;
+import controlador.ClienteController;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import java.sql.Statement;
-import java.sql.ResultSet;
+import java.util.List;
 import modelo.Cliente;
 
 /**
@@ -34,6 +29,7 @@ public class JPanelClienteEditar extends javax.swing.JPanel {
         this.setSize(new Dimension(900, 400));
 
         this.cargarClientesEnTabla();
+        this.verificarExistenciaClientes();
     }
 
     /**
@@ -153,7 +149,7 @@ public class JPanelClienteEditar extends javax.swing.JPanel {
 
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
         Cliente cliente = new Cliente();
-        ClienteDAO controladorCliente = new ClienteDAO();
+        ClienteController clienteController = new ClienteController();
 
         String cedulaRuc = txtCedulaRuc.getText().trim();
         String nombres = txtNombres.getText().trim();
@@ -183,19 +179,17 @@ public class JPanelClienteEditar extends javax.swing.JPanel {
             cliente.setDireccion(direccion);
             cliente.setEstado(1);
 
-            boolean clienteActualizado = controladorCliente.actualizar(cliente);
-
-            if (clienteActualizado) {
-                JOptionPane.showMessageDialog(null, "Cliente actualizado correctamente");
+            if (clienteController.actualizarCliente(cliente)) {
+                JOptionPane.showMessageDialog(null, "Cliente actualizado correctamente.");
                 this.cargarClientesEnTabla();
                 this.setear();
             } else {
-                JOptionPane.showMessageDialog(null, "Error al actualizar el cliente o usuario");
+                JOptionPane.showMessageDialog(null, "Error al actualizar el cliente.");
             }
 
         } catch (Exception e) {
-            System.out.println("Error al actualizar cliente: " + e);
-            JOptionPane.showMessageDialog(null, "Error inesperado al actualizar el cliente");
+            System.err.println("Error inesperado al actualizar cliente: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, "Error inesperado al actualizar el cliente.");
         }
     }//GEN-LAST:event_btnActualizarActionPerformed
 
@@ -251,65 +245,49 @@ public class JPanelClienteEditar extends javax.swing.JPanel {
         txtTelefono.setText("");
         txtEmail.setText("");
         txtDireccion.setText("");
+        idCliente = 0;
+        txtCedulaRuc.setEditable(false);
+        txtCedulaRuc.setEnabled(false);
     }
 
     private void cargarClientesEnTabla() {
-        Connection con = null;
         DefaultTableModel model = new DefaultTableModel();
+        ClienteController controller = new ClienteController();
 
-        String sql = "SELECT idCliente, nombre, apellido, telefono, correo, cedula, direccion, estado "
-                + "FROM Cliente"; 
+        model.addColumn("ID Cliente");
+        model.addColumn("Cédula");
+        model.addColumn("Nombres");
+        model.addColumn("Apellidos");
+        model.addColumn("Teléfono");
+        model.addColumn("Dirección");
+        model.addColumn("Correo");
+        model.addColumn("Estado");
 
-        try {
-            con = Conexion.conectar();
-            Statement st = con.createStatement();
-            ResultSet rs = st.executeQuery(sql);
+        List<Cliente> clientes = controller.obtenerTodosLosClientes();
 
-            model.addColumn("ID Cliente");
-            model.addColumn("Cédula");
-            model.addColumn("Nombres");
-            model.addColumn("Apellidos");
-            model.addColumn("Teléfono");
-            model.addColumn("Dirección");
-            model.addColumn("Correo");
-            model.addColumn("Estado");
-
-            boolean hayRegistros = false;
-
-            while (rs.next()) {
-                hayRegistros = true;
+        boolean hayRegistros = false;
+        if (!clientes.isEmpty()) {
+            hayRegistros = true;
+            for (Cliente cliente : clientes) {
                 Object[] fila = new Object[8];
-                fila[0] = rs.getInt("idCliente");
-                fila[1] = rs.getString("cedula");
-                fila[2] = rs.getString("nombre");
-                fila[3] = rs.getString("apellido");
-                fila[4] = rs.getString("telefono");
-                fila[5] = rs.getString("direccion");
-                fila[6] = rs.getString("correo");
-                fila[7] = (rs.getInt("estado") == 1) ? "Activo" : "Inactivo";
-
+                fila[0] = cliente.getIdCliente();
+                fila[1] = cliente.getCedula();
+                fila[2] = cliente.getNombre();
+                fila[3] = cliente.getApellido();
+                fila[4] = cliente.getTelefono();
+                fila[5] = cliente.getDireccion();
+                fila[6] = cliente.getCorreo();
+                fila[7] = (cliente.getEstado() == 1) ? "Activo" : "Inactivo";
                 model.addRow(fila);
             }
-
-            if (!hayRegistros) {
-                JOptionPane.showMessageDialog(null, "No existen clientes registrados actualmente.");
-            }
-
-            tableCliente.setModel(model);
-            jScrollPane3.setViewportView(tableCliente);
-
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error al cargar clientes: " + e.getMessage());
-            System.err.println("Error al cargar clientes: " + e.getMessage());
-        } finally {
-            try {
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-                System.err.println("Error al cerrar conexión: " + e.getMessage());
-            }
         }
+
+        if (!hayRegistros) {
+            JOptionPane.showMessageDialog(null, "No existen clientes registrados actualmente.");
+        }
+
+        tableCliente.setModel(model);
+        jScrollPane3.setViewportView(tableCliente);
 
         tableCliente.addMouseListener(new MouseAdapter() {
             @Override
@@ -324,26 +302,28 @@ public class JPanelClienteEditar extends javax.swing.JPanel {
     }
 
     private void enviarDatosCliente(int idCliente) {
-        String sql = "SELECT idCliente, nombre, apellido, telefono, correo, cedula, direccion, estado "
-                + "FROM Cliente WHERE idCliente = ?";
+        ClienteController controller = new ClienteController();
+        Cliente cliente = controller.obtenerClientePorId(idCliente);
 
-        try (Connection con = Conexion.conectar(); PreparedStatement pst = con.prepareStatement(sql)) {
-
-            pst.setInt(1, idCliente);
-            ResultSet rs = pst.executeQuery();
-
-            if (rs.next()) {
-                txtCedulaRuc.setText(rs.getString("cedula"));
-                txtNombres.setText(rs.getString("nombre"));
-                txtApellidos.setText(rs.getString("apellido"));
-                txtTelefono.setText(rs.getString("telefono"));
-                txtDireccion.setText(rs.getString("direccion"));
-                txtEmail.setText(rs.getString("correo"));
-            }
-
-        } catch (SQLException e) {
-            System.err.println("Error al seleccionar cliente: " + e.getMessage());
-            JOptionPane.showMessageDialog(null, "Error al cargar datos del cliente: " + e.getMessage());
+        if (cliente != null) {
+            txtCedulaRuc.setText(cliente.getCedula());
+            txtNombres.setText(cliente.getNombre());
+            txtApellidos.setText(cliente.getApellido());
+            txtTelefono.setText(cliente.getTelefono());
+            txtDireccion.setText(cliente.getDireccion());
+            txtEmail.setText(cliente.getCorreo());
+            txtCedulaRuc.setEditable(false);
+            txtCedulaRuc.setEnabled(false);
+        } else {
+            JOptionPane.showMessageDialog(null, "No se encontró el cliente seleccionado.");
+            setear();
+        }
+    }
+    
+    private void verificarExistenciaClientes() {
+        ClienteController controller = new ClienteController();
+        if (!controller.existenClientes()) {
+            JOptionPane.showMessageDialog(null, "No existen clientes en el sistema.");
         }
     }
 }

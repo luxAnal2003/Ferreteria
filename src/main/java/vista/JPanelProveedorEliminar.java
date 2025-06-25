@@ -4,15 +4,12 @@
  */
 package vista;
 
-import dao.ProveedorDAO;
-import dao.Conexion;
+import controlador.ProveedorController;
 import java.awt.Dimension;
-import java.sql.Connection;
-import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import java.sql.Statement;
-import java.sql.ResultSet;
+import java.util.List;
+import modelo.Proveedor;
 
 /**
  *
@@ -30,6 +27,7 @@ public class JPanelProveedorEliminar extends javax.swing.JPanel {
         this.setSize(new Dimension(900, 400));
 
         this.cargarProveedoresEnTabla();
+        this.verificarExistenciaProveedor();
     }
 
     /**
@@ -110,38 +108,35 @@ public class JPanelProveedorEliminar extends javax.swing.JPanel {
 
     private void cargarProveedoresEnTabla() {
         DefaultTableModel model = new DefaultTableModel();
+        ProveedorController controller = new ProveedorController(); 
 
-        String sql = "SELECT idProveedor, ruc, nombreProveedor, telefonoProveedor, "
-                + "correoProveedor, direccionProveedor, estado FROM proveedor";
+        model.addColumn("ID");
+        model.addColumn("RUC");
+        model.addColumn("Nombre Comercial");
+        model.addColumn("Teléfono");
+        model.addColumn("Email");
+        model.addColumn("Dirección");
+        model.addColumn("Estado");
 
-        try (Connection con = Conexion.conectar(); Statement st = con.createStatement(); ResultSet rs = st.executeQuery(sql)) {
+        List<Proveedor> proveedores = controller.obtenerTodosLosProveedores();
 
-            model.addColumn("ID");
-            model.addColumn("RUC");
-            model.addColumn("Nombre Comercial");
-            model.addColumn("Teléfono");
-            model.addColumn("Email");
-            model.addColumn("Dirección");
-            model.addColumn("Estado");
-
-            while (rs.next()) {
+        if (proveedores.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No existen proveedores registrados actualmente.");
+        } else {
+            for (Proveedor p : proveedores) {
                 Object[] fila = new Object[7];
-                fila[0] = rs.getInt("idProveedor");
-                fila[1] = rs.getString("ruc");
-                fila[2] = rs.getString("nombreProveedor");
-                fila[3] = rs.getString("telefonoProveedor");
-                fila[4] = rs.getString("correoProveedor");
-                fila[5] = rs.getString("direccionProveedor");
-                fila[6] = rs.getInt("estado") == 1 ? "Activo" : "Inactivo";
-
+                fila[0] = p.getIdProveedor();
+                fila[1] = p.getRuc();
+                fila[2] = p.getNombre();
+                fila[3] = p.getTelefono();
+                fila[4] = p.getCorreo();
+                fila[5] = p.getDireccion();
+                fila[6] = (p.getEstado() == 1) ? "Activo" : "Inactivo";
                 model.addRow(fila);
             }
-
-            tableProveedor.setModel(model);
-        } catch (SQLException e) {
-            System.err.println("Error al llenar la tabla de proveedores: " + e.getMessage());
-            JOptionPane.showMessageDialog(null, "Error al cargar los proveedores: " + e.getMessage());
         }
+        tableProveedor.setModel(model);
+        jScrollPane3.setViewportView(tableProveedor);
     }
 
     private void activar() {
@@ -156,8 +151,8 @@ public class JPanelProveedorEliminar extends javax.swing.JPanel {
 
             idProveedor = Integer.parseInt(tableProveedor.getValueAt(fila, 0).toString());
 
-            ProveedorDAO controlProveedor = new ProveedorDAO();
-            boolean proveedorActivado = controlProveedor.activar(idProveedor);
+            ProveedorController controlProveedor = new ProveedorController();
+            boolean proveedorActivado = controlProveedor.activarProveedor(idProveedor);
 
             if (proveedorActivado) {
                 JOptionPane.showMessageDialog(null, "Proveedor activado correctamente.");
@@ -183,8 +178,8 @@ public class JPanelProveedorEliminar extends javax.swing.JPanel {
 
             idProveedor = Integer.parseInt(tableProveedor.getValueAt(fila, 0).toString());
 
-            ProveedorDAO controlProveedor = new ProveedorDAO();
-            boolean proveedorDesactivado = controlProveedor.desactivar(idProveedor);
+            ProveedorController controlProveedor = new ProveedorController();
+            boolean proveedorDesactivado = controlProveedor.desactivarProveedor(idProveedor);
 
             if (proveedorDesactivado) {
                 JOptionPane.showMessageDialog(null, "Proveedor desactivado correctamente.");
@@ -194,6 +189,12 @@ public class JPanelProveedorEliminar extends javax.swing.JPanel {
             }
         } else {
             JOptionPane.showMessageDialog(null, "Seleccione un proveedor para desactivar.");
+        }
+    }
+    private void verificarExistenciaProveedor() {
+        ProveedorController controller = new ProveedorController();
+        if (!controller.existenProveedoresEnSistema()) {
+            JOptionPane.showMessageDialog(null, "No existen proveedores en el sistema.");
         }
     }
 }

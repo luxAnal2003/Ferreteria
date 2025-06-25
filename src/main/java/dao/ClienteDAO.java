@@ -1,6 +1,5 @@
 package dao;
 
-import dao.Conexion;
 import modelo.Cliente;
 import java.util.ArrayList;
 import java.util.List;
@@ -124,45 +123,8 @@ public class ClienteDAO {
         }
         return respuesta;
     }
-//
-//    public List<Cliente> listar() {
-//        List<Cliente> lista = new ArrayList<>();
-//        Connection cn = null;
-//
-//        String sql = "SELECT idCliente, nombre, apellido, telefono, correo, cedula, direccion, estado FROM cliente";
-//
-//        try {
-//            cn = Conexion.conectar();
-//            PreparedStatement consulta = cn.prepareStatement(sql);
-//            ResultSet rs = consulta.executeQuery();
-//
-//            while (rs.next()) {
-//                Cliente cli = new Cliente();
-//                cli.setIdCliente(rs.getInt("idCliente"));
-//                cli.setNombre(rs.getString("nombre"));
-//                cli.setApellido(rs.getString("apellido"));
-//                cli.setTelefono(rs.getString("telefono"));
-//                cli.setCorreo(rs.getString("correo"));
-//                cli.setCedula(rs.getString("cedula"));
-//                cli.setDireccion(rs.getString("direccion"));
-//                cli.setEstado(rs.getInt("estado"));
-//                lista.add(cli);
-//            }
-//        } catch (SQLException e) {
-//            System.err.println("Error al listar clientes: " + e.getMessage());
-//        } finally {
-//            try {
-//                if (cn != null) {
-//                    cn.close();
-//                }
-//            } catch (SQLException e) {
-//                System.err.println("Error al cerrar conexión: " + e.getMessage());
-//            }
-//        }
-//        return lista;
-//    }
 
-    public boolean existeCliente(String cedula) {
+    public boolean existeClientePorCedula(String cedula) {
         boolean respuesta = false;
         Connection cn = null;
 
@@ -238,5 +200,176 @@ public class ClienteDAO {
             System.out.println("Error al buscar cliente por cédula: " + e);
         }
         return cliente;
+    }
+
+    public List<Cliente> getAllClientes() {
+        List<Cliente> clientes = new ArrayList<>();
+        Connection con = null;
+        Statement st = null;
+        ResultSet rs = null;
+
+        String sql = "SELECT idCliente, nombre, apellido, telefono, correo, cedula, direccion, estado FROM Cliente";
+
+        try {
+            con = Conexion.conectar();
+            st = con.createStatement();
+            rs = st.executeQuery(sql);
+
+            while (rs.next()) {
+                Cliente cliente = new Cliente();
+                cliente.setIdCliente(rs.getInt("idCliente"));
+                cliente.setCedula(rs.getString("cedula"));
+                cliente.setNombre(rs.getString("nombre"));
+                cliente.setApellido(rs.getString("apellido"));
+                cliente.setTelefono(rs.getString("telefono"));
+                cliente.setDireccion(rs.getString("direccion"));
+                cliente.setCorreo(rs.getString("correo"));
+                cliente.setEstado(rs.getInt("estado"));
+                clientes.add(cliente);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error SQL al obtener todos los clientes en ClienteDAO: " + e.getMessage());
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (st != null) {
+                    st.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("Error al cerrar conexión en ClienteDAO.getAllClientes: " + e.getMessage());
+            }
+        }
+        return clientes;
+    }
+
+    public boolean verificarExistenciaClientes() {
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            con = Conexion.conectar();
+            String sql = "SELECT COUNT(*) FROM Cliente";
+            ps = con.prepareStatement(sql);
+            rs = ps.executeQuery();
+            return rs.next() && rs.getInt(1) > 0;
+        } catch (SQLException e) {
+            System.err.println("Error al verificar existencia de clientes: " + e.getMessage());
+            return false;
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("Error al cerrar conexión: " + e.getMessage());
+            }
+        }
+    }
+
+    public Cliente obtenerClientePorId(int idCliente) {
+        Cliente cliente = null;
+        String sql = "SELECT idCliente, nombre, apellido, telefono, correo, cedula, direccion, estado FROM Cliente WHERE idCliente = ?"; // Usar 'cedula'
+        Connection con = null;
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+
+        try {
+            con = Conexion.conectar();
+            pst = con.prepareStatement(sql);
+            pst.setInt(1, idCliente);
+            rs = pst.executeQuery();
+
+            if (rs.next()) {
+                cliente = new Cliente();
+                cliente.setIdCliente(rs.getInt("idCliente"));
+                cliente.setNombre(rs.getString("nombre"));
+                cliente.setApellido(rs.getString("apellido"));
+                cliente.setTelefono(rs.getString("telefono"));
+                cliente.setCorreo(rs.getString("correo"));
+                cliente.setCedula(rs.getString("cedula"));
+                cliente.setDireccion(rs.getString("direccion"));
+                cliente.setEstado(rs.getInt("estado"));
+            }
+        } catch (SQLException e) {
+            System.err.println("Error SQL al obtener cliente por ID en ClienteDAO: " + e.getMessage());
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (pst != null) {
+                    pst.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("Error al cerrar conexión en ClienteDAO.getClienteById: " + e.getMessage());
+            }
+        }
+        return cliente;
+    }
+
+    public List<Cliente> buscarClientesActivos(String criterio) {
+        List<Cliente> clientes = new ArrayList<>();
+        Connection con = null;
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+
+        String sql = "SELECT idCliente, nombre, apellido, telefono, correo, cedula, direccion, estado "
+                + "FROM Cliente "
+                + "WHERE estado = 1 " 
+                + "AND (nombre LIKE ? OR apellido LIKE ? OR cedula LIKE ?)";
+
+        try {
+            con = Conexion.conectar();
+            pst = con.prepareStatement(sql);
+            String busquedaLike = "%" + criterio + "%";
+            pst.setString(1, busquedaLike);
+            pst.setString(2, busquedaLike);
+            pst.setString(3, busquedaLike);
+            rs = pst.executeQuery();
+
+            while (rs.next()) {
+                Cliente cliente = new Cliente();
+                cliente.setIdCliente(rs.getInt("idCliente"));
+                cliente.setCedula(rs.getString("cedula"));
+                cliente.setNombre(rs.getString("nombre"));
+                cliente.setApellido(rs.getString("apellido"));
+                cliente.setTelefono(rs.getString("telefono"));
+                cliente.setDireccion(rs.getString("direccion"));
+                cliente.setCorreo(rs.getString("correo"));
+                cliente.setEstado(rs.getInt("estado"));
+                clientes.add(cliente);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error SQL al buscar clientes activos en ClienteDAO: " + e.getMessage());
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (pst != null) {
+                    pst.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("Error al cerrar conexión en ClienteDAO.buscarClientesActivos: " + e.getMessage());
+            }
+        }
+        return clientes;
     }
 }

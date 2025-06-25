@@ -4,15 +4,12 @@
  */
 package vista;
 
-import dao.Conexion;
+import controlador.ProveedorController;
 import java.awt.Dimension;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import java.sql.Statement;
-import java.sql.ResultSet;
+import java.util.List;
+import modelo.Proveedor;
 
 /**
  *
@@ -141,58 +138,41 @@ public class JPanelConsultarProveedor extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     private void cargarProveedoresEnTabla() {
-        Connection con = null;
         DefaultTableModel model = new DefaultTableModel();
+        ProveedorController controller = new ProveedorController();
 
-        String sql = "SELECT idProveedor, ruc, nombreProveedor, telefonoProveedor, "
-                + "correoProveedor, direccionProveedor, estado FROM proveedor WHERE estado = 1";
+        model.addColumn("ID");
+        model.addColumn("RUC");
+        model.addColumn("Nombre Comercial");
+        model.addColumn("Teléfono");
+        model.addColumn("Email");
+        model.addColumn("Dirección");
+        model.addColumn("Estado");
 
-        try {
-            con = Conexion.conectar();
-            Statement st = con.createStatement();
-            ResultSet rs = st.executeQuery(sql);
+        List<Proveedor> proveedores = controller.obtenerTodosLosProveedores();
 
-            model.addColumn("ID");
-            model.addColumn("RUC");
-            model.addColumn("Nombre Comercial");
-            model.addColumn("Teléfono");
-            model.addColumn("Email");
-            model.addColumn("Dirección");
-            model.addColumn("Estado");
-
-            boolean hayRegistros = false;
-
-            while (rs.next()) {
-                hayRegistros = true;
+        if (proveedores.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No existen proveedores registrados actualmente.");
+        } else {
+            for (Proveedor p : proveedores) {
                 Object[] fila = new Object[7];
-                fila[0] = rs.getInt("idProveedor");
-                fila[1] = rs.getString("ruc");
-                fila[2] = rs.getString("nombreProveedor");
-                fila[3] = rs.getString("telefonoProveedor");
-                fila[4] = rs.getString("correoProveedor");
-                fila[5] = rs.getString("direccionProveedor");
-                fila[6] = (rs.getInt("estado") == 1) ? "Activo" : "Inactivo"; 
+                fila[0] = p.getIdProveedor();
+                fila[1] = p.getRuc();
+                fila[2] = p.getNombre();
+                fila[3] = p.getTelefono();
+                fila[4] = p.getCorreo();
+                fila[5] = p.getDireccion();
+                fila[6] = (p.getEstado() == 1) ? "Activo" : "Inactivo";
                 model.addRow(fila);
             }
-
-            tableProveedor.setModel(model); 
-            jScrollPane3.setViewportView(tableProveedor);
-
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error al cargar proveedores: " + e.getMessage());
-        } finally {
-            try {
-                if (con != null) {
-                    con.close(); 
-                }
-            } catch (SQLException e) {
-                System.err.println("Error al cerrar conexión: " + e.getMessage());
-            }
         }
+        tableProveedor.setModel(model);
+        jScrollPane3.setViewportView(tableProveedor);
     }
 
     private void buscarProveedores() {
         String criterio = txtBuscador.getText().trim();
+        ProveedorController controller = new ProveedorController(); 
 
         if (criterio.isEmpty()) {
             cargarProveedoresEnTabla(); 
@@ -208,78 +188,32 @@ public class JPanelConsultarProveedor extends javax.swing.JPanel {
         model.addColumn("Dirección");
         model.addColumn("Estado");
 
-        Connection con = null;
+        List<Proveedor> proveedoresEncontrados = controller.buscarProveedoresPorCriterio(criterio);
 
-        String sql = "SELECT idProveedor, ruc, nombreProveedor, telefonoProveedor, "
-                + "correoProveedor, direccionProveedor, estado FROM proveedor "
-                + "WHERE estado = 1 AND (ruc LIKE ? OR nombreProveedor LIKE ?)";
-
-        try {
-            con = Conexion.conectar();
-            PreparedStatement pst = con.prepareStatement(sql);
-            String busquedaLike = "%" + criterio + "%";
-
-            pst.setString(1, busquedaLike);
-            pst.setString(2, busquedaLike);
-
-            ResultSet rs = pst.executeQuery();
-
-            boolean hayRegistros = false;
-
-            while (rs.next()) {
-                hayRegistros = true;
+        if (!proveedoresEncontrados.isEmpty()) {
+            for (Proveedor p : proveedoresEncontrados) {
                 Object[] fila = new Object[7];
-                fila[0] = rs.getInt("idProveedor");
-                fila[1] = rs.getString("ruc");
-                fila[2] = rs.getString("nombreProveedor");
-                fila[3] = rs.getString("telefonoProveedor");
-                fila[4] = rs.getString("correoProveedor");
-                fila[5] = rs.getString("direccionProveedor");
-                fila[6] = (rs.getInt("estado") == 1) ? "Activo" : "Inactivo";
+                fila[0] = p.getIdProveedor();
+                fila[1] = p.getRuc();
+                fila[2] = p.getNombre();
+                fila[3] = p.getTelefono();
+                fila[4] = p.getCorreo();
+                fila[5] = p.getDireccion();
+                fila[6] = (p.getEstado() == 1) ? "Activo" : "Inactivo";
                 model.addRow(fila);
             }
-
-            if (hayRegistros) {
-                tableProveedor.setModel(model); 
-                jScrollPane3.setViewportView(tableProveedor);
-            } else {
-                JOptionPane.showMessageDialog(null, "No se encontraron resultados para la búsqueda de proveedores.");
-                cargarProveedoresEnTabla();
-            }
-
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error al buscar proveedores: " + e.getMessage());
-        } finally {
-            try {
-                if (con != null) {
-                    con.close(); 
-                }
-            } catch (SQLException e) {
-                System.err.println("Error al cerrar conexión: " + e.getMessage());
-            }
+            tableProveedor.setModel(model);
+            jScrollPane3.setViewportView(tableProveedor);
+        } else {
+            JOptionPane.showMessageDialog(null, "No se encontraron proveedores activos que coincidan con el criterio de búsqueda.");
+            cargarProveedoresEnTabla();
         }
     }
 
     private void verificarExistenciaProveedor() {
-        Connection con = null;
-        try {
-            con = Conexion.conectar();
-            String sql = "SELECT COUNT(*) FROM Proveedor";
-            try (PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
-                if (rs.next() && rs.getInt(1) == 0) {
-                    JOptionPane.showMessageDialog(null, "No existen proveedores en el sistema.");
-                }
-            }
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error al verificar proveedores: " + e.getMessage());
-        } finally {
-            try {
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-                System.err.println("Error al cerrar conexión: " + e.getMessage());
-            }
+        ProveedorController controller = new ProveedorController();
+        if (!controller.existenProveedoresEnSistema()) {
+            JOptionPane.showMessageDialog(null, "No existen proveedores en el sistema.");
         }
     }
 }

@@ -7,25 +7,17 @@ package vista;
 import config.Sesion;
 import controlador.ClienteController;
 import controlador.VentaController;
-import dao.VentaDAO;
 import dao.ClienteDAO;
 import dao.ProductoDAO;
-import dao.Conexion;
 import java.awt.Dimension;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import modelo.Venta;
 import modelo.Cliente;
 import modelo.DetalleVenta;
 import modelo.Producto;
-import modelo.Totales;
-import modelo.VentaCalculadora;
 
 /**
  *
@@ -719,7 +711,7 @@ public class JPanelVentaNuevo extends javax.swing.JPanel {
             return;
         }
 
-        if (controladorCliente.existeCliente(cedulaRuc)) {
+        if (controladorCliente.existeClientePorCedula(cedulaRuc)) {
             JOptionPane.showMessageDialog(null, "El cliente ya existe");
             return;
         }

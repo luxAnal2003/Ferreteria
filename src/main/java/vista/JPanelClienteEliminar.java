@@ -4,16 +4,12 @@
  */
 package vista;
 
-import dao.ClienteDAO;
-import dao.Conexion;
+import controlador.ClienteController;
 import java.awt.Dimension;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import java.sql.Statement;
-import java.sql.ResultSet;
+import java.util.List;
+import modelo.Cliente;
 
 /**
  *
@@ -110,82 +106,66 @@ public class JPanelClienteEliminar extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     private void cargarClientesEnTabla() {
-        Connection con = null;
         DefaultTableModel model = new DefaultTableModel();
+        ClienteController controller = new ClienteController();
 
-        String sql = "SELECT idCliente, cedula, nombre, apellido, telefono, direccion, correo, estado FROM Cliente";
+        model.addColumn("ID Cliente");
+        model.addColumn("Cédula");
+        model.addColumn("Nombres");
+        model.addColumn("Apellidos");
+        model.addColumn("Teléfono");
+        model.addColumn("Dirección");
+        model.addColumn("Correo");
+        model.addColumn("Estado");
 
-        try {
-            con = Conexion.conectar();
-            Statement st = con.createStatement();
-            ResultSet rs = st.executeQuery(sql);
+        List<Cliente> clientes = controller.obtenerTodosLosClientes();
 
-            model.addColumn("ID Cliente");
-            model.addColumn("Cédula");
-            model.addColumn("Nombres");
-            model.addColumn("Apellidos");
-            model.addColumn("Teléfono");
-            model.addColumn("Dirección");
-            model.addColumn("Correo");
-            model.addColumn("Estado");
-
-            boolean hayRegistros = false;
-
-            while (rs.next()) {
-                hayRegistros = true;
+        boolean hayRegistros = false;
+        if (!clientes.isEmpty()) {
+            hayRegistros = true;
+            for (Cliente cliente : clientes) {
                 Object[] fila = new Object[8];
-                fila[0] = rs.getInt("idCliente");
-                fila[1] = rs.getString("cedula");
-                fila[2] = rs.getString("nombre");
-                fila[3] = rs.getString("apellido");
-                fila[4] = rs.getString("telefono");
-                fila[5] = rs.getString("direccion");
-                fila[6] = rs.getString("correo");
-                fila[7] = (rs.getInt("estado") == 1) ? "Activo" : "Inactivo";
+                fila[0] = cliente.getIdCliente();
+                fila[1] = cliente.getCedula();
+                fila[2] = cliente.getNombre();
+                fila[3] = cliente.getApellido();
+                fila[4] = cliente.getTelefono();
+                fila[5] = cliente.getDireccion();
+                fila[6] = cliente.getCorreo();
+                fila[7] = (cliente.getEstado() == 1) ? "Activo" : "Inactivo";
                 model.addRow(fila);
             }
-            if (!hayRegistros) {
-                JOptionPane.showMessageDialog(null, "No existen clientes registrados actualmente.");
-            }
-
-            tableCliente.setModel(model);
-            jScrollPane3.setViewportView(tableCliente);
-
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error al cargar clientes: " + e.getMessage());
-            System.err.println("Error al cargar clientes: " + e.getMessage());
-        } finally {
-            try {
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-                System.err.println("Error al cerrar conexión: " + e.getMessage());
-            }
         }
+
+        if (!hayRegistros) {
+            JOptionPane.showMessageDialog(null, "No existen clientes registrados actualmente");
+        }
+
+        tableCliente.setModel(model);
+        jScrollPane3.setViewportView(tableCliente);
     }
 
-    private void verificarExistenciaClientes() {
-        Connection con = null;
-        try {
-            con = Conexion.conectar();
-            String sql = "SELECT COUNT(*) FROM Cliente";
-            try (PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
-                if (rs.next() && rs.getInt(1) == 0) {
-                    JOptionPane.showMessageDialog(null, "No existen clientes en el sistema.");
-                }
+    private void desactivar() {
+        int fila = tableCliente.getSelectedRow();
+
+        if (fila != -1) {
+            String estadoActual = tableCliente.getValueAt(fila, 7).toString();
+            if (estadoActual.equalsIgnoreCase("Inactivo")) {
+                JOptionPane.showMessageDialog(null, "El cliente ya ha sido desactivado");
+                return;
             }
-        } catch (SQLException e) {
-            System.err.println("Error al verificar clientes: " + e.getMessage());
-            JOptionPane.showMessageDialog(null, "Error al verificar clientes: " + e.getMessage());
-        } finally {
-            try {
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-                System.err.println("Error al cerrar conexión: " + e.getMessage());
+
+            idCliente = Integer.parseInt(tableCliente.getValueAt(fila, 0).toString());
+
+            ClienteController controller = new ClienteController();
+            if (controller.desactivarCliente(idCliente)) {
+                JOptionPane.showMessageDialog(null, "Cliente desactivado correctamente");
+                cargarClientesEnTabla();
+            } else {
+                JOptionPane.showMessageDialog(null, "Error al desactivar el cliente");
             }
+        } else {
+            JOptionPane.showMessageDialog(null, "Seleccione un cliente para desactivar");
         }
     }
 
@@ -195,71 +175,28 @@ public class JPanelClienteEliminar extends javax.swing.JPanel {
         if (fila != -1) {
             String estadoActual = tableCliente.getValueAt(fila, 7).toString();
             if (estadoActual.equalsIgnoreCase("Activo")) {
-                JOptionPane.showMessageDialog(null, "El cliente ya está activo.");
-                return;
-            }
-
-            int idCliente = Integer.parseInt(tableCliente.getValueAt(fila, 0).toString());
-
-            Connection con = null;
-            try {
-                con = Conexion.conectar();
-                String sql = "UPDATE Cliente SET estado = 1 WHERE idCliente = ?";
-                try (PreparedStatement pst = con.prepareStatement(sql)) {
-                    pst.setInt(1, idCliente);
-                    int filasAfectadas = pst.executeUpdate();
-                    if (filasAfectadas > 0) {
-                        JOptionPane.showMessageDialog(null, "Cliente activado correctamente.");
-                        cargarClientesEnTabla();
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Error al activar el cliente.");
-                    }
-                }
-            } catch (SQLException e) {
-                JOptionPane.showMessageDialog(null, "Error SQL al activar cliente: " + e.getMessage());
-                System.err.println("Error SQL al activar cliente: " + e.getMessage());
-            } finally {
-                try {
-                    if (con != null) {
-                        con.close();
-                    }
-                } catch (SQLException e) {
-                    System.err.println("Error al cerrar conexión: " + e.getMessage());
-                }
-            }
-        } else {
-            JOptionPane.showMessageDialog(null, "Seleccione un cliente para activar.");
-        }
-    }
-
-    /**
-     * Desactiva el cliente seleccionado en la tabla (cambia su estado a
-     * inactivo).
-     */
-    private void desactivar() {
-        int fila = tableCliente.getSelectedRow();
-
-        if (fila != -1) {
-            String estadoActual = tableCliente.getValueAt(fila, 7).toString();
-            if (estadoActual.equalsIgnoreCase("Inactivo")) {
-                JOptionPane.showMessageDialog(null, "El cliente ya ha sido desactivado.");
+                JOptionPane.showMessageDialog(null, "El cliente ya ha sido activado");
                 return;
             }
 
             idCliente = Integer.parseInt(tableCliente.getValueAt(fila, 0).toString());
 
-            ClienteDAO control = new ClienteDAO();
-            boolean clienteDesactivado = control.desactivar(idCliente);
-
-            if (clienteDesactivado) {
-                JOptionPane.showMessageDialog(null, "Cliente desactivado correctamente.");
-                this.cargarClientesEnTabla();
+            ClienteController controller = new ClienteController();
+            if (controller.activarCliente(idCliente)) {
+                JOptionPane.showMessageDialog(null, "Cliente activado correctamente");
+                cargarClientesEnTabla();
             } else {
-                JOptionPane.showMessageDialog(null, "Error al desactivar el cliente.");
+                JOptionPane.showMessageDialog(null, "Error al activar el cliente");
             }
-        } else {
-            JOptionPane.showMessageDialog(null, "Seleccione un cliente para desactivar.");
+        }else{
+            JOptionPane.showMessageDialog(null, "Seleccione un cliente para activar");
+        }
+    }
+
+    private void verificarExistenciaClientes() {
+        ClienteController controller = new ClienteController();
+        if (!controller.existenClientes()) {
+            JOptionPane.showMessageDialog(null, "No existen clientes en el sistema.");
         }
     }
 }
-

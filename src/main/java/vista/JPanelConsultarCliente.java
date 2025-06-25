@@ -4,15 +4,12 @@
  */
 package vista;
 
-import dao.Conexion;
+import controlador.ClienteController;
 import java.awt.Dimension;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import java.sql.Statement;
-import java.sql.ResultSet;
+import java.util.List;
+import modelo.Cliente;
 
 /**
  *
@@ -141,66 +138,48 @@ public class JPanelConsultarCliente extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     private void cargarClientesEnTabla() {
-        Connection con = null;
         DefaultTableModel model = new DefaultTableModel();
+        ClienteController controller = new ClienteController();
 
-        String sql = "SELECT idCliente, nombre, apellido, telefono, correo, cedula, direccion, estado "
-                + "FROM Cliente WHERE estado = 1"; 
+        model.addColumn("ID Cliente");
+        model.addColumn("Cédula");
+        model.addColumn("Nombres");
+        model.addColumn("Apellidos");
+        model.addColumn("Teléfono");
+        model.addColumn("Dirección");
+        model.addColumn("Correo");
+        model.addColumn("Estado");
 
-        try {
-            con = Conexion.conectar();
-            Statement st = con.createStatement();
-            ResultSet rs = st.executeQuery(sql);
+        List<Cliente> clientes = controller.obtenerTodosLosClientes();
 
-            model.addColumn("ID Cliente");
-            model.addColumn("Cédula");
-            model.addColumn("Nombres");
-            model.addColumn("Apellidos");
-            model.addColumn("Teléfono");
-            model.addColumn("Dirección");
-            model.addColumn("Correo");
-            model.addColumn("Estado");
-
-            boolean hayRegistros = false;
-
-            while (rs.next()) {
-                hayRegistros = true;
+        boolean hayRegistros = false;
+        if (!clientes.isEmpty()) {
+            hayRegistros = true;
+            for (Cliente cliente : clientes) {
                 Object[] fila = new Object[8];
-                fila[0] = rs.getInt("idCliente");
-                fila[1] = rs.getString("cedula");
-                fila[2] = rs.getString("nombre");
-                fila[3] = rs.getString("apellido");
-                fila[4] = rs.getString("telefono");
-                fila[5] = rs.getString("direccion");
-                fila[6] = rs.getString("correo");
-                fila[7] = (rs.getInt("estado") == 1) ? "Activo" : "Inactivo";
-
+                fila[0] = cliente.getIdCliente();
+                fila[1] = cliente.getCedula();
+                fila[2] = cliente.getNombre();
+                fila[3] = cliente.getApellido();
+                fila[4] = cliente.getTelefono();
+                fila[5] = cliente.getDireccion();
+                fila[6] = cliente.getCorreo();
+                fila[7] = (cliente.getEstado() == 1) ? "Activo" : "Inactivo";
                 model.addRow(fila);
             }
-
-            if (!hayRegistros) {
-                JOptionPane.showMessageDialog(null, "No existen clientes activos registrados actualmente.");
-            }
-
-            tableCliente.setModel(model);
-            jScrollPane3.setViewportView(tableCliente);
-
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error al cargar clientes: " + e.getMessage());
-            System.err.println("Error al cargar clientes: " + e.getMessage());
-        } finally {
-            try {
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-                System.err.println("Error al cerrar conexión: " + e.getMessage());
-            }
         }
+
+        if (!hayRegistros) {
+            JOptionPane.showMessageDialog(null, "No existen clientes registrados actualmente");
+        }
+
+        tableCliente.setModel(model);
+        jScrollPane3.setViewportView(tableCliente);
     }
 
     private void buscarClientes() {
         String criterio = txtBuscador.getText().trim();
+        ClienteController controller = new ClienteController();
 
         if (criterio.isEmpty()) {
             cargarClientesEnTabla();
@@ -217,81 +196,33 @@ public class JPanelConsultarCliente extends javax.swing.JPanel {
         model.addColumn("Correo");
         model.addColumn("Estado");
 
-        Connection con = null;
+        List<Cliente> clientesEncontrados = controller.buscarClientesActivosPorCriterio(criterio);
 
-        String sql = "SELECT idCliente, nombre, apellido, telefono, correo, cedula, direccion, estado "
-                + "FROM Cliente "
-                + "WHERE estado = 1 " 
-                + "AND (nombre LIKE ? OR apellido LIKE ? OR cedula LIKE ?)";
-
-        try {
-            con = Conexion.conectar();
-            PreparedStatement pst = con.prepareStatement(sql);
-            String busquedaLike = "%" + criterio + "%";
-            pst.setString(1, busquedaLike);
-            pst.setString(2, busquedaLike);
-            pst.setString(3, busquedaLike);
-            ResultSet rs = pst.executeQuery();
-
-            boolean hayResultados = false;
-
-            while (rs.next()) {
-                hayResultados = true;
-                Object[] fila = new Object[8]; 
-                fila[0] = rs.getInt("idCliente");
-                fila[1] = rs.getString("cedula"); 
-                fila[2] = rs.getString("nombre");
-                fila[3] = rs.getString("apellido");
-                fila[4] = rs.getString("telefono");
-                fila[5] = rs.getString("direccion");
-                fila[6] = rs.getString("correo");
-                fila[7] = (rs.getInt("estado") == 1) ? "Activo" : "Inactivo";
+        if (!clientesEncontrados.isEmpty()) {
+            for (Cliente cliente : clientesEncontrados) {
+                Object[] fila = new Object[8];
+                fila[0] = cliente.getIdCliente();
+                fila[1] = cliente.getCedula();
+                fila[2] = cliente.getNombre();
+                fila[3] = cliente.getApellido();
+                fila[4] = cliente.getTelefono();
+                fila[5] = cliente.getDireccion();
+                fila[6] = cliente.getCorreo();
+                fila[7] = (cliente.getEstado() == 1) ? "Activo" : "Inactivo";
                 model.addRow(fila);
             }
-
-            if (hayResultados) {
-                tableCliente.setModel(model);
-                jScrollPane3.setViewportView(tableCliente);
-            } else {
-                JOptionPane.showMessageDialog(null, "No se encontraron resultados para la búsqueda de clientes activos.");
-                cargarClientesEnTabla(); 
-            }
-
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error al buscar clientes: " + e.getMessage());
-            System.err.println("Error al buscar clientes: " + e.getMessage());
-        } finally {
-            try {
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-                System.err.println("Error al cerrar conexión: " + e.getMessage());
-            }
+            tableCliente.setModel(model);
+            jScrollPane3.setViewportView(tableCliente);
+        } else {
+            JOptionPane.showMessageDialog(null, "No se encontraron clientes activos que coincidan con el criterio de búsqueda.");
+            cargarClientesEnTabla(); 
         }
     }
 
     private void verificarExistenciaClientes() {
-        Connection con = null;
-        try {
-            con = Conexion.conectar();
-            String sql = "SELECT COUNT(*) FROM Cliente WHERE estado = 1"; 
-            try (PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
-                if (rs.next() && rs.getInt(1) == 0) {
-                    JOptionPane.showMessageDialog(null, "No existen clientes activos en el sistema.");
-                }
-            }
-        } catch (SQLException e) {
-            System.err.println("Error al verificar clientes: " + e.getMessage());
-            JOptionPane.showMessageDialog(null, "Error al verificar clientes: " + e.getMessage());
-        } finally {
-            try {
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-                System.err.println("Error al cerrar conexión: " + e.getMessage());
-            }
+        ClienteController controller = new ClienteController();
+        if (!controller.existenClientes()) {
+            JOptionPane.showMessageDialog(null, "No existen clientes en el sistema.");
         }
     }
 }

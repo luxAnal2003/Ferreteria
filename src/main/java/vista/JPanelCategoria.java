@@ -4,18 +4,10 @@
  */
 package vista;
 
-import dao.CategoriaDAO;
-import dao.Conexion;
+import controlador.CategoriaController;
 import java.awt.Dimension;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.util.List;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import modelo.Categoria;
 
@@ -71,13 +63,13 @@ public class JPanelCategoria extends javax.swing.JPanel {
 
         tableCategoria.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
-                "Categoria", "Estado"
+                "Id", "Categoria", "Estado"
             }
         ));
         jScrollPane1.setViewportView(tableCategoria);
@@ -147,29 +139,37 @@ public class JPanelCategoria extends javax.swing.JPanel {
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         Categoria categoria = new Categoria();
-        CategoriaDAO controladorCategoria = new CategoriaDAO();
+        CategoriaController categoriaController = new CategoriaController();
 
-        if (txtCategoria.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Complete todos los campos");
-        } else {
-            if (!controladorCategoria.existeCategoria(txtCategoria.getText().trim())) {
-                String nombreIngresado = txtCategoria.getText().trim();
-                if (!nombreIngresado.isEmpty()) {
-                    String nombreFormateado = nombreIngresado.substring(0, 1).toUpperCase() + nombreIngresado.substring(1).toLowerCase();
-                    categoria.setNombre(nombreFormateado);
-                }
-                categoria.setEstado(1);
-                if (controladorCategoria.guardar(categoria)) {
-                    JOptionPane.showMessageDialog(null, "Registro guardado");
-                    this.cargarCategoriasEnTabla();
-                } else {
-                    JOptionPane.showMessageDialog(null, "Error al guardar");
-                }
-            } else {
-                JOptionPane.showMessageDialog(null, "La categoria ya existe");
-            }
+        String nombreCategoria = txtCategoria.getText().trim();
+
+        if (nombreCategoria.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Complete el campo de categoría.");
+            return;
         }
-        txtCategoria.setText("");
+
+        if (categoriaController.existeCategoriaPorDescripcion(nombreCategoria)) {
+            JOptionPane.showMessageDialog(null, "La categoría ya existe.");
+            return;
+        }
+
+        try {
+            String nombreFormateado = nombreCategoria.substring(0, 1).toUpperCase() + nombreCategoria.substring(1).toLowerCase();
+            categoria.setNombre(nombreFormateado);
+            categoria.setEstado(1);
+
+            if (categoriaController.guardarCategoria(categoria)) {
+                JOptionPane.showMessageDialog(null, "Categoría guardada correctamente.");
+                this.cargarCategoriasEnTabla();
+                txtCategoria.setText("");
+                idCategoria = 0;
+            } else {
+                JOptionPane.showMessageDialog(null, "Error al guardar la categoría.");
+            }
+        } catch (Exception e) {
+            System.err.println("Error inesperado al guardar categoría: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, "Error inesperado al guardar la categoría.");
+        }
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
@@ -178,70 +178,68 @@ public class JPanelCategoria extends javax.swing.JPanel {
 
     private void btnEliminar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminar1ActionPerformed
         int fila = tableCategoria.getSelectedRow();
-        if (fila != -1) {
-            String estado = tableCategoria.getValueAt(fila, 2).toString();
-            if (estado.equalsIgnoreCase("Inactivo")) {
-                JOptionPane.showMessageDialog(null, "La categoría ya ha sido desactivada.");
-                return;
-            }
-
-            idCategoria = Integer.parseInt(tableCategoria.getValueAt(fila, 0).toString());
-
-            CategoriaDAO control = new CategoriaDAO();
-
-            boolean categoriaDesactivado = control.desactivar(idCategoria);
-
-            if (categoriaDesactivado) {
-                JOptionPane.showMessageDialog(null, "Categoría desactivada correctamente.");
-                txtCategoria.setText("");
-                this.cargarCategoriasEnTabla();
-            } else {
-                JOptionPane.showMessageDialog(null, "Error al desactivar la categoría.");
-            }
-        } else {
+        if (fila == -1) {
             JOptionPane.showMessageDialog(null, "Seleccione una categoría para desactivar.");
+            return;
+        }
+
+        idCategoria = Integer.parseInt(tableCategoria.getValueAt(fila, 0).toString());
+        String estadoActual = tableCategoria.getValueAt(fila, 2).toString();
+
+        if (estadoActual.equalsIgnoreCase("Inactivo")) {
+            JOptionPane.showMessageDialog(null, "La categoría ya ha sido desactivada.");
+            return;
+        }
+
+        CategoriaController categoriaController = new CategoriaController();
+        if (categoriaController.desactivarCategoria(idCategoria)) {
+            JOptionPane.showMessageDialog(null, "Categoría desactivada correctamente.");
+            txtCategoria.setText("");
+            idCategoria = 0;
+            this.cargarCategoriasEnTabla();
+        } else {
+            JOptionPane.showMessageDialog(null, "Error al desactivar la categoría.");
         }
     }//GEN-LAST:event_btnEliminar1ActionPerformed
 
     private void btnActivarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActivarActionPerformed
         int fila = tableCategoria.getSelectedRow();
-
-        if (fila != -1) {
-            String estado = tableCategoria.getValueAt(fila, 2).toString(); 
-            if (estado.equalsIgnoreCase("Activo")) {
-                JOptionPane.showMessageDialog(null, "La categoría ya está activa.");
-                txtCategoria.setText("");
-                return;
-            }
-            idCategoria = Integer.parseInt(tableCategoria.getValueAt(fila, 0).toString());
-
-            CategoriaDAO controlCategoria = new CategoriaDAO();
-
-            boolean categoriaActivado = controlCategoria.activar(idCategoria);
-
-            if (categoriaActivado) {
-                JOptionPane.showMessageDialog(null, "Categoría activada correctamente."); 
-                txtCategoria.setText("");
-               this.cargarCategoriasEnTabla();
-            } else {
-                JOptionPane.showMessageDialog(null, "Error al activar la categoría.");
-            }
-        } else {
+        if (fila == -1) {
             JOptionPane.showMessageDialog(null, "Seleccione una categoría para activar.");
+            return;
+        }
+
+        idCategoria = Integer.parseInt(tableCategoria.getValueAt(fila, 0).toString());
+        String estadoActual = tableCategoria.getValueAt(fila, 2).toString();
+
+        if (estadoActual.equalsIgnoreCase("Activo")) {
+            JOptionPane.showMessageDialog(null, "La categoría ya está activa.");
+            txtCategoria.setText("");
+            idCategoria = 0;
+            return;
+        }
+
+        CategoriaController categoriaController = new CategoriaController();
+        if (categoriaController.activarCategoria(idCategoria)) {
+            JOptionPane.showMessageDialog(null, "Categoría activada correctamente.");
+            txtCategoria.setText("");
+            this.cargarCategoriasEnTabla();
+        } else {
+            JOptionPane.showMessageDialog(null, "Error al activar la categoría.");
         }
     }//GEN-LAST:event_btnActivarActionPerformed
 
     private void btnActualizar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizar1ActionPerformed
         if (!txtCategoria.getText().isEmpty()) {
             Categoria categoria = new Categoria();
-            CategoriaDAO controlCategoria = new CategoriaDAO();
+            CategoriaController categoriaController = new CategoriaController();
 
             String nombreIngresado = txtCategoria.getText().trim();
             if (!nombreIngresado.isEmpty()) {
                 String nombreFormateado = nombreIngresado.substring(0, 1).toUpperCase() + nombreIngresado.substring(1).toLowerCase();
                 categoria.setNombre(nombreFormateado);
             }
-            if (controlCategoria.actualizar(categoria, idCategoria)) {
+            if (categoriaController.actualizarCategoria(categoria, idCategoria)) {
                 JOptionPane.showMessageDialog(null, "Categoria actualizada");
                 txtCategoria.setText("");
                 this.cargarCategoriasEnTabla();
@@ -269,63 +267,58 @@ public class JPanelCategoria extends javax.swing.JPanel {
     public static javax.swing.JTable tableCategoria;
     private javax.swing.JTextField txtCategoria;
     // End of variables declaration//GEN-END:variables
+
     private void cargarCategoriasEnTabla() {
-        Connection con = Conexion.conectar();
         DefaultTableModel model = new DefaultTableModel();
-        String sql = "select idCategoria, descripcionCategoria, estado from categoria";
-        Statement st;
+        CategoriaController controller = new CategoriaController();
 
-        try {
-            st = con.createStatement();
-            ResultSet rs = st.executeQuery(sql);
-            JPanelCategoria.tableCategoria = new JTable(model);
-            JPanelCategoria.jScrollPane1.setViewportView(JPanelCategoria.tableCategoria);
+        model.addColumn("IdCategoria");
+        model.addColumn("Descripcion");
+        model.addColumn("Estado");
 
-            model.addColumn("IdCategoria");
-            model.addColumn("Descripcion");
-            model.addColumn("Estado");
+        List<Categoria> categorias = controller.obtenerTodasLasCategorias();
 
-            while (rs.next()) {
-                Object fila[] = new Object[3];
-                fila[0] = rs.getInt("idCategoria");
-                fila[1] = rs.getString("descripcionCategoria");
-
-                int estadoValor = rs.getInt("estado");
-                fila[2] = (estadoValor == 1) ? "Activo" : "Inactivo";
-
+        boolean hayRegistros = false;
+        if (!categorias.isEmpty()) {
+            hayRegistros = true;
+            for (Categoria categoria : categorias) {
+                Object[] fila = new Object[3];
+                fila[0] = categoria.getIdCategoria();
+                fila[1] = categoria.getNombre();
+                fila[2] = (categoria.getEstado() == 1) ? "Activo" : "Inactivo";
                 model.addRow(fila);
             }
-
-            con.close();
-        } catch (SQLException e) {
-            System.out.println("Error al llenar la tabla categorias: " + e);
         }
-        tableCategoria.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                int fila_point = tableCategoria.rowAtPoint(e.getPoint());
-                int columna_point = 0;
 
-                if (fila_point > -1) {
-                    idCategoria = (int) model.getValueAt(fila_point, columna_point);
-                    enviarDatosCategoria(idCategoria);
+        tableCategoria.setModel(model);
+        jScrollPane1.setViewportView(tableCategoria);
+
+        if (!hayRegistros) {
+            JOptionPane.showMessageDialog(null, "No existen categorías registradas actualmente.");
+        }
+
+        tableCategoria.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                int filaSeleccionada = tableCategoria.getSelectedRow();
+                if (filaSeleccionada != -1) {
+                    int id = (int) tableCategoria.getValueAt(filaSeleccionada, 0);
+                    idCategoria = id;
+                    enviarDatosCategoria(id);
                 }
             }
         });
+
     }
 
     private void enviarDatosCategoria(int idCategoria) {
-        try {
-            Connection con = Conexion.conectar();
-            PreparedStatement pst = con.prepareStatement("select * from categoria where idCategoria= '" + idCategoria + "'");
-            ResultSet rs = pst.executeQuery();
+        CategoriaController controller = new CategoriaController();
+        Categoria categoria = controller.obtenerCategoriaPorId(idCategoria);
 
-            if (rs.next()) {
-                txtCategoria.setText(rs.getString("descripcionCategoria"));
-            }
-            con.close();
-        } catch (SQLException e) {
-            System.out.println("Error al seleccionar categorias: " + e);
+        if (categoria != null) {
+            txtCategoria.setText(categoria.getNombre());
+        } else {
+            JOptionPane.showMessageDialog(null, "No se encontró la categoría seleccionada.");
+            txtCategoria.setText("");
         }
     }
 }

@@ -4,22 +4,18 @@
  */
 package vista;
 
-import dao.ProductoDAO;
-import dao.Conexion;
+import controlador.CategoriaController;
+import controlador.ProductoController;
+import controlador.ProveedorController;
+import dao.CategoriaDAO;
+import dao.ProveedorDAO;
 import java.awt.Dimension;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import modelo.Categoria;
-import javax.swing.JComboBox;
 import modelo.Producto;
 import modelo.Proveedor;
-import java.sql.Statement;
-import java.sql.ResultSet;
+import java.util.List;
 
 /**
  *
@@ -29,7 +25,6 @@ public class JPanelProductoNuevo extends javax.swing.JPanel {
 
     private Categoria obtenerIdCategoria = new Categoria();
     private Proveedor obtenerIdProveedor = new Proveedor();
-    private int idProducto;
 
     /**
      * Creates new form JPanelCategoriaNuevo
@@ -37,20 +32,10 @@ public class JPanelProductoNuevo extends javax.swing.JPanel {
     public JPanelProductoNuevo() {
         initComponents();
         this.setSize(new Dimension(900, 400));
-        cargarDatosEnComboBox("categoria", "descripcionCategoria", cboxCategoria, "Seleccionar categoria");
-        cargarDatosEnComboBox("proveedor", "nombreProveedor", cboxProveedor, "Seleccionar proveedor");
+        this.cargarCategoriasEnComboBox();
+        this.cargarProveedoresEnComboBox();
 
         this.cargarProductosEnTabla();
-        tableProducto.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                int filaSeleccionada = tableProducto.getSelectedRow();
-                if (filaSeleccionada != -1) {
-                    idProducto = Integer.parseInt(tableProducto.getValueAt(filaSeleccionada, 0).toString());
-                }
-            }
-        });
-
     }
 
     /**
@@ -172,24 +157,24 @@ public class JPanelProductoNuevo extends javax.swing.JPanel {
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         Producto producto = new Producto();
-        ProductoDAO controladorProducto = new ProductoDAO();
+        ProductoController productoController = new ProductoController();
 
         String nombreProducto = txtNombreProducto.getText().trim();
         String stockTexto = txtStock.getText().trim();
         String precioTexto = txtPrecio.getText().trim();
         String descripcion = textAreaDescripcion.getText().trim();
+        String nombreCategoriaSeleccionada = cboxCategoria.getSelectedItem().toString();
+        String nombreProveedorSeleccionado = cboxProveedor.getSelectedItem().toString();
 
-        
-
-        if (controladorProducto.existeProducto(nombreProducto)) {
-            JOptionPane.showMessageDialog(null, "El producto ya existe");
+        if (productoController.existeProductoPorNombre(nombreProducto)) {
+            JOptionPane.showMessageDialog(null, "El producto ya existe con este nombre.");
             return;
         }
-        
+
         if (!validarCampos(nombreProducto, stockTexto, precioTexto, descripcion)) {
             return;
         }
-        
+
         try {
             String nombreFormateado = nombreProducto.substring(0, 1).toUpperCase() + nombreProducto.substring(1).toLowerCase();
             producto.setNombreProducto(nombreFormateado);
@@ -203,30 +188,31 @@ public class JPanelProductoNuevo extends javax.swing.JPanel {
             producto.setPorcentajeIva(12);
             producto.setEstado(1);
 
-            this.idCategoria();
+            this.obtenerIdCategoriaSeleccionada();
             producto.setIdCategoria(obtenerIdCategoria);
 
-            this.idProveedor();
+            this.obtenerIdProveedorSeleccionado();
             producto.setIdProveedor(obtenerIdProveedor);
 
-            if (controladorProducto.guardar(producto)) {
-                JOptionPane.showMessageDialog(null, "Producto guardado con iva del 12%");
-
-                this.cargarDatosEnComboBox("categoria", "descripcionCategoria", cboxCategoria, "Seleccionar categoria");
-                this.cargarDatosEnComboBox("proveedor", "nombreProveedor", cboxProveedor, "Seleccionar proveedor");
+            if (productoController.guardarProducto(producto, nombreCategoriaSeleccionada, nombreProveedorSeleccionado)) {
+                JOptionPane.showMessageDialog(null, "Producto guardado con IVA del 12%.");
+                this.cargarCategoriasEnComboBox();
+                this.cargarProveedoresEnComboBox();
 
                 this.cboxProveedor.setSelectedItem("Seleccione proveedor");
                 this.cboxCategoria.setSelectedItem("Seleccione categoria");
-
                 this.cargarProductosEnTabla();
                 this.setear();
             } else {
-                JOptionPane.showMessageDialog(null, "Error al guardar");
+                JOptionPane.showMessageDialog(null, "Error al guardar el producto.");
             }
 
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Error de formato en stock o precio: " + e.getMessage());
+            System.err.println("Error de formato numérico al guardar producto: " + e.getMessage());
         } catch (Exception e) {
-            System.out.println("Error al guardar producto: " + e);
-            JOptionPane.showMessageDialog(null, "Error inesperado al guardar el producto");
+            System.err.println("Error inesperado al guardar producto: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, "Error inesperado al guardar el producto.");
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
 
@@ -251,147 +237,76 @@ public class JPanelProductoNuevo extends javax.swing.JPanel {
     private javax.swing.JTextField txtStock;
     // End of variables declaration//GEN-END:variables
 
-    private void cargarDatosEnComboBox(String tabla, String columnaMostrar, JComboBox<String> comboBox, String textoInicial) {
-        Connection cn = Conexion.conectar();
-        String sql = "SELECT * FROM " + tabla;
-        Statement st;
+    private void cargarCategoriasEnComboBox() {
+        CategoriaController controller = new CategoriaController();
+        List<Categoria> categorias = controller.obtenerTodasLasCategorias();
 
-        try {
-            st = cn.createStatement();
-            ResultSet rs = st.executeQuery(sql);
+        cboxCategoria.removeAllItems();
+        cboxCategoria.addItem("Seleccionar categoria");
 
-            comboBox.removeAllItems();
-            comboBox.addItem(textoInicial);
+        for (Categoria cat : categorias) {
+            cboxCategoria.addItem(cat.getNombre());
+        }
+    }
 
-            while (rs.next()) {
-                comboBox.addItem(rs.getString(columnaMostrar));
-            }
+    private void cargarProveedoresEnComboBox() {
+        ProveedorController controller = new ProveedorController();
+        List<Proveedor> proveedores = controller.obtenerTodosLosProveedores();
 
-            cn.close();
-        } catch (SQLException e) {
-            System.out.println("Error al cargar datos de " + tabla + ": " + e);
+        cboxProveedor.removeAllItems();
+        cboxProveedor.addItem("Seleccionar proveedor");
+
+        for (Proveedor prov : proveedores) {
+            cboxProveedor.addItem(prov.getNombre());
         }
     }
 
     private void cargarProductosEnTabla() {
-        Connection con = Conexion.conectar();
         DefaultTableModel model = new DefaultTableModel();
-        String sql = "SELECT p.idProducto, p.nombre, pr.nombreProveedor, p.cantidad, p.descripcion, p.precio, p.iva, c.descripcionCategoria, p.estado "
-                + "FROM producto p "
-                + "INNER JOIN categoria c ON p.idCategoria = c.idCategoria "
-                + "INNER JOIN proveedor pr ON p.idProveedor = pr.idProveedor";
-        Statement st;
+        ProductoController controller = new ProductoController();
 
-        try {
-            st = con.createStatement();
-            ResultSet rs = st.executeQuery(sql);
+        model.addColumn("ID");
+        model.addColumn("Nombre");
+        model.addColumn("Proveedor");
+        model.addColumn("Cantidad");
+        model.addColumn("Descripción");
+        model.addColumn("Precio");
+        model.addColumn("IVA");
+        model.addColumn("Categoría");
+        model.addColumn("Estado");
 
-            model.addColumn("ID");
-            model.addColumn("Nombre");
-            model.addColumn("Proveedor");
-            model.addColumn("Cantidad");
-            model.addColumn("Descripción");
-            model.addColumn("Precio");
-            model.addColumn("IVA");
-            model.addColumn("Categoría");
-            model.addColumn("Estado");
+        List<Producto> productos = controller.obtenerTodosLosProductos();
 
-            while (rs.next()) {
+        if (productos.isEmpty()) {
+        } else {
+            for (Producto p : productos) {
                 Object[] fila = new Object[9];
-                fila[0] = rs.getInt("idProducto");
-                fila[1] = rs.getString("nombre");
-                fila[2] = rs.getString("nombreProveedor");
-                fila[3] = rs.getInt("cantidad");
-                fila[4] = rs.getString("descripcion");
-                fila[5] = rs.getDouble("precio");
-                fila[6] = String.format("%.2f", rs.getInt("iva") / 100.0);
-                fila[7] = rs.getString("descripcionCategoria");
-                fila[8] = (rs.getInt("estado") == 1) ? "Activo" : "Inactivo";
+                fila[0] = p.getIdProducto();
+                fila[1] = p.getNombreProducto();
+                fila[2] = p.getIdProveedor().getNombre();
+                fila[3] = p.getCantidad();
+                fila[4] = p.getDescripcion();
+                fila[5] = p.getPrecio();
+                fila[6] = String.format("%.2f", p.getPorcentajeIva() / 100.0);
+                fila[7] = p.getIdCategoria().getNombre();
+                fila[8] = (p.getEstado() == 1) ? "Activo" : "Inactivo";
                 model.addRow(fila);
             }
-            
-            tableProducto.setModel(model);
-            
-            con.close();
-        } catch (SQLException e) {
-            System.out.println("Error al llenar la tabla productos: " + e);
         }
-
-        tableProducto.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                int fila_point = tableProducto.rowAtPoint(e.getPoint());
-                int columna_point = 0;
-
-                if (fila_point > -1) {
-                    idProducto = (int) model.getValueAt(fila_point, columna_point);
-                    enviarDatosProducto(idProducto);
-                }
-            }
-        });
+        tableProducto.setModel(model);
+        jScrollPane4.setViewportView(tableProducto);
     }
 
-    private void enviarDatosProducto(int idProducto) {
-        try {
-            Connection con = Conexion.conectar();
-            String sql = "SELECT p.*, c.descripcionCategoria, pr.nombreProveedor FROM producto p "
-                    + "INNER JOIN categoria c ON p.idCategoria = c.idCategoria "
-                    + "INNER JOIN proveedor pr ON p.idProveedor = pr.idProveedor "
-                    + "WHERE p.idProducto = ?";
-            PreparedStatement pst = con.prepareStatement(sql);
-            pst.setInt(1, idProducto);
-            ResultSet rs = pst.executeQuery();
-
-            if (rs.next()) {
-                txtNombreProducto.setText(rs.getString("nombre"));
-                txtStock.setText(String.valueOf(rs.getInt("cantidad")));
-                textAreaDescripcion.setText(rs.getString("descripcion"));
-                txtPrecio.setText(String.valueOf(rs.getDouble("precio")));
-
-                String nombreCategoria = rs.getString("descripcionCategoria");
-                cboxCategoria.setSelectedItem(nombreCategoria);
-
-                String nombreProveedor = rs.getString("nombreProveedor");
-                cboxProveedor.setSelectedItem(nombreProveedor);
-            }
-
-            con.close();
-        } catch (SQLException e) {
-            System.out.println("Error al seleccionar producto: " + e);
-        }
+    private int obtenerIdCategoriaSeleccionada() {
+        String descripcion = (String) cboxCategoria.getSelectedItem();
+        CategoriaDAO dao = new CategoriaDAO();
+        return dao.getIdCategoriaPorNombre(descripcion);
     }
 
-    private int idCategoria() {
-        String sql = "select * from categoria where descripcionCategoria = '" + this.cboxCategoria.getSelectedItem() + "'";
-        Statement st;
-
-        try {
-            Connection cn = Conexion.conectar();
-            st = cn.createStatement();
-            ResultSet rs = st.executeQuery(sql);
-            while (rs.next()) {
-                obtenerIdCategoria.setIdCategoria(rs.getInt("idCategoria"));
-            }
-        } catch (Exception e) {
-            System.out.println("Error al obtener id categoria");
-        }
-        return obtenerIdCategoria.getIdCategoria();
-    }
-
-    private int idProveedor() {
-        String sql = "SELECT * FROM proveedor WHERE nombreProveedor = '" + this.cboxProveedor.getSelectedItem() + "'";
-        Statement st;
-        try {
-            Connection cn = Conexion.conectar();
-            st = cn.createStatement();
-            ResultSet rs = st.executeQuery(sql);
-            while (rs.next()) {
-                obtenerIdProveedor.setIdProveedor(rs.getInt("idProveedor"));
-            }
-        } catch (Exception e) {
-            System.out.println("Error al obtener id proveedor: " + e);
-        }
-        return obtenerIdProveedor.getIdProveedor();
+    private int obtenerIdProveedorSeleccionado() {
+        String nombre = (String) cboxProveedor.getSelectedItem();
+        ProveedorDAO dao = new ProveedorDAO();
+        return dao.getIdProveedorPorNombre(nombre);
     }
 
     private void setear() {
@@ -403,8 +318,8 @@ public class JPanelProductoNuevo extends javax.swing.JPanel {
         textAreaDescripcion.setText("");
     }
 
-    private boolean validarCampos(String nombreProducto, String stockTexto, String precioTexto, String descripcion ){
-       if (nombreProducto.isEmpty() || stockTexto.isEmpty() || precioTexto.isEmpty() || descripcion.isEmpty()) {
+    private boolean validarCampos(String nombreProducto, String stockTexto, String precioTexto, String descripcion) {
+        if (nombreProducto.isEmpty() || stockTexto.isEmpty() || precioTexto.isEmpty() || descripcion.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Campos obligatorios vacíos");
             return false;
         }

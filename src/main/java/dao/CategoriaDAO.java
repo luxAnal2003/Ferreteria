@@ -147,4 +147,78 @@ public class CategoriaDAO {
 
         return lista;
     }
+
+    public Categoria obtenerCategoriaPorId(int idCategoria) {
+        Categoria categoria = null;
+        String sql = "SELECT idCategoria, descripcionCategoria, estado FROM categoria WHERE idCategoria = ?";
+        Connection con = null;
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+
+        try {
+            con = Conexion.conectar();
+            pst = con.prepareStatement(sql);
+            pst.setInt(1, idCategoria);
+            rs = pst.executeQuery();
+
+            if (rs.next()) {
+                categoria = new Categoria();
+                categoria.setIdCategoria(rs.getInt("idCategoria"));
+                categoria.setNombre(rs.getString("descripcionCategoria"));
+                categoria.setEstado(rs.getInt("estado"));
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener categoria: " + e.getMessage());
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (pst != null) {
+                    pst.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("Error al cerrar conexión: " + e.getMessage());
+            }
+        }
+        return categoria;
+    }
+
+    public int getIdCategoriaPorNombre(String nombreCategoria) {
+        int id = -1;
+        Connection cn = null;
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+        String sql = "SELECT idCategoria FROM categoria WHERE descripcionCategoria = ?";
+
+        try {
+            cn = Conexion.conectar();
+            pst = cn.prepareStatement(sql);
+            pst.setString(1, nombreCategoria);
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                id = rs.getInt("idCategoria");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener idCategoria: " + e.getMessage());
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (pst != null) {
+                    pst.close();
+                }
+                if (cn != null) {
+                    cn.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("Error al cerrar conexión: " + e.getMessage());
+            }
+        }
+        return id;
+    }
 }
