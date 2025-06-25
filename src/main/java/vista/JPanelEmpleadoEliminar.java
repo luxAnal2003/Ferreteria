@@ -4,16 +4,12 @@
  */
 package vista;
 
-import dao.EmpleadoDAO;
-import dao.UsuarioDAO;
-import dao.Conexion;
+import controlador.EmpleadoController;
+import controlador.UsuarioController;
 import java.awt.Dimension;
-import java.sql.Connection;
-import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import java.sql.Statement;
-import java.sql.ResultSet;
+import java.util.List;
 
 /**
  *
@@ -22,6 +18,8 @@ import java.sql.ResultSet;
 public class JPanelEmpleadoEliminar extends javax.swing.JPanel {
 
     private int idEmpleado;
+    private EmpleadoController controladorEmpleado;
+    private UsuarioController controladorUsuario;
 
     /**
      * Creates new form JPanelCategoriaNuevo
@@ -79,18 +77,18 @@ public class JPanelEmpleadoEliminar extends javax.swing.JPanel {
 
         tableEmpleado.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "ID", "Nombre", "Apellido", "Rol", "Cédula", "Dirección", "Telefono", "Estado"
+                "ID", "Cedula", "Nombre", "Apellido", "Telefono", "Dirección", "Correo", "usuario", "Contraseña", "Rol", "Estado", "idUsuario"
             }
         ));
         jScrollPane4.setViewportView(tableEmpleado);
 
-        add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, 860, 310));
+        add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, 860, 280));
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnActivarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActivarActionPerformed
@@ -101,20 +99,20 @@ public class JPanelEmpleadoEliminar extends javax.swing.JPanel {
         int fila = tableEmpleado.getSelectedRow();
 
         if (fila != -1) {
-            String estado = tableEmpleado.getValueAt(fila, 7).toString();
+            String estado = tableEmpleado.getValueAt(fila, 10).toString();
             if (estado.equalsIgnoreCase("Inactivo")) {
                 JOptionPane.showMessageDialog(null, "El empleado ya ha sido desactivado anteriormente");
                 return;
             }
 
             idEmpleado = Integer.parseInt(tableEmpleado.getValueAt(fila, 0).toString());
-            int idUsuario = Integer.parseInt(tableEmpleado.getValueAt(fila, 8).toString());
+            int idUsuario = Integer.parseInt(tableEmpleado.getValueAt(fila, 11).toString());
 
-            EmpleadoDAO controlEmpleado = new EmpleadoDAO();
-            UsuarioDAO controlUsuario = new UsuarioDAO();
+            controladorEmpleado = new EmpleadoController();
+            controladorUsuario = new UsuarioController();
 
-            boolean empleadoDesactivado = controlEmpleado.desactivar(idEmpleado);
-            boolean usuarioDesactivado = controlUsuario.desactivar(idUsuario);
+            boolean empleadoDesactivado = controladorEmpleado.desactivarEmpleado(idEmpleado);
+            boolean usuarioDesactivado = controladorUsuario.desactivarUsuario(idUsuario);
 
             if (empleadoDesactivado && usuarioDesactivado) {
                 JOptionPane.showMessageDialog(null, "Empleado desactivado correctamente");
@@ -135,62 +133,25 @@ public class JPanelEmpleadoEliminar extends javax.swing.JPanel {
     public static javax.swing.JTable tableEmpleado;
     // End of variables declaration//GEN-END:variables
     private void cargarEmpleadosEnTabla() {
-        DefaultTableModel model = new DefaultTableModel();
+        DefaultTableModel model = (DefaultTableModel) tableEmpleado.getModel();
+        model.setRowCount(0);
 
-        String sql = "SELECT e.idEmpleado, e.cedula, u.nombre, u.apellido, u.telefono, e.direccion, "
-                + "u.correo, u.estado, u.idUsuario "
-                + "FROM empleado e "
-                + "INNER JOIN usuario u ON e.idUsuario = u.idUsuario "
-                + "INNER JOIN rol r ON u.idRol = r.idRol "
-                + "WHERE r.idRol = 2";
+        EmpleadoController controller = new EmpleadoController();
+        List<Object[]> empleadosConUsuario = controller.obtenerEmpleados();
 
-        try (Connection con = Conexion.conectar(); Statement st = con.createStatement(); ResultSet rs = st.executeQuery(sql)) {
+        for (Object[] fila : empleadosConUsuario) {
+            model.addRow(fila);
+        }
 
-            model.addColumn("ID");
-            model.addColumn("Cédula");
-            model.addColumn("Nombres");
-            model.addColumn("Apellidos");
-            model.addColumn("Teléfono");
-            model.addColumn("Dirección");
-            model.addColumn("Correo");
-            model.addColumn("Estado");
-            model.addColumn("idUsuario");
+        tableEmpleado.setModel(model);
+        if (model.getColumnCount() > 11) {
+            tableEmpleado.getColumnModel().getColumn(11).setMinWidth(0);
+            tableEmpleado.getColumnModel().getColumn(11).setMaxWidth(0);
+            tableEmpleado.getColumnModel().getColumn(11).setWidth(0);
+        }
 
-            boolean hayRegistros = false;
-
-            while (rs.next()) {
-                hayRegistros = true;
-                Object[] fila = new Object[9];
-                fila[0] = rs.getInt("idEmpleado");
-                fila[1] = rs.getString("cedula");
-                fila[2] = rs.getString("nombre");
-                fila[3] = rs.getString("apellido");
-                fila[4] = rs.getString("telefono");
-                fila[5] = rs.getString("direccion");
-                fila[6] = rs.getString("correo");
-                fila[7] = rs.getInt("estado") == 1 ? "Activo" : "Inactivo";
-                fila[8] = rs.getInt("idUsuario");
-
-                model.addRow(fila);
-            }
-
-            tableEmpleado.setModel(model);
-
-            if (tableEmpleado.getColumnModel().getColumnCount() > 8) {
-                tableEmpleado.getColumnModel().getColumn(8).setMinWidth(0);
-                tableEmpleado.getColumnModel().getColumn(8).setMaxWidth(0);
-                tableEmpleado.getColumnModel().getColumn(8).setWidth(0);
-            }
-
-            jScrollPane4.setViewportView(tableEmpleado);
-
-            if (!hayRegistros) {
-                JOptionPane.showMessageDialog(null, "No existen empleados registrados actualmente.");
-            }
-
-        } catch (SQLException e) {
-            System.err.println("Error al llenar la tabla empleados: " + e.getMessage());
-            JOptionPane.showMessageDialog(null, "Error al cargar empleados: " + e.getMessage());
+        if (empleadosConUsuario.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No existen empleados registrados actualmente.");
         }
     }
 
@@ -198,20 +159,20 @@ public class JPanelEmpleadoEliminar extends javax.swing.JPanel {
         int fila = tableEmpleado.getSelectedRow();
 
         if (fila != -1) {
-            String estado = tableEmpleado.getValueAt(fila, 7).toString();
+            String estado = tableEmpleado.getValueAt(fila, 10).toString();
             if (estado.equalsIgnoreCase("Activo")) {
                 JOptionPane.showMessageDialog(null, "El empleado ya está activo");
                 return;
             }
 
             idEmpleado = Integer.parseInt(tableEmpleado.getValueAt(fila, 0).toString());
-            int idUsuario = Integer.parseInt(tableEmpleado.getValueAt(fila, 8).toString());
+            int idUsuario = Integer.parseInt(tableEmpleado.getValueAt(fila, 11).toString());
 
-            EmpleadoDAO controlEmpleado = new EmpleadoDAO();
-            UsuarioDAO controlUsuario = new UsuarioDAO();
+            controladorEmpleado = new EmpleadoController();
+            controladorUsuario = new UsuarioController();
 
-            boolean empleadoActivado = controlEmpleado.activar(idEmpleado);
-            boolean usuarioActivado = controlUsuario.activar(idUsuario);
+            boolean empleadoActivado = controladorEmpleado.activarEmpleado(idEmpleado);
+            boolean usuarioActivado = controladorUsuario.activarUsuario(idUsuario);
 
             if (empleadoActivado && usuarioActivado) {
                 JOptionPane.showMessageDialog(null, "Empleado activado correctamente");

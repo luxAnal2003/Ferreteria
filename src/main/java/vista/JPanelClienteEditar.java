@@ -6,8 +6,6 @@ package vista;
 
 import controlador.ClienteController;
 import java.awt.Dimension;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import java.util.List;
@@ -289,13 +287,12 @@ public class JPanelClienteEditar extends javax.swing.JPanel {
         tableCliente.setModel(model);
         jScrollPane3.setViewportView(tableCliente);
 
-        tableCliente.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                int fila = tableCliente.rowAtPoint(e.getPoint());
-                if (fila > -1) {
-                    int idClienteSeleccionado = Integer.parseInt(tableCliente.getValueAt(fila, 0).toString());
-                    enviarDatosCliente(idClienteSeleccionado);
+        tableCliente.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                int fila = tableCliente.getSelectedRow();
+                if (fila!= -1) {
+                    idCliente = Integer.parseInt(tableCliente.getValueAt(fila, 0).toString());
+                    enviarDatosCliente(idCliente);
                 }
             }
         });

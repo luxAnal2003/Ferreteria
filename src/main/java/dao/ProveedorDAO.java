@@ -257,14 +257,14 @@ public class ProveedorDAO {
         PreparedStatement pst = null;
         ResultSet rs = null;
 
-        String sql = "SELECT idProveedor, ruc, nombreProveedor, telefonoProveedor, "
-                + "correoProveedor, direccionProveedor, estado FROM proveedor "
-                + "WHERE estado = 1 AND (ruc LIKE ? OR nombreProveedor LIKE ?)";
+        String sql = "SELECT idProveedor, ruc, nombreProveedor, telefonoProveedor, correoProveedor, direccionProveedor, estado "
+                + "FROM proveedor "
+                + "WHERE LOWER(ruc) LIKE ? OR LOWER(nombreProveedor) LIKE ?";
 
         try {
             con = Conexion.conectar();
             pst = con.prepareStatement(sql);
-            String busquedaLike = "%" + criterio + "%";
+            String busquedaLike = "%" + criterio.toLowerCase() + "%";
             pst.setString(1, busquedaLike);
             pst.setString(2, busquedaLike);
             rs = pst.executeQuery();
@@ -294,7 +294,7 @@ public class ProveedorDAO {
                     con.close();
                 }
             } catch (SQLException e) {
-                System.err.println("Error al cerrar conexión en ProveedorDAO.buscarProveedoresActivos: " + e.getMessage());
+                System.err.println("Error al cerrar conexión en ProveedorDAO.buscarProveedores: " + e.getMessage());
             }
         }
         return proveedores;

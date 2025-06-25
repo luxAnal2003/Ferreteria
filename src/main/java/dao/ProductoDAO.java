@@ -324,4 +324,14 @@ public class ProductoDAO {
 
         return false;
     }
+    
+    public boolean disminuirStock(int idProducto, int cantidad, Connection con) throws SQLException {
+        String sql = "UPDATE producto SET cantidad = cantidad - ? WHERE idProducto = ? AND cantidad >= ?";
+        PreparedStatement pst = con.prepareStatement(sql);
+        pst.setInt(1, cantidad);
+        pst.setInt(2, idProducto);
+        pst.setInt(3, cantidad);
+        int filasAfectadas = pst.executeUpdate();
+        return filasAfectadas > 0; 
+    }
 }

@@ -59,8 +59,8 @@ public class JPanelConsultarProveedor extends javax.swing.JPanel {
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jLabel2.setText("Consultar Proveedor");
-        add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 30, -1, -1));
+        jLabel2.setText("Consultar Proveedor - Por nombre y RUC");
+        add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 30, -1, -1));
 
         jScrollPane3.setPreferredSize(new java.awt.Dimension(450, 80));
 

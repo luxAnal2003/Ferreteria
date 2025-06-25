@@ -321,7 +321,7 @@ public class ClienteDAO {
         return cliente;
     }
 
-    public List<Cliente> buscarClientesActivos(String criterio) {
+    public List<Cliente> buscarClientesPorCriterio(String criterio) {
         List<Cliente> clientes = new ArrayList<>();
         Connection con = null;
         PreparedStatement pst = null;
@@ -329,13 +329,12 @@ public class ClienteDAO {
 
         String sql = "SELECT idCliente, nombre, apellido, telefono, correo, cedula, direccion, estado "
                 + "FROM Cliente "
-                + "WHERE estado = 1 " 
-                + "AND (nombre LIKE ? OR apellido LIKE ? OR cedula LIKE ?)";
+                + "WHERE LOWER(nombre) LIKE ? OR LOWER(apellido) LIKE ? OR LOWER(cedula) LIKE ?";
 
         try {
             con = Conexion.conectar();
             pst = con.prepareStatement(sql);
-            String busquedaLike = "%" + criterio + "%";
+            String busquedaLike = "%" + criterio.toLowerCase() + "%";
             pst.setString(1, busquedaLike);
             pst.setString(2, busquedaLike);
             pst.setString(3, busquedaLike);
@@ -354,7 +353,7 @@ public class ClienteDAO {
                 clientes.add(cliente);
             }
         } catch (SQLException e) {
-            System.err.println("Error SQL al buscar clientes activos en ClienteDAO: " + e.getMessage());
+            System.err.println("Error SQL al buscar clientes en ClienteDAO: " + e.getMessage());
         } finally {
             try {
                 if (rs != null) {
@@ -367,9 +366,10 @@ public class ClienteDAO {
                     con.close();
                 }
             } catch (SQLException e) {
-                System.err.println("Error al cerrar conexión en ClienteDAO.buscarClientesActivos: " + e.getMessage());
+                System.err.println("Error al cerrar conexión en ClienteDAO.buscarClientesPorCriterio: " + e.getMessage());
             }
         }
         return clientes;
     }
+
 }

@@ -4,23 +4,20 @@
  */
 package vista;
 
-import dao.Conexion;
+import controlador.EmpleadoController;
 import java.awt.Dimension;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import modelo.Categoria;
-import modelo.Proveedor;
-import java.sql.Statement;
-import java.sql.ResultSet;
+import java.util.List;
 
 /**
  *
  * @author admin
  */
 public class JPanelConsultarEmpleado extends javax.swing.JPanel {
+
+    private EmpleadoController controller = new EmpleadoController();
+
     /**
      * Creates new form JPanelCategoriaNuevo
      */
@@ -63,8 +60,8 @@ public class JPanelConsultarEmpleado extends javax.swing.JPanel {
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jLabel2.setText("Consultar Empleado");
-        add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 30, -1, -1));
+        jLabel2.setText("Consultar Empleado - Por nombres, apellidos y cédula");
+        add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 20, -1, -1));
 
         jScrollPane3.setPreferredSize(new java.awt.Dimension(450, 80));
 
@@ -142,136 +139,43 @@ public class JPanelConsultarEmpleado extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     private void cargarEmpleadosEnTabla() {
-        Connection con = Conexion.conectar();
-        DefaultTableModel model = new DefaultTableModel();
-        String sql = "SELECT e.idEmpleado, u.nombre, u.apellido, r.tipo AS rol, e.cedula, e.direccion, u.telefono, u.estado "
-                   + "FROM Empleado e "
-                   + "INNER JOIN Usuario u ON e.idUsuario = u.idUsuario "
-                   + "INNER JOIN rol r ON e.idRol = r.idRol "
-                   + "WHERE u.estado = 1";
+        List<Object[]> empleados = controller.obtenerEmpleadosActivos();
+        DefaultTableModel model = (DefaultTableModel) tableEmpleado.getModel();
+        model.setRowCount(0);
 
-        try (Statement st = con.createStatement(); ResultSet rs = st.executeQuery(sql)) {
-            model.addColumn("ID");
-            model.addColumn("Nombre");
-            model.addColumn("Apellido");
-            model.addColumn("Rol");
-            model.addColumn("Cédula");
-            model.addColumn("Dirección");
-            model.addColumn("Teléfono");
-            model.addColumn("Estado");
+        for (Object[] fila : empleados) {
+            model.addRow(fila);
+        }
 
-            boolean hayRegistros = false;
-
-            while (rs.next()) {
-                hayRegistros = true;
-                Object[] fila = new Object[8];
-                fila[0] = rs.getInt("idEmpleado");
-                fila[1] = rs.getString("nombre");
-                fila[2] = rs.getString("apellido");
-                fila[3] = rs.getString("rol");
-                fila[4] = rs.getString("cedula");
-                fila[5] = rs.getString("direccion");
-                fila[6] = rs.getString("telefono");
-                fila[7] = (rs.getInt("estado") == 1) ? "Activo" : "Inactivo";
-
-                model.addRow(fila);
-            }
-
-            if (!hayRegistros) {
-                JOptionPane.showMessageDialog(null, "No existen empleados registrados actualmente.");
-            }
-
-            tableEmpleado.setModel(model);
-            jScrollPane3.setViewportView(tableEmpleado);
-
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error al cargar empleados: " + e.getMessage());
+        if (empleados.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No existen empleados registrados actualmente.");
         }
     }
 
     private void buscarEmpleados() {
         String criterio = txtBuscador.getText().trim();
-
         if (criterio.isEmpty()) {
             cargarEmpleadosEnTabla();
             return;
         }
 
-        DefaultTableModel model = new DefaultTableModel();
-        model.addColumn("ID");
-        model.addColumn("Nombre");
-        model.addColumn("Apellido");
-        model.addColumn("Rol");
-        model.addColumn("Cédula");
-        model.addColumn("Dirección");
-        model.addColumn("Teléfono");
-        model.addColumn("Estado");
+        List<Object[]> resultados = controller.buscarEmpleados(criterio);
+        DefaultTableModel model = (DefaultTableModel) tableEmpleado.getModel();
+        model.setRowCount(0);
 
-        Connection con = Conexion.conectar();
+        for (Object[] fila : resultados) {
+            model.addRow(fila);
+        }
 
-        String sql = "SELECT e.idEmpleado, u.nombre, u.apellido, r.tipo AS rol, e.cedula, e.direccion, u.telefono, u.estado "
-                   + "FROM Empleado e "
-                   + "INNER JOIN Usuario u ON e.idUsuario = u.idUsuario "
-                   + "INNER JOIN rol r ON e.idRol = r.idRol "
-                   + "WHERE u.estado = 1 AND (u.nombre LIKE ? OR u.apellido LIKE ? OR e.cedula LIKE ?)";
-
-        try (PreparedStatement pst = con.prepareStatement(sql)) {
-            String busquedaLike = "%" + criterio + "%";
-            pst.setString(1, busquedaLike);
-            pst.setString(2, busquedaLike);
-            pst.setString(3, busquedaLike);
-            ResultSet rs = pst.executeQuery();
-
-            boolean hayResultados = false;
-
-            while (rs.next()) {
-                hayResultados = true;
-                Object[] fila = new Object[8];
-                fila[0] = rs.getInt("idEmpleado");
-                fila[1] = rs.getString("nombre");
-                fila[2] = rs.getString("apellido");
-                fila[3] = rs.getString("rol");
-                fila[4] = rs.getString("cedula");
-                fila[5] = rs.getString("direccion");
-                fila[6] = rs.getString("telefono");
-                fila[7] = (rs.getInt("estado") == 1) ? "Activo" : "Inactivo";
-
-                model.addRow(fila);
-            }
-
-            if (hayResultados) {
-                tableEmpleado.setModel(model);
-                jScrollPane3.setViewportView(tableEmpleado);
-            } else {
-                JOptionPane.showMessageDialog(null, "No se encontraron resultados para la búsqueda");
-                cargarEmpleadosEnTabla();
-            }
-
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error al buscar empleados: " + e.getMessage());
+        if (resultados.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No se encontraron resultados.");
+            cargarEmpleadosEnTabla();
         }
     }
 
     private void verificarExistenciaEmpleados() {
-        Connection con = null;
-        try {
-            con = Conexion.conectar();
-            String sql = "SELECT COUNT(*) FROM Empleado e INNER JOIN Usuario u ON e.idUsuario = u.idUsuario WHERE u.estado = 1";
-            try (PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
-                if (rs.next() && rs.getInt(1) == 0) {
-                    JOptionPane.showMessageDialog(null, "No existen empleados en el sistema");
-                }
-            }
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error al verificar empleados: " + e.getMessage());
-        } finally {
-            try {
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-                System.err.println("Error al cerrar conexión: " + e.getMessage());
-            }
+        if (!controller.existenEmpleadosActivos()) {
+            JOptionPane.showMessageDialog(null, "No existen empleados en el sistema.");
         }
     }
 }

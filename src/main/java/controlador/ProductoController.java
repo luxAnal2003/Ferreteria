@@ -17,16 +17,17 @@ import modelo.Proveedor;
  * @author admin
  */
 public class ProductoController {
+
     private ProductoDAO productoDAO;
-    private CategoriaDAO categoriaDAO; 
+    private CategoriaDAO categoriaDAO;
     private ProveedorDAO proveedorDAO;
-    
+
     public ProductoController() {
         this.productoDAO = new ProductoDAO();
-        this.categoriaDAO = new CategoriaDAO(); 
-        this.proveedorDAO = new ProveedorDAO(); 
+        this.categoriaDAO = new CategoriaDAO();
+        this.proveedorDAO = new ProveedorDAO();
     }
-    
+
     public boolean guardarProducto(Producto producto, String nombreCategoria, String nombreProveedor) {
         int idCat = categoriaDAO.getIdCategoriaPorNombre(nombreCategoria);
         int idProv = proveedorDAO.getIdProveedorPorNombre(nombreProveedor);
@@ -46,6 +47,7 @@ public class ProductoController {
 
         return productoDAO.guardar(producto);
     }
+
     public boolean actualizarProducto(Producto producto, String nombreCategoria, String nombreProveedor, int idProducto) {
         int idCat = categoriaDAO.getIdCategoriaPorNombre(nombreCategoria);
         int idProv = proveedorDAO.getIdProveedorPorNombre(nombreProveedor);
@@ -65,7 +67,7 @@ public class ProductoController {
 
         return productoDAO.actualizar(producto, idProducto);
     }
-    
+
     public boolean desactivarProducto(int idProducto) {
         return productoDAO.desactivar(idProducto);
     }
@@ -81,7 +83,7 @@ public class ProductoController {
     public Producto obtenerProductoPorNombre(String nombreProducto) {
         return productoDAO.buscarProductoPorNombre(nombreProducto);
     }
-    
+
     public List<Producto> obtenerTodosLosProductos() {
         return productoDAO.listarProductos();
     }
@@ -89,7 +91,7 @@ public class ProductoController {
     public Producto obtenerProductoPorId(int idProducto) {
         return productoDAO.buscarProductoPorId(idProducto);
     }
-    
+
     public List<Categoria> obtenerTodasLasCategorias() {
         return categoriaDAO.listarCategorias();
     }

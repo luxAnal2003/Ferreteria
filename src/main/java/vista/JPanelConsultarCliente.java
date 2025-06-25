@@ -59,8 +59,8 @@ public class JPanelConsultarCliente extends javax.swing.JPanel {
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jLabel2.setText("Consultar Cliente");
-        add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 30, -1, -1));
+        jLabel2.setText("Consultar Cliente - Por nombre, apellido y cédula");
+        add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 20, -1, -1));
 
         jScrollPane3.setPreferredSize(new java.awt.Dimension(450, 80));
 
@@ -196,7 +196,7 @@ public class JPanelConsultarCliente extends javax.swing.JPanel {
         model.addColumn("Correo");
         model.addColumn("Estado");
 
-        List<Cliente> clientesEncontrados = controller.buscarClientesActivosPorCriterio(criterio);
+        List<Cliente> clientesEncontrados = controller.buscarClientes(criterio);
 
         if (!clientesEncontrados.isEmpty()) {
             for (Cliente cliente : clientesEncontrados) {

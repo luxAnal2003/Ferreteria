@@ -5,19 +5,11 @@
 package vista;
 
 import controlador.ProductoController;
-import dao.Conexion;
 import java.awt.Dimension;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import java.sql.Statement;
-import java.sql.ResultSet;
 import java.util.List;
 import modelo.Producto;
-import static vista.JPanelProductoEliminar.jScrollPane4;
-import static vista.JPanelProductoEliminar.tableProducto;
 
 /**
  *

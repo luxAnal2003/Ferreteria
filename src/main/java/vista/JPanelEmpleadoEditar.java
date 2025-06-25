@@ -4,19 +4,11 @@
  */
 package vista;
 
-import dao.EmpleadoDAO;
-import dao.UsuarioDAO;
-import dao.Conexion;
+import controlador.EmpleadoController;
 import java.awt.Dimension;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import java.sql.Statement;
-import java.sql.ResultSet;
+import java.util.List;
 import modelo.Empleado;
 import modelo.Usuario;
 
@@ -26,7 +18,9 @@ import modelo.Usuario;
  */
 public class JPanelEmpleadoEditar extends javax.swing.JPanel {
 
+    private EmpleadoController controlador;
     private int idEmpleado;
+    private int idUsuario;
 
     /**
      * Creates new form JPanelCategoriaNuevo
@@ -152,13 +146,13 @@ public class JPanelEmpleadoEditar extends javax.swing.JPanel {
 
         tableEmpleado.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "ID", "Nombre", "Apellido", "Rol", "Cédula", "Dirección", "Telefono", "Estado"
+                "ID", "Cedula", "Nombre", "Apellido", "Telefono", "Dirección", "Correo", "usuario", "Contraseña", "Rol", "Estado", "idUsuario"
             }
         ));
         jScrollPane4.setViewportView(tableEmpleado);
@@ -172,11 +166,6 @@ public class JPanelEmpleadoEditar extends javax.swing.JPanel {
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
-        Empleado empleado = new Empleado();
-        Usuario usuario = new Usuario();
-        EmpleadoDAO controladorEmpleado = new EmpleadoDAO();
-        UsuarioDAO controladorUsuario = new UsuarioDAO();
-
         String cedulaRuc = txtCedulaRuc.getText().trim();
         String nombres = txtNombres.getText().trim();
         String apellidos = txtApellidos.getText().trim();
@@ -185,56 +174,51 @@ public class JPanelEmpleadoEditar extends javax.swing.JPanel {
         String direccion = txtDireccion.getText().trim();
         String nombreUsuario = txtUsuario.getText().trim();
         String contrasenia = new String(txtContrasenia.getPassword()).trim();
-        int rol = 2;
+        int rol = 2; 
 
         if (!validarCampos(cedulaRuc, nombres, apellidos, telefono, email, direccion, nombreUsuario, contrasenia)) {
             return;
         }
 
         try {
-            int fila = tableEmpleado.getSelectedRow();
-            if (fila < 0) {
-                JOptionPane.showMessageDialog(null, "Seleccione un empleado para actualizar.");
+            if (idEmpleado == 0 || idUsuario == 0) {
+                JOptionPane.showMessageDialog(null, "Seleccione un empleado de la tabla para actualizar.");
                 return;
             }
 
-            idEmpleado = Integer.parseInt(tableEmpleado.getValueAt(fila, 0).toString());
-            int idUsuario = Integer.parseInt(tableEmpleado.getValueAt(fila, 11).toString());
-
-            usuario.setIdUsuario(idUsuario);
-            usuario.setNombre(nombres.substring(0, 1).toUpperCase() + nombres.substring(1).toLowerCase());
-            usuario.setApellido(apellidos.substring(0, 1).toUpperCase() + apellidos.substring(1).toLowerCase());
+            Usuario usuario = new Usuario();
+            usuario.setIdUsuario(idUsuario); 
+            usuario.setNombre(nombres); 
+            usuario.setApellido(apellidos); 
             usuario.setTelefono(telefono);
             usuario.setCorreo(email);
             usuario.setUsuario(nombreUsuario);
             usuario.setContrasenia(contrasenia);
-            usuario.setIdRol(rol);
-            usuario.setEstado(1);
+            usuario.setIdRol(rol); 
+            usuario.setEstado(1); 
 
-            empleado.setIdEmpleado(idEmpleado);
+            Empleado empleado = new Empleado();
+            empleado.setIdEmpleado(idEmpleado); 
             empleado.setCedula(cedulaRuc);
             empleado.setDireccion(direccion);
-            empleado.setIdRol(rol);
-            empleado.setEstado(1);
-            empleado.setIdUsuario(idUsuario);
+            empleado.setIdRol(rol); 
+            empleado.setEstado(1); 
+            empleado.setIdUsuario(idUsuario); 
 
-            boolean usuarioActualizado = controladorUsuario.actualizar(usuario);
-            boolean empleadoActualizado = controladorEmpleado.actualizar(empleado);
+            EmpleadoController empleadoController = new EmpleadoController();
+            boolean actualizadoExitosamente = empleadoController.actualizarEmpleadoYUsuario(empleado, usuario);
 
-            if (usuarioActualizado && empleadoActualizado) {
+            if (actualizadoExitosamente) {
                 JOptionPane.showMessageDialog(null, "Empleado actualizado correctamente.");
-                this.cargarEmpleadosEnTabla();
-                this.setear();
+                this.cargarEmpleadosEnTabla(); 
+                this.setear(); 
             } else {
-                JOptionPane.showMessageDialog(null, "Error al actualizar el empleado o usuario.");
+                JOptionPane.showMessageDialog(null, "Error al actualizar el empleado. Verifique los datos o intente nuevamente.");
             }
 
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(null, "Error: El ID del empleado o usuario no es un número válido.");
-            System.err.println("Error al parsear ID: " + ex.getMessage());
-        } catch (StringIndexOutOfBoundsException e) {
-            JOptionPane.showMessageDialog(null, "Error al procesar nombres/apellidos. Asegúrese de que no estén vacíos.");
-            System.err.println("Error de índice de cadena al actualizar empleado: " + e.getMessage());
+            System.err.println("Error al parsear ID de empleado/usuario: " + ex.getMessage());
         } catch (Exception e) {
             System.err.println("Error inesperado al actualizar empleado: " + e.getMessage());
             JOptionPane.showMessageDialog(null, "Error inesperado al actualizar el empleado.");
@@ -277,111 +261,63 @@ public class JPanelEmpleadoEditar extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     private void cargarEmpleadosEnTabla() {
-        DefaultTableModel model = new DefaultTableModel();
+        controlador = new EmpleadoController();
+        List<Object[]> empleados = controlador.obtenerEmpleados();
 
-        String sql = "SELECT e.idEmpleado, e.cedula, u.nombre, u.apellido, u.telefono, e.direccion, "
-                + "u.correo, u.usuario, u.contrasenia, r.tipo AS rol, u.estado, u.idUsuario "
-                + "FROM empleado e "
-                + "INNER JOIN usuario u ON e.idUsuario = u.idUsuario "
-                + "INNER JOIN rol r ON u.idRol = r.idRol "
-                + "WHERE r.idRol = 2";
+        DefaultTableModel model = new DefaultTableModel(new String[]{
+            "ID", "Cédula", "Nombres", "Apellidos", "Teléfono", "Dirección",
+            "Correo", "Usuario", "Contraseña", "Rol", "Estado", "idUsuario"
+        }, 0);
 
-        try (Connection con = Conexion.conectar(); Statement st = con.createStatement(); ResultSet rs = st.executeQuery(sql)) {
-
-            model.addColumn("ID");
-            model.addColumn("Cédula");
-            model.addColumn("Nombres");
-            model.addColumn("Apellidos");
-            model.addColumn("Teléfono");
-            model.addColumn("Dirección");
-            model.addColumn("Correo");
-            model.addColumn("Usuario");
-            model.addColumn("Contraseña");
-            model.addColumn("Rol");
-            model.addColumn("Estado");
-            model.addColumn("idUsuario");
-
-            boolean hayRegistros = false;
-
-            while (rs.next()) {
-                hayRegistros = true;
-                Object[] fila = new Object[12];
-                fila[0] = rs.getInt("idEmpleado");
-                fila[1] = rs.getString("cedula");
-                fila[2] = rs.getString("nombre");
-                fila[3] = rs.getString("apellido");
-                fila[4] = rs.getString("telefono");
-                fila[5] = rs.getString("direccion");
-                fila[6] = rs.getString("correo");
-                fila[7] = rs.getString("usuario");
-                fila[8] = rs.getString("contrasenia");
-                fila[9] = rs.getString("rol");
-                fila[10] = rs.getInt("estado") == 1 ? "Activo" : "Inactivo";
-                fila[11] = rs.getInt("idUsuario");
-
-                model.addRow(fila);
-            }
-
-            tableEmpleado.setModel(model);
-
-            if (tableEmpleado.getColumnModel().getColumnCount() > 11) {
-                tableEmpleado.getColumnModel().getColumn(11).setMinWidth(0);
-                tableEmpleado.getColumnModel().getColumn(11).setMaxWidth(0);
-                tableEmpleado.getColumnModel().getColumn(11).setWidth(0);
-            }
-
-            jScrollPane4.setViewportView(tableEmpleado);
-
-            if (!hayRegistros) {
-                JOptionPane.showMessageDialog(null, "No existen empleados registrados actualmente.");
-            }
-
-        } catch (SQLException e) {
-            System.err.println("Error al llenar la tabla empleados: " + e.getMessage());
-            JOptionPane.showMessageDialog(null, "Error al cargar empleados: " + e.getMessage());
+        for (Object[] fila : empleados) {
+            model.addRow(fila);
+        }
+        
+        tableEmpleado.setModel(model);
+        if (model.getColumnCount() > 11) {
+            tableEmpleado.getColumnModel().getColumn(11).setMinWidth(0);
+            tableEmpleado.getColumnModel().getColumn(11).setMaxWidth(0);
+            tableEmpleado.getColumnModel().getColumn(11).setWidth(0);
         }
 
-        tableEmpleado.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                int fila = tableEmpleado.rowAtPoint(e.getPoint());
-                if (fila > -1) {
-                    int idEmpleado = Integer.parseInt(tableEmpleado.getValueAt(fila, 0).toString());
+        tableEmpleado.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                int fila = tableEmpleado.getSelectedRow();
+                if (fila != -1) {
+                    idEmpleado = Integer.parseInt(tableEmpleado.getValueAt(fila, 0).toString());
                     enviarDatosEmpleado(idEmpleado);
                 }
             }
         });
+
     }
 
     private void enviarDatosEmpleado(int idEmpleado) {
-        String sql = "SELECT e.idEmpleado, e.cedula, e.direccion, u.idUsuario, u.nombre, u.apellido, "
-                + "u.usuario, u.contrasenia, u.telefono, u.correo, r.tipo "
-                + "FROM empleado e "
-                + "INNER JOIN usuario u ON e.idUsuario = u.idUsuario "
-                + "INNER JOIN rol r ON u.idRol = r.idRol "
-                + "WHERE e.idEmpleado = ? AND r.idRol = 2";
+        EmpleadoController controller = new EmpleadoController();
 
-        try (Connection con = Conexion.conectar(); PreparedStatement pst = con.prepareStatement(sql)) {
+        int idUsuarioAsociado = controller.obtenerIdUsuarioAsociadoAEmpleado(idEmpleado);
 
-            pst.setInt(1, idEmpleado);
-            ResultSet rs = pst.executeQuery();
+        if (idUsuarioAsociado != -1) {
+            this.idUsuario = idUsuarioAsociado;
+            Empleado empleado = controller.obtenerEmpleadoPorId(idEmpleado);
+            Usuario usuario = controller.obtenerUsuarioPorId(idUsuarioAsociado);
 
-            if (rs.next()) {
-                txtCedulaRuc.setText(rs.getString("cedula"));
-                txtNombres.setText(rs.getString("nombre"));
-                txtApellidos.setText(rs.getString("apellido"));
-                txtTelefono.setText(rs.getString("telefono"));
-                txtDireccion.setText(rs.getString("direccion"));
-                txtEmail.setText(rs.getString("correo"));
-                txtUsuario.setText(rs.getString("usuario"));
-                txtContrasenia.setText(rs.getString("contrasenia"));
+            if (empleado != null && usuario != null) {
+                txtCedulaRuc.setText(empleado.getCedula());
+                txtNombres.setText(usuario.getNombre());
+                txtApellidos.setText(usuario.getApellido());
+                txtTelefono.setText(usuario.getTelefono());
+                txtEmail.setText(usuario.getCorreo());
+                txtDireccion.setText(empleado.getDireccion());
+                txtUsuario.setText(usuario.getUsuario());
+                txtContrasenia.setText(usuario.getContrasenia());
             } else {
-                JOptionPane.showMessageDialog(null, "No se encontró el empleado seleccionado o no tiene el rol de empleado.");
+                JOptionPane.showMessageDialog(null, "No se encontraron datos completos para el empleado/usuario seleccionado.");
+                setear();
             }
-
-        } catch (SQLException e) {
-            System.err.println("Error al seleccionar empleado: " + e.getMessage());
-            JOptionPane.showMessageDialog(null, "Error al cargar datos del empleado: " + e.getMessage());
+        } else {
+            JOptionPane.showMessageDialog(null, "No se pudo obtener el ID de usuario asociado al empleado.");
+            setear();
         }
     }
 
@@ -409,7 +345,7 @@ public class JPanelEmpleadoEditar extends javax.swing.JPanel {
 
         return true;
     }
-    
+
     private void setear() {
         txtCedulaRuc.setText("");
         txtNombres.setText("");

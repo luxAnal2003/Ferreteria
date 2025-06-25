@@ -4,23 +4,21 @@
  */
 package vista;
 
-import dao.Conexion;
+import controlador.VentaController;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import java.sql.Statement;
-import java.sql.ResultSet;
+import java.util.List;
 
 /**
  *
  * @author admin
  */
 public class JPanelConsultarVenta extends javax.swing.JPanel {
+
+    private VentaController controlador;
 
     /**
      * Creates new form JPanelCategoriaNuevo
@@ -30,7 +28,7 @@ public class JPanelConsultarVenta extends javax.swing.JPanel {
         this.setSize(new Dimension(900, 400));
 
         this.cargarVentasEnTabla();
-        this.verificarExistenciaVentas();
+        this.verificarExistenciaVenta();
 
         txtBuscador.addKeyListener(new java.awt.event.KeyAdapter() {
             @Override
@@ -264,7 +262,7 @@ public class JPanelConsultarVenta extends javax.swing.JPanel {
     private javax.swing.JTextField txtTotal;
     // End of variables declaration//GEN-END:variables
 
-        private void limpiarDetalleVenta() {
+    private void limpiarDetalleVenta() {
         txtAreaProductos.setText("");
         txtSubtotal.setText("0.00");
         txtIva.setText("0.00");
@@ -273,223 +271,82 @@ public class JPanelConsultarVenta extends javax.swing.JPanel {
     }
 
     private void cargarVentasEnTabla() {
-        Connection con = null;
-        DefaultTableModel model = new DefaultTableModel();
+        controlador = new VentaController();
+        List<Object[]> Ventas = controlador.obtenerVentas();
 
-        String sql = "SELECT cv.idCabeceraVenta, cv.fechaVenta, cv.total, "
-                + "CONCAT(cl.nombre, ' ', cl.apellido) AS nombre_cliente, " 
-                + "CONCAT(ue.nombre, ' ', ue.apellido) AS nombre_empleado, cv.estado "
-                + "FROM CabeceraVenta cv "
-                + "INNER JOIN Cliente cl ON cv.idCliente = cl.idCliente " 
-                + "INNER JOIN Empleado em ON cv.idEmpleado = em.idEmpleado "
-                + "INNER JOIN Usuario ue ON em.idUsuario = ue.idUsuario "
-                + "WHERE cv.estado = 1";
+        DefaultTableModel model = new DefaultTableModel(new String[]{"IdVenta", "Fecha", "Total", "Cliente", "Empleado", "Estado"}, 0);
 
-        try {
-            con = Conexion.conectar();
-            Statement st = con.createStatement();
-            ResultSet rs = st.executeQuery(sql);
+        for (Object[] fila : Ventas) {
+            model.addRow(fila);
+        }
 
-            model.addColumn("ID Venta");
-            model.addColumn("Fecha");
-            model.addColumn("Total");
-            model.addColumn("Cliente");
-            model.addColumn("Empleado");
-            model.addColumn("Estado");
+        tableVentas.setModel(model);
 
-            boolean hayRegistros = false;
+        if (Ventas.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No existen ventas registradas actualmente.");
+        }
+    }
 
-            while (rs.next()) {
-                hayRegistros = true;
-                Object[] fila = new Object[6];
-                fila[0] = rs.getInt("idCabeceraVenta");
-                fila[1] = rs.getDate("fechaVenta");
-                fila[2] = rs.getDouble("total");
-                fila[3] = rs.getString("nombre_cliente");
-                fila[4] = rs.getString("nombre_empleado");
-                fila[5] = (rs.getInt("estado") == 1) ? "Activa" : "Anulada";
-                model.addRow(fila);
-            }
-
-            if (!hayRegistros) {
-                JOptionPane.showMessageDialog(null, "No existen ventas registradas actualmente.");
-            }
-
-            tableVentas.setModel(model);
-            jScrollPane3.setViewportView(tableVentas);
-
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error al cargar ventas: " + e.getMessage());
-            System.err.println("Error al cargar ventas: " + e.getMessage());
-        } finally {
-            try {
-                if (con != null) con.close();
-            } catch (SQLException e) {
-                System.err.println("Error al cerrar conexión: " + e.getMessage());
-            }
+    private void verificarExistenciaVenta() {
+        VentaController controller = new VentaController();
+        if (!controller.existenVentas()) {
+            JOptionPane.showMessageDialog(null, "No existen clientes en el sistema.");
         }
     }
 
     private void buscarVentas() {
         String criterio = txtBuscador.getText().trim();
-
         limpiarDetalleVenta();
+        List<Object[]> ventas = controlador.buscarVentas(criterio);
 
-        if (criterio.isEmpty()) {
-            cargarVentasEnTabla();
-            return;
+        DefaultTableModel model = new DefaultTableModel(new String[]{
+            "ID Venta", "Fecha", "Total", "Cliente", "Empleado", "Estado"
+        }, 0);
+
+        for (Object[] fila : ventas) {
+            model.addRow(fila);
         }
 
-        DefaultTableModel model = new DefaultTableModel();
-        model.addColumn("ID Venta");
-        model.addColumn("Fecha");
-        model.addColumn("Total");
-        model.addColumn("Cliente");
-        model.addColumn("Empleado");
-        model.addColumn("Estado");
+        tableVentas.setModel(model);
+        jScrollPane3.setViewportView(tableVentas);
 
-        Connection con = null;
-        String sql = "SELECT cv.idCabeceraVenta, cv.fechaVenta, cv.total, "
-                + "CONCAT(cl.nombre, ' ', cl.apellido) AS nombre_cliente, "
-                + "CONCAT(ue.nombre, ' ', ue.apellido) AS nombre_empleado, cv.estado "
-                + "FROM CabeceraVenta cv "
-                + "INNER JOIN Cliente cl ON cv.idCliente = cl.idCliente "
-                + "INNER JOIN Empleado em ON cv.idEmpleado = em.idEmpleado "
-                + "INNER JOIN Usuario ue ON em.idUsuario = ue.idUsuario "
-                + "WHERE cv.estado = 1 AND ("
-                + "CONCAT(cl.nombre, ' ', cl.apellido) LIKE ? OR cl.cedula LIKE ?"
-                + ")";
-
-        try {
-            con = Conexion.conectar();
-            PreparedStatement pst = con.prepareStatement(sql);
-            String busquedaLike = "%" + criterio + "%";
-
-            pst.setString(1, busquedaLike);
-            pst.setString(2, busquedaLike); 
-            ResultSet rs = pst.executeQuery();
-
-            boolean hayResultados = false;
-
-            while (rs.next()) {
-               hayResultados = true;
-                Object[] fila = new Object[6];
-                fila[0] = rs.getInt("idCabeceraVenta");
-                fila[1] = rs.getDate("fechaVenta");
-                fila[2] = rs.getDouble("total");
-                fila[3] = rs.getString("nombre_cliente");
-                fila[4] = rs.getString("nombre_empleado");
-                fila[5] = (rs.getInt("estado") == 1) ? "Activa" : "Anulada";
-                model.addRow(fila);
-            }
-
-            tableVentas.setModel(model);
-            jScrollPane3.setViewportView(tableVentas);
-
-            if (!hayResultados) {
-                JOptionPane.showMessageDialog(null, "No se encontraron resultados para la búsqueda de ventas.");
-                cargarVentasEnTabla(); 
-            }
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error al buscar ventas: " + e.getMessage());
-            System.err.println("Error al buscar ventas: " + e.getMessage());
-        } finally {
-            try {
-                if (con != null) con.close();
-            } catch (SQLException e) {
-                System.err.println("Error al cerrar conexión: " + e.getMessage());
-            }
+        if (ventas.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No se encontraron resultados para la búsqueda de ventas.");
+            cargarVentasEnTabla();
         }
     }
 
     private void mostrarDetalleVenta(int idCabeceraVenta) {
-        Connection con = null;
-        try {
-            con = Conexion.conectar();
-
-            String sqlCabecera = "SELECT total FROM CabeceraVenta WHERE idCabeceraVenta = ?";
-            try (PreparedStatement pstCabecera = con.prepareStatement(sqlCabecera)) {
-                pstCabecera.setInt(1, idCabeceraVenta);
-                ResultSet rsCabecera = pstCabecera.executeQuery();
-                if (rsCabecera.next()) {
-                    txtTotal.setText(String.format("%.2f", rsCabecera.getDouble("total")));
-                } else {
-                    limpiarDetalleVenta();
-                    JOptionPane.showMessageDialog(null, "No se encontró el total para la venta seleccionada.");
-                    return; 
-                }
-            }
-
-            String sqlDetalleAndSums = "SELECT dv.cantidad, dv.precioUnitario, dv.subTotal, dv.descuento, dv.iva, p.nombre "
-                                     + "FROM DetalleVenta dv "
-                                     + "INNER JOIN Producto p ON dv.idProducto = p.idProducto "
-                                     + "WHERE dv.idCabeceraVenta = ?";
-            try (PreparedStatement pstDetalleAndSums = con.prepareStatement(sqlDetalleAndSums)) {
-                pstDetalleAndSums.setInt(1, idCabeceraVenta);
-                ResultSet rsDetalleAndSums = pstDetalleAndSums.executeQuery();
-
-                StringBuilder productosTexto = new StringBuilder("Productos:\n");
-                boolean hayProductos = false;
-                double calculatedSubtotal = 0.0;
-                double calculatedIva = 0.0;
-                double calculatedDescuento = 0.0;
-
-                while (rsDetalleAndSums.next()) {
-                    hayProductos = true;
-                    productosTexto.append("- ")
-                                  .append(rsDetalleAndSums.getString("nombre"))
-                                  .append(" (Cant: ")
-                                  .append(rsDetalleAndSums.getInt("cantidad"))
-                                  .append(", Precio Unitario: ")
-                                  .append(String.format("%.2f", rsDetalleAndSums.getDouble("precioUnitario")))
-                                  .append(")\n");
-
-                    calculatedSubtotal += rsDetalleAndSums.getDouble("subTotal");
-                    calculatedIva += rsDetalleAndSums.getDouble("iva");
-                    calculatedDescuento += rsDetalleAndSums.getDouble("descuento");
-                }
-
-                txtAreaProductos.setText(productosTexto.toString());
-                txtSubtotal.setText(String.format("%.2f", calculatedSubtotal));
-                txtIva.setText(String.format("%.2f", calculatedIva));
-                txtDescuento.setText(String.format("%.2f", calculatedDescuento));
-
-                if (!hayProductos) {
-                    txtAreaProductos.setText("No hay productos detallados para esta venta.");
-                }
-            }
-
-        } catch (SQLException e) {
+        Object[] totales = controlador.obtenerTotalesVenta(idCabeceraVenta);
+        if (totales == null) {
             limpiarDetalleVenta();
-            JOptionPane.showMessageDialog(null, "Error al cargar el detalle de la venta: " + e.getMessage());
-            System.err.println("Error al cargar detalle de venta: " + e.getMessage());
-        } finally {
-            try {
-                if (con != null) con.close();
-            } catch (SQLException e) {
-                System.err.println("Error al cerrar conexión: " + e.getMessage());
-            }
+            JOptionPane.showMessageDialog(null, "No se encontró el total para la venta seleccionada.");
+            return;
+        }
+        txtTotal.setText(String.format("%.2f", totales[0]));
+
+        List<Object[]> detalles = controlador.obtenerDetalleVenta(idCabeceraVenta);
+        StringBuilder productosTexto = new StringBuilder("Productos:\n");
+        double subtotal = 0.0, iva = 0.0, descuento = 0.0;
+
+        for (Object[] det : detalles) {
+            productosTexto.append("- ").append(det[0])
+                    .append(" (Cant: ").append(det[1])
+                    .append(", Precio Unitario: ").append(String.format("%.2f", det[2]))
+                    .append(")\n");
+
+            subtotal += (double) det[3];
+            descuento += (double) det[4];
+            iva += (double) det[5];
+        }
+
+        txtAreaProductos.setText(productosTexto.toString());
+        txtSubtotal.setText(String.format("%.2f", subtotal));
+        txtIva.setText(String.format("%.2f", iva));
+        txtDescuento.setText(String.format("%.2f", descuento));
+
+        if (detalles.isEmpty()) {
+            txtAreaProductos.setText("No hay productos detallados para esta venta.");
         }
     }
-
-    private void verificarExistenciaVentas() {
-        Connection con = null;
-        try {
-            con = Conexion.conectar();
-            String sql = "SELECT COUNT(*) FROM CabeceraVenta WHERE estado = 1"; 
-            try (PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
-                if (rs.next() && rs.getInt(1) == 0) {
-                    JOptionPane.showMessageDialog(null, "No existen ventas activas en el sistema.");
-                }
-            }
-        } catch (SQLException e) {
-            System.err.println("Error al verificar ventas: " + e.getMessage());
-            JOptionPane.showMessageDialog(null, "Error al verificar ventas: " + e.getMessage());
-        } finally {
-            try {
-                if (con != null) con.close();
-            } catch (SQLException e) {
-                System.err.println("Error al cerrar conexión: " + e.getMessage());
-            }
-        }
-    }}
+}

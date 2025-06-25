@@ -372,28 +372,6 @@ public class JPanelProductoEditar extends javax.swing.JPanel {
         textAreaDescripcion.setText("");
     }
 
-//    private boolean validarCampos(String nombreProducto, String stockTexto, String precioTexto, String descripcion) {
-//        if (nombreProducto.isEmpty() || stockTexto.isEmpty() || precioTexto.isEmpty() || descripcion.isEmpty()) {
-//            JOptionPane.showMessageDialog(null, "Campos obligatorios vacíos");
-//            return false;
-//        }
-//
-//        if (!stockTexto.matches("\\d+")) {
-//            JOptionPane.showMessageDialog(null, "Formato de dato incorrecto.");
-//            return false;
-//        }
-//
-//        if (!precioTexto.matches("^\\d+(\\.\\d{1,2})?$") && !precioTexto.matches("^\\d+(,\\d{1,2})?$")) {
-//            JOptionPane.showMessageDialog(null, "Formato de dato incorrecto.");
-//            return false;
-//        }
-//
-//        if (cboxCategoria.getSelectedIndex() == 0 || cboxProveedor.getSelectedIndex() == 0) {
-//            JOptionPane.showMessageDialog(null, "Campos obligatorios vacíos");
-//            return false;
-//        }
-//        return true;
-//    }
     private boolean validarCampos(String nombreProducto, String stockTexto, String precioTexto, String descripcion) {
         if (nombreProducto.isEmpty() || stockTexto.isEmpty() || precioTexto.isEmpty() || descripcion.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Campos obligatorios vacíos.");

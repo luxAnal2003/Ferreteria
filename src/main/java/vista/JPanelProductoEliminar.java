@@ -5,32 +5,19 @@
 package vista;
 
 import controlador.ProductoController;
-import dao.ProductoDAO;
-import dao.Conexion;
 import java.awt.Dimension;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.sql.Connection;
-import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import modelo.Categoria;
 import modelo.Proveedor;
-import java.sql.Statement;
-import java.sql.ResultSet;
 import java.util.List;
 import modelo.Producto;
-import static vista.JPanelProductoNuevo.jScrollPane4;
-import static vista.JPanelProductoNuevo.tableProducto;
 
 /**
  *
  * @author admin
  */
 public class JPanelProductoEliminar extends javax.swing.JPanel {
-
-    private Categoria obtenerIdCategoria = new Categoria();
-    private Proveedor obtenerIdProveedor = new Proveedor();
     private int idProducto;
 
     /**
@@ -41,15 +28,6 @@ public class JPanelProductoEliminar extends javax.swing.JPanel {
         this.setSize(new Dimension(900, 400));
 
         this.cargarProductosEnTabla();
-//        tableProducto.addMouseListener(new MouseAdapter() {
-//            @Override
-//            public void mouseClicked(MouseEvent e) {
-//                int filaSeleccionada = tableProducto.getSelectedRow();
-//                if (filaSeleccionada != -1) {
-//                    idProducto = Integer.parseInt(tableProducto.getValueAt(filaSeleccionada, 0).toString());
-//                }
-//            }
-//        });
     }
 
     /**

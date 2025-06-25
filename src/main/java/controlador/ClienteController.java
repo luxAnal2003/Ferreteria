@@ -69,7 +69,12 @@ public class ClienteController {
         return clienteDAO.obtenerClientePorId(idCliente);
     }
     
-    public List<Cliente> buscarClientesActivosPorCriterio(String criterio) {
-        return clienteDAO.buscarClientesActivos(criterio);
+    public List<Cliente> buscarClientes(String criterio) {
+        return clienteDAO.buscarClientesPorCriterio(criterio);
     }
+    
+    public int obtenerUltimoIdInsertado() {
+        return clienteDAO.obtenerUltimoIdInsertado();
+    }
+    
 }

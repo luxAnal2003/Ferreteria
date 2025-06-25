@@ -4,7 +4,6 @@
  */
 package dao;
 
-import dao.Conexion;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -22,6 +21,7 @@ import modelo.DetalleVenta;
  * @author admin
  */
 public class VentaDAO {
+
     public boolean guardarVentaCompleta(Venta venta, List<DetalleVenta> detalles) {
         Connection con = null;
         boolean exito = false;
@@ -48,6 +48,8 @@ public class VentaDAO {
             String sqlDetalle = "INSERT INTO detalleventa (idCabeceraVenta, idProducto, cantidad, precioUnitario, subTotal, iva, descuento, totalPagar, estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement pstDetalle = con.prepareStatement(sqlDetalle);
 
+            ProductoDAO productoDAO = new ProductoDAO();
+
             for (DetalleVenta det : detalles) {
                 pstDetalle.setInt(1, idCabeceraVenta);
                 pstDetalle.setInt(2, det.getIdProducto());
@@ -59,6 +61,11 @@ public class VentaDAO {
                 pstDetalle.setDouble(8, det.getTotalPagar());
                 pstDetalle.setInt(9, det.getEstado());
                 pstDetalle.addBatch();
+
+                boolean stockActualizado = productoDAO.disminuirStock(det.getIdProducto(), det.getCantidad(), con);
+                if (!stockActualizado) {
+                    throw new SQLException("Stock insuficiente para el producto con ID: " + det.getIdProducto());
+                }
             }
 
             pstDetalle.executeBatch();
@@ -90,14 +97,32 @@ public class VentaDAO {
     public boolean activar(int idCabeceraVenta) {
         boolean respuesta = false;
         Connection cn = null;
-        String sql = "UPDATE cabeceraventa SET estado = 1 WHERE idCabeceraVenta = ?";
+
+        String sqlCabecera = "UPDATE cabeceraventa SET estado = 1 WHERE idCabeceraVenta = ?";
+        String sqlDetalle = "UPDATE detalleventa SET estado = 1 WHERE idCabeceraVenta = ?";
 
         try {
             cn = Conexion.conectar();
-            PreparedStatement pst = cn.prepareStatement(sql);
-            pst.setInt(1, idCabeceraVenta);
-            respuesta = pst.executeUpdate() > 0;
+            cn.setAutoCommit(false); 
+
+            PreparedStatement pstCabecera = cn.prepareStatement(sqlCabecera);
+            pstCabecera.setInt(1, idCabeceraVenta);
+            pstCabecera.executeUpdate();
+
+            PreparedStatement pstDetalle = cn.prepareStatement(sqlDetalle);
+            pstDetalle.setInt(1, idCabeceraVenta);
+            pstDetalle.executeUpdate();
+
+            cn.commit(); 
+            respuesta = true;
         } catch (SQLException e) {
+            try {
+                if (cn != null) {
+                    cn.rollback();
+                }
+            } catch (SQLException ex) {
+                System.err.println("Error al hacer rollback: " + ex.getMessage());
+            }
             System.err.println("Error al activar venta: " + e.getMessage());
         } finally {
             try {
@@ -114,17 +139,48 @@ public class VentaDAO {
     public boolean desactivar(int idCabeceraVenta) {
         boolean respuesta = false;
         Connection cn = null;
-        String sql = "UPDATE cabeceraventa SET estado = 0 WHERE idCabeceraVenta = ?";
+        PreparedStatement pstCabecera = null;
+        PreparedStatement pstDetalle = null;
+
+        String sqlCabecera = "UPDATE CabeceraVenta SET estado = 0 WHERE idCabeceraVenta = ?";
+        String sqlDetalle = "UPDATE DetalleVenta SET estado = 0 WHERE idCabeceraVenta = ?";
 
         try {
             cn = Conexion.conectar();
-            PreparedStatement pst = cn.prepareStatement(sql);
-            pst.setInt(1, idCabeceraVenta);
-            respuesta = pst.executeUpdate() > 0;
+            cn.setAutoCommit(false);
+
+            pstCabecera = cn.prepareStatement(sqlCabecera);
+            pstCabecera.setInt(1, idCabeceraVenta);
+            int filasCabecera = pstCabecera.executeUpdate();
+
+            pstDetalle = cn.prepareStatement(sqlDetalle);
+            pstDetalle.setInt(1, idCabeceraVenta);
+            int filasDetalle = pstDetalle.executeUpdate();
+
+            if (filasCabecera > 0 && filasDetalle > 0) {
+                cn.commit(); 
+                respuesta = true;
+            } else {
+                cn.rollback(); 
+            }
+
         } catch (SQLException e) {
+            try {
+                if (cn != null) {
+                    cn.rollback();
+                }
+            } catch (SQLException ex) {
+                System.err.println("Error al hacer rollback: " + ex.getMessage());
+            }
             System.err.println("Error al desactivar venta: " + e.getMessage());
         } finally {
             try {
+                if (pstDetalle != null) {
+                    pstDetalle.close();
+                }
+                if (pstCabecera != null) {
+                    pstCabecera.close();
+                }
                 if (cn != null) {
                     cn.close();
                 }
@@ -132,19 +188,20 @@ public class VentaDAO {
                 System.err.println("Error al cerrar conexión en desactivar venta: " + e.getMessage());
             }
         }
+
         return respuesta;
     }
-    
+
     public List<Venta> obtenerTodasLasVentasActivas() throws SQLException {
         List<Venta> ventas = new ArrayList<>();
         Connection con = null;
         String sql = "SELECT cv.idCabeceraVenta, cv.idCliente, cv.idEmpleado, cv.fechaVenta, cv.total, cv.estado, "
                 + "cl.nombre AS nombre_cliente, cl.apellido AS apellido_cliente, "
-                + "u.nombre AS nombre_empleado, u.apellido AS apellido_empleado " 
+                + "u.nombre AS nombre_empleado, u.apellido AS apellido_empleado "
                 + "FROM CabeceraVenta cv "
                 + "INNER JOIN Cliente cl ON cv.idCliente = cl.idCliente "
                 + "INNER JOIN Empleado e ON cv.idEmpleado = e.idEmpleado "
-                + "INNER JOIN Usuario u ON e.idUsuario = u.idUsuario " 
+                + "INNER JOIN Usuario u ON e.idUsuario = u.idUsuario "
                 + "WHERE cv.estado = 1";
 
         try {
@@ -155,12 +212,12 @@ public class VentaDAO {
             while (rs.next()) {
                 Venta venta = new Venta();
                 venta.setIdCabecera(rs.getInt("idCabeceraVenta"));
-                venta.setIdCliente(rs.getInt("idCliente")); 
+                venta.setIdCliente(rs.getInt("idCliente"));
                 venta.setIdEmpleado(rs.getInt("idEmpleado"));
                 venta.setFechaVenta(rs.getString("fechaVenta"));
                 venta.setTotal(rs.getDouble("total"));
                 venta.setEstado(rs.getInt("estado"));
-                
+
                 ventas.add(venta);
             }
         } finally {
@@ -171,46 +228,131 @@ public class VentaDAO {
         return ventas;
     }
 
-    public List<Venta> buscarVentas(String criterio) throws SQLException {
-        List<Venta> ventas = new ArrayList<>();
+    public boolean verificarExistenciaVentas() {
         Connection con = null;
-        String sql = "SELECT cv.idCabeceraVenta, cv.idCliente, cv.idEmpleado, cv.fechaVenta, cv.total, cv.estado, "
-                + "cl.nombre AS nombre_cliente, cl.apellido AS apellido_cliente, "
-                + "u.nombre AS nombre_empleado, u.apellido AS apellido_empleado "
-                + "FROM CabeceraVenta cv "
-                + "INNER JOIN Cliente cl ON cv.idCliente = cl.idCliente "
-                + "INNER JOIN Empleado e ON cv.idEmpleado = e.idEmpleado "
-                + "INNER JOIN Usuario u ON e.idUsuario = u.idUsuario "
-                + "WHERE cv.estado = 1 AND ("
-                + "CONCAT(cl.nombre, ' ', cl.apellido) LIKE ? OR cl.cedula LIKE ? OR CONCAT(u.nombre, ' ', u.apellido) LIKE ? OR cv.idCabeceraVenta LIKE ?" // Buscar por ID de venta también
-                + ")";
-
+        PreparedStatement ps = null;
+        ResultSet rs = null;
         try {
             con = Conexion.conectar();
-            PreparedStatement pst = con.prepareStatement(sql);
-            String busquedaLike = "%" + criterio + "%";
-            pst.setString(1, busquedaLike);
-            pst.setString(2, busquedaLike);
-            pst.setString(3, busquedaLike);
-            pst.setString(4, busquedaLike); 
-
-            ResultSet rs = pst.executeQuery();
-
-            while (rs.next()) {
-                Venta venta = new Venta();
-                venta.setIdCabecera(rs.getInt("idCabeceraVenta"));
-                venta.setIdCliente(rs.getInt("idCliente"));
-                venta.setIdEmpleado(rs.getInt("idEmpleado"));
-                venta.setFechaVenta(rs.getString("fechaVenta"));
-                venta.setTotal(rs.getDouble("total"));
-                venta.setEstado(rs.getInt("estado"));
-                ventas.add(venta);
-            }
+            String sql = "SELECT COUNT(*) FROM cabeceraventa";
+            ps = con.prepareStatement(sql);
+            rs = ps.executeQuery();
+            return rs.next() && rs.getInt(1) > 0;
+        } catch (SQLException e) {
+            System.err.println("Error al verificar existencia de ventas: " + e.getMessage());
+            return false;
         } finally {
-            if (con != null) {
-                con.close();
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                System.err.println("Error al cerrar conexión: " + e.getMessage());
             }
         }
+    }
+
+    public List<Object[]> obtenerVentasConDetalle() {
+        List<Object[]> ventas = new ArrayList<>();
+        String sql = "SELECT cv.idCabeceraVenta, cv.fechaVenta, cv.total, "
+                + "CONCAT(cl.nombre, ' ', cl.apellido) AS nombre_cliente, "
+                + "CONCAT(u.nombre, ' ', u.apellido) AS nombre_empleado, cv.estado "
+                + "FROM cabeceraventa cv "
+                + "INNER JOIN cliente cl ON cv.idCliente = cl.idCliente "
+                + "INNER JOIN empleado em ON cv.idEmpleado = em.idEmpleado "
+                + "INNER JOIN usuario u ON em.idUsuario = u.idUsuario";
+
+        try (Connection con = Conexion.conectar(); Statement st = con.createStatement(); ResultSet rs = st.executeQuery(sql)) {
+            while (rs.next()) {
+                Object[] fila = new Object[6];
+                fila[0] = rs.getInt("idCabeceraVenta");
+                fila[1] = rs.getDate("fechaVenta");
+                fila[2] = rs.getDouble("total");
+                fila[3] = rs.getString("nombre_cliente");
+                fila[4] = rs.getString("nombre_empleado");
+                fila[5] = rs.getInt("estado") == 1 ? "Activa" : "Anulada";
+                ventas.add(fila);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener ventas resumidas: " + e.getMessage());
+        }
         return ventas;
+    }
+
+    public List<Object[]> buscarVentas(String criterio) {
+        List<Object[]> ventas = new ArrayList<>();
+        String sql = "SELECT cv.idCabeceraVenta, cv.fechaVenta, cv.total, "
+                + "CONCAT(cl.nombre, ' ', cl.apellido) AS nombre_cliente, "
+                + "CONCAT(ue.nombre, ' ', ue.apellido) AS nombre_empleado, cv.estado "
+                + "FROM CabeceraVenta cv "
+                + "INNER JOIN Cliente cl ON cv.idCliente = cl.idCliente "
+                + "INNER JOIN Empleado em ON cv.idEmpleado = em.idEmpleado "
+                + "INNER JOIN Usuario ue ON em.idUsuario = ue.idUsuario "
+                + "WHERE cv.estado = 1 AND (CONCAT(cl.nombre, ' ', cl.apellido) LIKE ? OR cl.cedula LIKE ?)";
+
+        try (Connection con = Conexion.conectar(); PreparedStatement pst = con.prepareStatement(sql)) {
+            String like = "%" + criterio + "%";
+            pst.setString(1, like);
+            pst.setString(2, like);
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                Object[] fila = new Object[6];
+                fila[0] = rs.getInt("idCabeceraVenta");
+                fila[1] = rs.getDate("fechaVenta");
+                fila[2] = rs.getDouble("total");
+                fila[3] = rs.getString("nombre_cliente");
+                fila[4] = rs.getString("nombre_empleado");
+                fila[5] = (rs.getInt("estado") == 1) ? "Activa" : "Anulada";
+                ventas.add(fila);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al buscar ventas: " + e.getMessage());
+        }
+        return ventas;
+    }
+
+    public Object[] obtenerTotalesVenta(int idCabeceraVenta) {
+        String sql = "SELECT total FROM CabeceraVenta WHERE idCabeceraVenta = ?";
+        try (Connection con = Conexion.conectar(); PreparedStatement pst = con.prepareStatement(sql)) {
+            pst.setInt(1, idCabeceraVenta);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                return new Object[]{rs.getDouble("total")};
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener total de la venta: " + e.getMessage());
+        }
+        return null;
+    }
+
+    public List<Object[]> obtenerDetalleVenta(int idCabeceraVenta) {
+        List<Object[]> detalles = new ArrayList<>();
+        String sql = "SELECT dv.cantidad, dv.precioUnitario, dv.subTotal, dv.descuento, dv.iva, p.nombre "
+                + "FROM DetalleVenta dv "
+                + "INNER JOIN Producto p ON dv.idProducto = p.idProducto "
+                + "WHERE dv.idCabeceraVenta = ?";
+        try (Connection con = Conexion.conectar(); PreparedStatement pst = con.prepareStatement(sql)) {
+            pst.setInt(1, idCabeceraVenta);
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                detalles.add(new Object[]{
+                    rs.getString("nombre"),
+                    rs.getInt("cantidad"),
+                    rs.getDouble("precioUnitario"),
+                    rs.getDouble("subTotal"),
+                    rs.getDouble("descuento"),
+                    rs.getDouble("iva")
+                });
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener detalle de la venta: " + e.getMessage());
+        }
+        return detalles;
     }
 }

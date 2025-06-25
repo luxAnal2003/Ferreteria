@@ -4,19 +4,11 @@
  */
 package vista;
 
-import dao.EmpleadoDAO;
-import dao.UsuarioDAO;
-import dao.Conexion;
+import controlador.EmpleadoController;
 import java.awt.Dimension;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import java.sql.Statement;
-import java.sql.ResultSet;
+import java.util.List;
 import modelo.Empleado;
 import modelo.Usuario;
 
@@ -25,8 +17,7 @@ import modelo.Usuario;
  * @author admin
  */
 public class JPanelEmpleadoNuevo extends javax.swing.JPanel {
-
-    private int idEmpleado;
+    private EmpleadoController controlador;
 
     /**
      * Creates new form JPanelCategoriaNuevo
@@ -169,12 +160,7 @@ public class JPanelEmpleadoNuevo extends javax.swing.JPanel {
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        Empleado empleado = new Empleado();
-        Usuario usuario = new Usuario();
-        EmpleadoDAO controladorEmpleado = new EmpleadoDAO();
-        UsuarioDAO controladorUsuario = new UsuarioDAO();
-
-        String cedulaRuc = txtCedulaRuc.getText().trim();
+        String cedula = txtCedulaRuc.getText().trim();
         String nombres = txtNombres.getText().trim();
         String apellidos = txtApellidos.getText().trim();
         String telefono = txtTelefono.getText().trim();
@@ -182,52 +168,38 @@ public class JPanelEmpleadoNuevo extends javax.swing.JPanel {
         String direccion = txtDireccion.getText().trim();
         String nombreUsuario = txtUsuario.getText().trim();
         String contrasenia = new String(txtContrasenia.getPassword()).trim();
-        int rol = 2;
 
-        if (controladorEmpleado.existeEmpleado(cedulaRuc)) {
-            JOptionPane.showMessageDialog(null, "El empleado con esta cédula/RUC ya existe.");
+        if (controlador.existeCedulaEmpleado(cedula)) {
+            JOptionPane.showMessageDialog(null, "El empleado ya existe.");
             return;
         }
 
-        if (!validarCampos(cedulaRuc, nombres, apellidos, telefono, email, direccion, nombreUsuario, contrasenia)) {
+        if (!validarCampos(cedula, nombres, apellidos, telefono, email, direccion, nombreUsuario, contrasenia)) {
             return;
         }
-        
-        try {
-            usuario.setNombre(nombres.substring(0, 1).toUpperCase() + nombres.substring(1).toLowerCase());
-            usuario.setApellido(apellidos.substring(0, 1).toUpperCase() + apellidos.substring(1).toLowerCase());
-            usuario.setTelefono(telefono);
-            usuario.setCorreo(email);
-            usuario.setUsuario(nombreUsuario);
-            usuario.setContrasenia(contrasenia);
-            usuario.setIdRol(rol);
-            usuario.setEstado(1);
 
-            int idUsuario = controladorUsuario.guardar(usuario);
-            if (idUsuario == -1) {
-                JOptionPane.showMessageDialog(null, "Error al guardar usuario.");
-                return;
-            }
+        Usuario usuario = new Usuario();
+        usuario.setNombre(nombres);
+        usuario.setApellido(apellidos);
+        usuario.setTelefono(telefono);
+        usuario.setCorreo(email);
+        usuario.setUsuario(nombreUsuario);
+        usuario.setContrasenia(contrasenia);
+        usuario.setIdRol(2);
+        usuario.setEstado(1);
 
-            empleado.setCedula(cedulaRuc);
-            empleado.setDireccion(direccion);
-            empleado.setIdRol(rol);
-            empleado.setEstado(1);
-            empleado.setIdUsuario(idUsuario);
+        Empleado empleado = new Empleado();
+        empleado.setCedula(cedula);
+        empleado.setDireccion(direccion);
+        empleado.setIdRol(2);
+        empleado.setEstado(1);
 
-            if (controladorEmpleado.guardar(empleado)) {
-                JOptionPane.showMessageDialog(null, "Empleado guardado correctamente.");
-                this.cargarEmpleadosEnTabla();
-                this.setear();
-            } else {
-                JOptionPane.showMessageDialog(null, "Error al guardar empleado.");
-            }
-        } catch (StringIndexOutOfBoundsException e) {
-            JOptionPane.showMessageDialog(null, "Error al procesar nombres/apellidos. Asegúrese de que no estén vacíos.");
-            System.err.println("Error de índice de cadena al guardar empleado: " + e.getMessage());
-        } catch (Exception e) {
-            System.err.println("Error inesperado al guardar empleado: " + e.getMessage());
-            JOptionPane.showMessageDialog(null, "Error inesperado al guardar el empleado.");
+        if (controlador.guardarEmpleadoYUsuario(empleado, usuario)) {
+            JOptionPane.showMessageDialog(null, "Empleado guardado.");
+            cargarEmpleadosEnTabla();
+            setear();
+        } else {
+            JOptionPane.showMessageDialog(null, "Error al guardar empleado.");
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
 
@@ -267,68 +239,27 @@ public class JPanelEmpleadoNuevo extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     private void cargarEmpleadosEnTabla() {
-        DefaultTableModel model = new DefaultTableModel();
+        controlador = new EmpleadoController();
+        List<Object[]> empleados = controlador.obtenerEmpleados();
 
-        String sql = "SELECT e.idEmpleado, e.cedula, u.nombre, u.apellido, u.telefono, e.direccion, "
-                + "u.correo, u.usuario, u.contrasenia, r.tipo AS rol, u.estado, u.idUsuario "
-                + "FROM empleado e "
-                + "INNER JOIN usuario u ON e.idUsuario = u.idUsuario "
-                + "INNER JOIN rol r ON u.idRol = r.idRol "
-                + "WHERE r.idRol = 2";
+        DefaultTableModel model = new DefaultTableModel(new String[]{
+            "ID", "Cédula", "Nombres", "Apellidos", "Teléfono", "Dirección",
+            "Correo", "Usuario", "Contraseña", "Rol", "Estado", "idUsuario"
+        }, 0);
 
-        try (Connection con = Conexion.conectar(); Statement st = con.createStatement(); ResultSet rs = st.executeQuery(sql)) {
+        for (Object[] fila : empleados) {
+            model.addRow(fila);
+        }
 
-            model.addColumn("ID");
-            model.addColumn("Cédula");
-            model.addColumn("Nombres");
-            model.addColumn("Apellidos");
-            model.addColumn("Teléfono");
-            model.addColumn("Dirección");
-            model.addColumn("Correo");
-            model.addColumn("Usuario");
-            model.addColumn("Contraseña");
-            model.addColumn("Rol");
-            model.addColumn("Estado");
-            model.addColumn("idUsuario");
+        tableEmpleado.setModel(model);
+        if (model.getColumnCount() > 11) {
+            tableEmpleado.getColumnModel().getColumn(11).setMinWidth(0);
+            tableEmpleado.getColumnModel().getColumn(11).setMaxWidth(0);
+            tableEmpleado.getColumnModel().getColumn(11).setWidth(0);
+        }
 
-            boolean hayRegistros = false;
-
-            while (rs.next()) {
-                hayRegistros = true;
-                Object[] fila = new Object[12];
-                fila[0] = rs.getInt("idEmpleado");
-                fila[1] = rs.getString("cedula");
-                fila[2] = rs.getString("nombre");
-                fila[3] = rs.getString("apellido");
-                fila[4] = rs.getString("telefono");
-                fila[5] = rs.getString("direccion");
-                fila[6] = rs.getString("correo");
-                fila[7] = rs.getString("usuario");
-                fila[8] = rs.getString("contrasenia");
-                fila[9] = rs.getString("rol");
-                fila[10] = rs.getInt("estado") == 1 ? "Activo" : "Inactivo";
-                fila[11] = rs.getInt("idUsuario");
-
-                model.addRow(fila);
-            }
-
-            tableEmpleado.setModel(model);
-
-            if (tableEmpleado.getColumnModel().getColumnCount() > 11) {
-                tableEmpleado.getColumnModel().getColumn(11).setMinWidth(0);
-                tableEmpleado.getColumnModel().getColumn(11).setMaxWidth(0);
-                tableEmpleado.getColumnModel().getColumn(11).setWidth(0);
-            }
-
-            jScrollPane4.setViewportView(tableEmpleado);
-
-            if (!hayRegistros) {
-                JOptionPane.showMessageDialog(null, "No existen empleados registrados actualmente.");
-            }
-
-        } catch (SQLException e) {
-            System.err.println("Error al llenar la tabla empleados: " + e.getMessage());
-            JOptionPane.showMessageDialog(null, "Error al cargar empleados: " + e.getMessage());
+        if (empleados.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No existen empleados registrados actualmente.");
         }
     }
 

@@ -125,7 +125,7 @@ public class UsuarioDAO {
         }
         return respuesta;
     }
-    
+
     public boolean activar(int idUsuario) {
         boolean respuesta = false;
         Connection cn = Conexion.conectar();
@@ -144,5 +144,35 @@ public class UsuarioDAO {
         }
 
         return respuesta;
+    }
+
+    public Usuario getUsuarioById(int idUsuario) {
+        Usuario usuario = null;
+
+        String sql = "SELECT * FROM Usuario WHERE idUsuario = ?";
+
+        try (Connection conn = Conexion.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, idUsuario);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                usuario = new Usuario();
+                usuario.setIdUsuario(rs.getInt("idUsuario"));
+                usuario.setIdRol(rs.getInt("idRol"));
+                usuario.setNombre(rs.getString("nombre"));
+                usuario.setApellido(rs.getString("apellido"));
+                usuario.setUsuario(rs.getString("usuario"));
+                usuario.setContrasenia(rs.getString("contrasenia"));
+                usuario.setTelefono(rs.getString("telefono"));
+                usuario.setCorreo(rs.getString("correo"));
+                usuario.setEstado(rs.getInt("estado"));
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error al obtener usuario por ID: " + e.getMessage());
+        }
+
+        return usuario;
     }
 }
