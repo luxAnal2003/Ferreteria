@@ -7,7 +7,7 @@ import modelo.Empleado;
 
 public class EmpleadoDAO {
 
-    public boolean guardar(Empleado empleado) {
+    public boolean registrarEmpleado(Empleado empleado) {
         boolean respuesta = false;
         Connection cn = Conexion.conectar();
 
@@ -30,19 +30,19 @@ public class EmpleadoDAO {
         return respuesta;
     }
 
-    public boolean actualizar(Empleado empleado) {
+    public boolean actualizarEmpleado(Empleado empleado, int idEmpleado) {
         boolean respuesta = false;
         Connection cn = Conexion.conectar();
-
-        String sql = "UPDATE empleado SET idRol = ?, cedula = ?, direccion = ?, estado = ? WHERE idEmpleado = ?";
-
+        
         try {
-            PreparedStatement consulta = cn.prepareStatement(sql);
+            PreparedStatement consulta = cn.prepareStatement(
+                    "UPDATE empleado SET idRol = ?, cedula = ?, direccion = ?, estado = ? WHERE idEmpleado = ?"
+            );
             consulta.setInt(1, empleado.getIdRol());
             consulta.setString(2, empleado.getCedula());
             consulta.setString(3, empleado.getDireccion());
             consulta.setInt(4, empleado.getEstado());
-            consulta.setInt(5, empleado.getIdEmpleado());
+            consulta.setInt(5, idEmpleado);
 
             respuesta = consulta.executeUpdate() > 0;
             cn.close();
@@ -53,41 +53,17 @@ public class EmpleadoDAO {
         return respuesta;
     }
 
-    public boolean desactivar(int idEmpleado) {
-        boolean respuesta = false;
-        Connection cn = Conexion.conectar();
+    public boolean cambiarEstado(int idEmpleado, int estado) {
+        String sql = "UPDATE empleado SET estado = ? WHERE idEmpleado = ?";
+        try (Connection conn = Conexion.conectar(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
-        String sql = "UPDATE empleado SET estado = 0 WHERE idEmpleado = ?";
-
-        try {
-            PreparedStatement pst = cn.prepareStatement(sql);
-            pst.setInt(1, idEmpleado);
-            respuesta = pst.executeUpdate() > 0;
-            cn.close();
+            ps.setInt(1, estado);
+            ps.setInt(2, idEmpleado);
+            return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            System.out.println("Error al desactivar empleado: " + e);
+            e.printStackTrace();
+            return false;
         }
-        return respuesta;
-    }
-
-    public boolean activar(int idEmpleado) {
-        boolean respuesta = false;
-        Connection cn = Conexion.conectar();
-
-        try {
-            PreparedStatement consulta = cn.prepareStatement("UPDATE empleado SET estado = 1 WHERE idEmpleado = ?");
-            consulta.setInt(1, idEmpleado);
-
-            if (consulta.executeUpdate() > 0) {
-                respuesta = true;
-            }
-
-            cn.close();
-        } catch (SQLException e) {
-            System.out.println("Error al activar empleado: " + e);
-        }
-
-        return respuesta;
     }
 
     public boolean existeEmpleado(String empleado) {
@@ -177,7 +153,7 @@ public class EmpleadoDAO {
         return idUsuario;
     }
 
-    public Empleado getEmpleadoById(int idEmpleado) {
+    public Empleado obtenerEmpleadoPorId(int idEmpleado) {
         Empleado empleado = null;
 
         String sql = "SELECT * FROM Empleado WHERE idEmpleado = ?";

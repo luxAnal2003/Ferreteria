@@ -18,7 +18,7 @@ import modelo.Usuario;
  */
 public class JPanelEmpleadoEditar extends javax.swing.JPanel {
 
-    private EmpleadoController controlador;
+    private EmpleadoController empleadoController;
     private int idEmpleado;
     private int idUsuario;
 
@@ -28,7 +28,7 @@ public class JPanelEmpleadoEditar extends javax.swing.JPanel {
     public JPanelEmpleadoEditar() {
         initComponents();
         this.setSize(new Dimension(900, 400));
-
+        empleadoController =  new EmpleadoController();
         this.cargarEmpleadosEnTabla();
     }
 
@@ -166,7 +166,7 @@ public class JPanelEmpleadoEditar extends javax.swing.JPanel {
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
-        String cedulaRuc = txtCedulaRuc.getText().trim();
+        String cedula = txtCedulaRuc.getText().trim();
         String nombres = txtNombres.getText().trim();
         String apellidos = txtApellidos.getText().trim();
         String telefono = txtTelefono.getText().trim();
@@ -174,54 +174,15 @@ public class JPanelEmpleadoEditar extends javax.swing.JPanel {
         String direccion = txtDireccion.getText().trim();
         String nombreUsuario = txtUsuario.getText().trim();
         String contrasenia = new String(txtContrasenia.getPassword()).trim();
-        int rol = 2; 
+        int idRol = 2;
+        int estado = 1;
 
-        if (!validarCampos(cedulaRuc, nombres, apellidos, telefono, email, direccion, nombreUsuario, contrasenia)) {
-            return;
-        }
-
-        try {
-            if (idEmpleado == 0 || idUsuario == 0) {
-                JOptionPane.showMessageDialog(null, "Seleccione un empleado de la tabla para actualizar.");
-                return;
-            }
-
-            Usuario usuario = new Usuario();
-            usuario.setIdUsuario(idUsuario); 
-            usuario.setNombre(nombres); 
-            usuario.setApellido(apellidos); 
-            usuario.setTelefono(telefono);
-            usuario.setCorreo(email);
-            usuario.setUsuario(nombreUsuario);
-            usuario.setContrasenia(contrasenia);
-            usuario.setIdRol(rol); 
-            usuario.setEstado(1); 
-
-            Empleado empleado = new Empleado();
-            empleado.setIdEmpleado(idEmpleado); 
-            empleado.setCedula(cedulaRuc);
-            empleado.setDireccion(direccion);
-            empleado.setIdRol(rol); 
-            empleado.setEstado(1); 
-            empleado.setIdUsuario(idUsuario); 
-
-            EmpleadoController empleadoController = new EmpleadoController();
-            boolean actualizadoExitosamente = empleadoController.actualizarEmpleadoYUsuario(empleado, usuario);
-
-            if (actualizadoExitosamente) {
-                JOptionPane.showMessageDialog(null, "Empleado actualizado correctamente.");
-                this.cargarEmpleadosEnTabla(); 
-                this.setear(); 
-            } else {
-                JOptionPane.showMessageDialog(null, "Error al actualizar el empleado. Verifique los datos o intente nuevamente.");
-            }
-
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(null, "Error: El ID del empleado o usuario no es un número válido.");
-            System.err.println("Error al parsear ID de empleado/usuario: " + ex.getMessage());
-        } catch (Exception e) {
-            System.err.println("Error inesperado al actualizar empleado: " + e.getMessage());
-            JOptionPane.showMessageDialog(null, "Error inesperado al actualizar el empleado.");
+        String mensaje = empleadoController.actualizarEmpleadoConUsuario(cedula, nombres, apellidos, telefono, email, direccion, nombreUsuario, contrasenia, idRol, estado, idEmpleado, idUsuario);
+        JOptionPane.showMessageDialog(this, mensaje);
+        
+        if (mensaje.contains("correctamente")) {
+            this.setear();
+            this.cargarEmpleadosEnTabla();
         }
     }//GEN-LAST:event_btnActualizarActionPerformed
 
@@ -261,8 +222,7 @@ public class JPanelEmpleadoEditar extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     private void cargarEmpleadosEnTabla() {
-        controlador = new EmpleadoController();
-        List<Object[]> empleados = controlador.obtenerEmpleados();
+        List<Object[]> empleados = empleadoController.obtenerEmpleados();
 
         DefaultTableModel model = new DefaultTableModel(new String[]{
             "ID", "Cédula", "Nombres", "Apellidos", "Teléfono", "Dirección",

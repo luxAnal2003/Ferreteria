@@ -4,7 +4,6 @@
  */
 package dao;
 
-import dao.Conexion;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -50,7 +49,7 @@ public class UsuarioDAO {
         return usuarioAutenticado;
     }
 
-    public int guardar(Usuario usuario) {
+    public int registrarUsuario(Usuario usuario) {
         int idGenerado = -1;
         String sql = "INSERT INTO Usuario (idRol, nombre, apellido, usuario, contrasenia, telefono, correo, estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -82,14 +81,12 @@ public class UsuarioDAO {
         return idGenerado;
     }
 
-    public boolean actualizar(Usuario usuario) {
+    public boolean actualizarUsuario(Usuario usuario, int idUsuario) {
         boolean respuesta = false;
         Connection cn = Conexion.conectar();
 
-        String sql = "UPDATE usuario SET nombre = ?, apellido = ?, usuario = ?, contrasenia = ?, telefono = ?, correo = ?, estado = ?, idRol = ? WHERE idUsuario = ?";
-
         try {
-            PreparedStatement ps = cn.prepareStatement(sql);
+            PreparedStatement ps = cn.prepareStatement("UPDATE usuario SET nombre = ?, apellido = ?, usuario = ?, contrasenia = ?, telefono = ?, correo = ?, estado = ?, idRol = ? WHERE idUsuario = ?");
             ps.setString(1, usuario.getNombre());
             ps.setString(2, usuario.getApellido());
             ps.setString(3, usuario.getUsuario());
@@ -98,7 +95,7 @@ public class UsuarioDAO {
             ps.setString(6, usuario.getCorreo());
             ps.setInt(7, usuario.getEstado());
             ps.setInt(8, usuario.getIdRol());
-            ps.setInt(9, usuario.getIdUsuario());
+            ps.setInt(9, idUsuario);
 
             respuesta = ps.executeUpdate() > 0;
             cn.close();
@@ -109,44 +106,20 @@ public class UsuarioDAO {
         return respuesta;
     }
 
-    public boolean desactivar(int idUsuario) {
-        boolean respuesta = false;
-        Connection cn = Conexion.conectar();
+    public boolean cambiarEstado(int idUsuario, int estado) {
+        String sql = "UPDATE usuario SET estado = ? WHERE idUsuario = ?";
+        try (Connection conn = Conexion.conectar(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
-        String sql = "UPDATE usuario SET estado = 0 WHERE idUsuario = ?";
-
-        try {
-            PreparedStatement pst = cn.prepareStatement(sql);
-            pst.setInt(1, idUsuario);
-            respuesta = pst.executeUpdate() > 0;
-            cn.close();
+            ps.setInt(1, estado);
+            ps.setInt(2, idUsuario);
+            return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            System.out.println("Error al desactivar usuario: " + e);
+            e.printStackTrace();
+            return false;
         }
-        return respuesta;
     }
 
-    public boolean activar(int idUsuario) {
-        boolean respuesta = false;
-        Connection cn = Conexion.conectar();
-
-        try {
-            PreparedStatement consulta = cn.prepareStatement("UPDATE usuario SET estado = 1 WHERE idUsuario = ?");
-            consulta.setInt(1, idUsuario);
-
-            if (consulta.executeUpdate() > 0) {
-                respuesta = true;
-            }
-
-            cn.close();
-        } catch (SQLException e) {
-            System.out.println("Error al activar usuario: " + e);
-        }
-
-        return respuesta;
-    }
-
-    public Usuario getUsuarioById(int idUsuario) {
+    public Usuario obtenerUsuarioPorId(int idUsuario) {
         Usuario usuario = null;
 
         String sql = "SELECT * FROM Usuario WHERE idUsuario = ?";

@@ -5,6 +5,7 @@
 package controlador;
 
 import dao.UsuarioDAO;
+import modelo.Producto;
 import modelo.Usuario;
 
 /**
@@ -26,22 +27,42 @@ public class UsuarioController {
     }
 
     public int guardarUsuario(Usuario usuario) {
-        return usuarioDAO.guardar(usuario);
+        return usuarioDAO.registrarUsuario(usuario);
     }
 
-    public boolean actualizarUsuario(Usuario usuario) {
-        return usuarioDAO.actualizar(usuario);
+    public boolean actualizarUsuario(Usuario usuario, int idUsuario) {
+        return usuarioDAO.actualizarUsuario(usuario, idUsuario);
     }
 
-    public boolean desactivarUsuario(int idUsuario) {
-        return usuarioDAO.desactivar(idUsuario);
+    public String desactivarUsuario(int idUsuario) {
+        Usuario usu = usuarioDAO.obtenerUsuarioPorId(idUsuario);
+        if (usu == null) {
+            return "El usuario no existe";
+        }
+
+        if (usu.getEstado() == 0) {
+            return "El usuario ya está desactivado";
+        }
+
+        boolean resultado = usuarioDAO.cambiarEstado(idUsuario, 0);
+        return resultado ? "Usuario desactivado correctamente" : "Error al desactivar el usuario";
     }
 
-    public boolean activarUsuario(int idUsuario) {
-        return usuarioDAO.activar(idUsuario);
-    }
+    public String activarUsuario (int idUsuario) {
+        Usuario usu = usuarioDAO.obtenerUsuarioPorId(idUsuario);
+        if (usu == null) {
+            return "El usuario no existe";
+        }
 
+        if (usu.getEstado() == 1) {
+            return "El usuario ya está activo";
+        }
+
+        boolean resultado = usuarioDAO.cambiarEstado(idUsuario, 1);
+        return resultado ? "Usuario activado correctamente" : "Error al activar el usuario";
+    }
+    
     public Usuario obtenerUsuarioPorId(int idUsuario) {
-        return usuarioDAO.getUsuarioById(idUsuario);
+        return usuarioDAO.obtenerUsuarioPorId(idUsuario);
     }
 }

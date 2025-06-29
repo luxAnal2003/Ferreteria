@@ -18,8 +18,9 @@ import java.util.List;
 public class JPanelEmpleadoEliminar extends javax.swing.JPanel {
 
     private int idEmpleado;
-    private EmpleadoController controladorEmpleado;
-    private UsuarioController controladorUsuario;
+    private int idUsuario;
+    private EmpleadoController empleadoController;
+    private UsuarioController usuarioController;
 
     /**
      * Creates new form JPanelCategoriaNuevo
@@ -27,7 +28,8 @@ public class JPanelEmpleadoEliminar extends javax.swing.JPanel {
     public JPanelEmpleadoEliminar() {
         initComponents();
         this.setSize(new Dimension(900, 400));
-//        this.verificarExistenciaEmpleados();
+        empleadoController = new EmpleadoController();
+        usuarioController = new UsuarioController();
         this.cargarEmpleadosEnTabla();
     }
 
@@ -97,32 +99,18 @@ public class JPanelEmpleadoEliminar extends javax.swing.JPanel {
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
         int fila = tableEmpleado.getSelectedRow();
-
-        if (fila != -1) {
-            String estado = tableEmpleado.getValueAt(fila, 10).toString();
-            if (estado.equalsIgnoreCase("Inactivo")) {
-                JOptionPane.showMessageDialog(null, "El empleado ya ha sido desactivado anteriormente");
-                return;
-            }
-
-            idEmpleado = Integer.parseInt(tableEmpleado.getValueAt(fila, 0).toString());
-            int idUsuario = Integer.parseInt(tableEmpleado.getValueAt(fila, 11).toString());
-
-            controladorEmpleado = new EmpleadoController();
-            controladorUsuario = new UsuarioController();
-
-            boolean empleadoDesactivado = controladorEmpleado.desactivarEmpleado(idEmpleado);
-            boolean usuarioDesactivado = controladorUsuario.desactivarUsuario(idUsuario);
-
-            if (empleadoDesactivado && usuarioDesactivado) {
-                JOptionPane.showMessageDialog(null, "Empleado desactivado correctamente");
-                this.cargarEmpleadosEnTabla();
-            } else {
-                JOptionPane.showMessageDialog(null, "Error al desactivar el empleado");
-            }
-        } else {
+        if (fila == -1) {
             JOptionPane.showMessageDialog(null, "Seleccione un empleado para desactivar");
+            return;
         }
+        idEmpleado = Integer.parseInt(tableEmpleado.getValueAt(fila, 0).toString());
+        idUsuario = Integer.parseInt(tableEmpleado.getValueAt(fila, 11).toString());
+
+        String mensaje = empleadoController.desactivarEmpleado(idEmpleado);
+        usuarioController.desactivarUsuario(idUsuario);
+
+        JOptionPane.showMessageDialog(null, mensaje);
+        this.cargarEmpleadosEnTabla();
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -157,32 +145,17 @@ public class JPanelEmpleadoEliminar extends javax.swing.JPanel {
 
     private void activar() {
         int fila = tableEmpleado.getSelectedRow();
-
-        if (fila != -1) {
-            String estado = tableEmpleado.getValueAt(fila, 10).toString();
-            if (estado.equalsIgnoreCase("Activo")) {
-                JOptionPane.showMessageDialog(null, "El empleado ya está activo");
-                return;
-            }
-
-            idEmpleado = Integer.parseInt(tableEmpleado.getValueAt(fila, 0).toString());
-            int idUsuario = Integer.parseInt(tableEmpleado.getValueAt(fila, 11).toString());
-
-            controladorEmpleado = new EmpleadoController();
-            controladorUsuario = new UsuarioController();
-
-            boolean empleadoActivado = controladorEmpleado.activarEmpleado(idEmpleado);
-            boolean usuarioActivado = controladorUsuario.activarUsuario(idUsuario);
-
-            if (empleadoActivado && usuarioActivado) {
-                JOptionPane.showMessageDialog(null, "Empleado activado correctamente");
-                this.cargarEmpleadosEnTabla();
-            } else {
-                JOptionPane.showMessageDialog(null, "Error al activar el empleado");
-            }
-
-        } else {
-            JOptionPane.showMessageDialog(null, "Seleccione un empleado para activar");
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(null, "Seleccione un producto para activar");
+            return;
         }
+        idEmpleado = Integer.parseInt(tableEmpleado.getValueAt(fila, 0).toString());
+        idUsuario = Integer.parseInt(tableEmpleado.getValueAt(fila, 11).toString());
+
+        String mensaje = empleadoController.activarEmpleado(idEmpleado);
+        usuarioController.activarUsuario(idUsuario);
+
+        JOptionPane.showMessageDialog(null, mensaje);
+        this.cargarEmpleadosEnTabla();
     }
 }

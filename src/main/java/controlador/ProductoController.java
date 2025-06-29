@@ -79,7 +79,8 @@ public class ProductoController {
         producto.setNombreProducto(nombreProducto);
         producto.setDescripcion(descripcion);
         producto.setPrecio(precio);
-        producto.setCantidad(stock);
+        producto.setCantidad(stock);producto.setPorcentajeIva(iva);
+        producto.setEstado(estado);
 
         Categoria categoria = new Categoria();
         categoria.setIdCategoria(idCat);
@@ -88,9 +89,6 @@ public class ProductoController {
         Proveedor proveedor = new Proveedor();
         proveedor.setIdProveedor(idProv);
         producto.setProveedor(proveedor);
-
-        producto.setPorcentajeIva(iva);
-        producto.setEstado(estado);
 
         boolean registrado = productoDAO.registrarProducto(producto);
         return registrado ? "Producto registrado correctamente" : "Error al registrar el producto";

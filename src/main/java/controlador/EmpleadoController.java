@@ -21,71 +21,149 @@ public class EmpleadoController {
 
     public EmpleadoController() {
         this.empleadoDAO = new EmpleadoDAO();
-        this.usuarioDAO = new UsuarioDAO(); 
+        this.usuarioDAO = new UsuarioDAO();
     }
 
-    public boolean guardarEmpleadoYUsuario(Empleado empleado, Usuario usuario) {
-        if (usuario.getNombre() != null && !usuario.getNombre().isEmpty()) {
-            usuario.setNombre(usuario.getNombre().substring(0, 1).toUpperCase() + usuario.getNombre().substring(1).toLowerCase());
+    public String guardarEmpleadoConUsuario(String cedula, String nombres, String apellidos, String telefono,
+            String email, String direccion, String nombreUsuario, String contrasenia, int idRol, int estado) {
+
+        if (cedula.isEmpty() || nombres.isEmpty() || apellidos.isEmpty() || telefono.isEmpty() || email.isEmpty()
+                || direccion.isEmpty() || nombreUsuario.isEmpty() || contrasenia.isEmpty()) {
+            return "Todos los campos son obligatorios";
         }
-        if (usuario.getApellido() != null && !usuario.getApellido().isEmpty()) {
-            usuario.setApellido(usuario.getApellido().substring(0, 1).toUpperCase() + usuario.getApellido().substring(1).toLowerCase());
+
+        if (!cedula.matches("\\d{10}")) {
+            return "La cédula debe tener exactamente 10 caracteres numéricos";
+        }
+
+        if (!telefono.matches("\\d{10}")) {
+            return "El teléfono debe tener exactamente 10 caracteres numéricos";
+        }
+
+        if (!email.matches("^[\\w.-]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+            return "Formato de Email inválido.";
         }
         
-        int idUsuarioGenerado = usuarioDAO.guardar(usuario); 
-        
+        if (empleadoDAO.existeEmpleado(cedula)) {
+            return "El empleado ya existe con esa cedula";
+        }
+
+        Usuario usuario = new Usuario();
+        usuario.setNombre(nombres);
+        usuario.setApellido(apellidos);
+        usuario.setTelefono(telefono);
+        usuario.setCorreo(email);
+        usuario.setUsuario(nombreUsuario);
+        usuario.setContrasenia(contrasenia);
+        usuario.setIdRol(idRol);
+        usuario.setEstado(estado);
+
+        Empleado empleado = new Empleado();
+        empleado.setCedula(cedula);
+        empleado.setDireccion(direccion);
+        empleado.setIdRol(idRol);
+        empleado.setEstado(estado);
+
+        int idUsuarioGenerado = usuarioDAO.registrarUsuario(usuario);
         if (idUsuarioGenerado != -1) {
             empleado.setIdUsuario(idUsuarioGenerado);
-            return empleadoDAO.guardar(empleado); 
+            boolean registrado = empleadoDAO.registrarEmpleado(empleado);
+            return registrado ? "Empleado registrado correctamente" : "Error al registrar el empleado";
         }
-        return false;
+        return "Error al registrar el usuario";
     }
 
-    public boolean actualizarEmpleadoYUsuario(Empleado empleado, Usuario usuario) {
-        if (usuario.getNombre() != null && !usuario.getNombre().isEmpty()) {
-            usuario.setNombre(usuario.getNombre().substring(0, 1).toUpperCase() + usuario.getNombre().substring(1).toLowerCase());
-        }
-        if (usuario.getApellido() != null && !usuario.getApellido().isEmpty()) {
-            usuario.setApellido(usuario.getApellido().substring(0, 1).toUpperCase() + usuario.getApellido().substring(1).toLowerCase());
+    public String actualizarEmpleadoConUsuario(String cedula, String nombres, String apellidos, String telefono,
+            String email, String direccion, String nombreUsuario, String contrasenia, int idRol, int estado, int idEmpleado, int idUsuario) {
+
+        if (cedula.isEmpty() || nombres.isEmpty() || apellidos.isEmpty() || telefono.isEmpty() || email.isEmpty()
+                || direccion.isEmpty() || nombreUsuario.isEmpty() || contrasenia.isEmpty()) {
+            return "Todos los campos son obligatorios";
         }
 
-        
-        boolean usuarioActualizado = usuarioDAO.actualizar(usuario); 
-        boolean empleadoActualizado = empleadoDAO.actualizar(empleado); 
+        if (!cedula.matches("\\d{10}")) {
+            return "La cédula debe tener exactamente 10 caracteres numéricos";
+        }
 
-        return usuarioActualizado && empleadoActualizado;
+        if (!telefono.matches("\\d{10}")) {
+            return "El teléfono debe tener exactamente 10 caracteres numéricos";
+        }
+
+        if (!email.matches("^[\\w.-]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+            return "Formato de Email inválido.";
+        }
+
+        Usuario usuario = new Usuario();
+        usuario.setNombre(nombres);
+        usuario.setApellido(apellidos);
+        usuario.setTelefono(telefono);
+        usuario.setCorreo(email);
+        usuario.setUsuario(nombreUsuario);
+        usuario.setContrasenia(contrasenia);
+        usuario.setIdRol(idRol);
+        usuario.setEstado(estado);
+
+        Empleado empleado = new Empleado();
+        empleado.setCedula(cedula);
+        empleado.setDireccion(direccion);
+        empleado.setIdRol(idRol);
+        empleado.setEstado(estado);
+
+        boolean usuarioActualizado = usuarioDAO.actualizarUsuario(usuario, idUsuario); 
+        boolean empleadoActualizado = empleadoDAO.actualizarEmpleado(empleado, idEmpleado); 
+
+        boolean actualizado = usuarioActualizado && empleadoActualizado;
+        return actualizado ? "Empleado actualizado correctamente" : "Error al actualizado el empleado";
     }
 
     public Empleado obtenerEmpleadoPorId(int idEmpleado) {
-        return empleadoDAO.getEmpleadoById(idEmpleado);
+        return empleadoDAO.obtenerEmpleadoPorId(idEmpleado);
     }
 
     public Usuario obtenerUsuarioPorId(int idUsuario) {
-        return usuarioDAO.getUsuarioById(idUsuario); 
+        return usuarioDAO.obtenerUsuarioPorId(idUsuario);
     }
-    
+
     public int obtenerIdUsuarioAsociadoAEmpleado(int idEmpleado) {
         return empleadoDAO.obtenerIdUsuarioPorIdEmpleado(idEmpleado);
     }
-    
-    
+
     public List<Object[]> obtenerEmpleados() {
-        return empleadoDAO.obtenerEmpleadosConUsuario(); 
+        return empleadoDAO.obtenerEmpleadosConUsuario();
     }
 
-    
     public boolean existeCedulaEmpleado(String cedula) {
         return empleadoDAO.existeEmpleado(cedula);
     }
 
-    public boolean desactivarEmpleado(int idEmpleado) {
-        return empleadoDAO.desactivar(idEmpleado);
+    public String desactivarEmpleado(int idProducto) {
+        Empleado emp = empleadoDAO.obtenerEmpleadoPorId(idProducto);
+        if (emp == null) {
+            return "El empleado no existe";
+        }
+
+        if (emp.getEstado() == 0) {
+            return "El empleado ya está desactivado";
+        }
+
+        boolean resultado = empleadoDAO.cambiarEstado(idProducto, 0);
+        return resultado ? "Empleado desactivado correctamente" : "Error al desactivar el empleado";
     }
 
-    public boolean activarEmpleado(int idEmpleado) {
-        return empleadoDAO.activar(idEmpleado);
+    public String activarEmpleado(int idProducto) {
+        Empleado emp = empleadoDAO.obtenerEmpleadoPorId(idProducto);
+        if (emp == null) {
+            return "El empleado no existe";
+        }
+
+        if (emp.getEstado() == 1) {
+            return "El empleado ya está activa";
+        }
+
+        boolean resultado = empleadoDAO.cambiarEstado(idProducto, 1);
+        return resultado ? "Empleado activado correctamente" : "Error al activar el empleado";
     }
-    
+
     public List<Object[]> obtenerEmpleadosActivos() {
         return empleadoDAO.obtenerEmpleadosActivos();
     }
@@ -97,7 +175,7 @@ public class EmpleadoController {
     public boolean existenEmpleadosActivos() {
         return empleadoDAO.contarEmpleadosActivos() > 0;
     }
-   
+
     public int obtenerIdEmp(int idEmpleado) {
         return empleadoDAO.obtenerIdEmpleadoPorUsuario(idEmpleado);
     }

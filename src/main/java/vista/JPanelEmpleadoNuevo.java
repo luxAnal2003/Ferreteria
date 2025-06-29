@@ -17,7 +17,7 @@ import modelo.Usuario;
  * @author admin
  */
 public class JPanelEmpleadoNuevo extends javax.swing.JPanel {
-    private EmpleadoController controlador;
+    private EmpleadoController empleadoController;
 
     /**
      * Creates new form JPanelCategoriaNuevo
@@ -25,7 +25,7 @@ public class JPanelEmpleadoNuevo extends javax.swing.JPanel {
     public JPanelEmpleadoNuevo() {
         initComponents();
         this.setSize(new Dimension(900, 400));
-
+        empleadoController =  new EmpleadoController();
         this.cargarEmpleadosEnTabla();
     }
 
@@ -168,38 +168,15 @@ public class JPanelEmpleadoNuevo extends javax.swing.JPanel {
         String direccion = txtDireccion.getText().trim();
         String nombreUsuario = txtUsuario.getText().trim();
         String contrasenia = new String(txtContrasenia.getPassword()).trim();
+        int idRol = 2;
+        int estado = 1;
 
-        if (controlador.existeCedulaEmpleado(cedula)) {
-            JOptionPane.showMessageDialog(null, "El empleado ya existe.");
-            return;
-        }
-
-        if (!validarCampos(cedula, nombres, apellidos, telefono, email, direccion, nombreUsuario, contrasenia)) {
-            return;
-        }
-
-        Usuario usuario = new Usuario();
-        usuario.setNombre(nombres);
-        usuario.setApellido(apellidos);
-        usuario.setTelefono(telefono);
-        usuario.setCorreo(email);
-        usuario.setUsuario(nombreUsuario);
-        usuario.setContrasenia(contrasenia);
-        usuario.setIdRol(2);
-        usuario.setEstado(1);
-
-        Empleado empleado = new Empleado();
-        empleado.setCedula(cedula);
-        empleado.setDireccion(direccion);
-        empleado.setIdRol(2);
-        empleado.setEstado(1);
-
-        if (controlador.guardarEmpleadoYUsuario(empleado, usuario)) {
-            JOptionPane.showMessageDialog(null, "Empleado guardado.");
-            cargarEmpleadosEnTabla();
-            setear();
-        } else {
-            JOptionPane.showMessageDialog(null, "Error al guardar empleado.");
+        String mensaje = empleadoController.guardarEmpleadoConUsuario(cedula, nombres, apellidos, telefono, email, direccion, nombreUsuario, contrasenia, idRol, estado);
+        JOptionPane.showMessageDialog(this, mensaje);
+        
+        if (mensaje.contains("correctamente")) {
+            this.setear();
+            this.cargarEmpleadosEnTabla();
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
 
@@ -239,8 +216,8 @@ public class JPanelEmpleadoNuevo extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     private void cargarEmpleadosEnTabla() {
-        controlador = new EmpleadoController();
-        List<Object[]> empleados = controlador.obtenerEmpleados();
+        empleadoController = new EmpleadoController();
+        List<Object[]> empleados = empleadoController.obtenerEmpleados();
 
         DefaultTableModel model = new DefaultTableModel(new String[]{
             "ID", "Cédula", "Nombres", "Apellidos", "Teléfono", "Dirección",
@@ -273,30 +250,4 @@ public class JPanelEmpleadoNuevo extends javax.swing.JPanel {
         txtUsuario.setText("");
         txtContrasenia.setText("");
     }
-
-    private boolean validarCampos(String cedulaRuc, String nombres, String apellidos, String telefono, String email, String direccion, String nombreUsuario, String contrasenia) {
-        if (cedulaRuc.isEmpty() || nombres.isEmpty() || apellidos.isEmpty() || telefono.isEmpty()
-                || email.isEmpty() || direccion.isEmpty() || nombreUsuario.isEmpty() || contrasenia.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Todos los campos son obligatorios.");
-            return false;
-        }
-
-        if (!cedulaRuc.matches("\\d{10}")) {
-            JOptionPane.showMessageDialog(null, "La cédula debe tener exactamente 10 caracteres numéricos");
-            return false;
-        }
-
-        if (!telefono.matches("\\d{10}")) {
-            JOptionPane.showMessageDialog(null, "El teléfono debe tener exactamente 10 caracteres numéricos");
-            return false;
-        }
-
-        if (!email.matches("^[\\w.-]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
-            JOptionPane.showMessageDialog(null, "Formato de Email inválido.");
-            return false;
-        }
-
-        return true;
-    }
-
 }
