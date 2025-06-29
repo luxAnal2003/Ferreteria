@@ -159,12 +159,12 @@ public class JPanelConsultarProducto extends javax.swing.JPanel {
                 Object[] fila = new Object[9];
                 fila[0] = p.getIdProducto();
                 fila[1] = p.getNombreProducto();
-                fila[2] = p.getIdProveedor().getNombre();
+                fila[2] = p.getProveedor().getNombre();
                 fila[3] = p.getCantidad();
                 fila[4] = p.getDescripcion();
                 fila[5] = p.getPrecio();
                 fila[6] = String.format("%.2f", p.getPorcentajeIva() / 100.0);
-                fila[7] = p.getIdCategoria().getNombre();
+                fila[7] = p.getCategoria().getNombre();
                 fila[8] = (p.getEstado() == 1) ? "Activo" : "Inactivo";
                 model.addRow(fila);
             }
@@ -199,12 +199,12 @@ public class JPanelConsultarProducto extends javax.swing.JPanel {
             Object[] fila = new Object[9];
             fila[0] = productoEncontrado.getIdProducto();
             fila[1] = productoEncontrado.getNombreProducto();
-            fila[2] = productoEncontrado.getIdProveedor().getNombre();
+            fila[2] = productoEncontrado.getProveedor().getNombre();
             fila[3] = productoEncontrado.getCantidad();
             fila[4] = productoEncontrado.getDescripcion();
             fila[5] = productoEncontrado.getPrecio();
             fila[6] = String.format("%.2f", productoEncontrado.getPorcentajeIva() / 100.0);
-            fila[7] = productoEncontrado.getIdCategoria().getNombre();
+            fila[7] = productoEncontrado.getCategoria().getNombre();
             fila[8] = (productoEncontrado.getEstado() == 1) ? "Activo" : "Inactivo";
             model.addRow(fila);
 
@@ -218,7 +218,7 @@ public class JPanelConsultarProducto extends javax.swing.JPanel {
 
     private void verificarExistenciaProductos() {
         ProductoController controller = new ProductoController();
-        if (!controller.existenProductosActivos()) {
+        if (!controller.existenProductosEnSistema()) {
             JOptionPane.showMessageDialog(null, "No existen productos en el sistema.");
         }
     }

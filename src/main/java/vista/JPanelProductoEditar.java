@@ -4,14 +4,8 @@
  */
 package vista;
 
-import controlador.CategoriaController;
 import controlador.ProductoController;
-import controlador.ProveedorController;
-import dao.CategoriaDAO;
-import dao.ProveedorDAO;
 import java.awt.Dimension;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import modelo.Categoria;
@@ -25,8 +19,7 @@ import java.util.List;
  */
 public class JPanelProductoEditar extends javax.swing.JPanel {
 
-    private Categoria obtenerIdCategoria = new Categoria();
-    private Proveedor obtenerIdProveedor = new Proveedor();
+    private ProductoController productoController;
     private int idProducto;
 
     /**
@@ -35,10 +28,34 @@ public class JPanelProductoEditar extends javax.swing.JPanel {
     public JPanelProductoEditar() {
         initComponents();
         this.setSize(new Dimension(900, 400));
-        cargarProveedoresEnComboBox();
-        cargarCategoriasEnComboBox();
 
+        productoController = new ProductoController();
+        this.cargarProveedoresEnComboBox();
+        this.cargarCategoriasEnComboBox();
         this.cargarProductosEnTabla();
+        this.verificarExistenciaProductos();
+    }
+
+    private void cargarCategoriasEnComboBox() {
+        List<Categoria> categorias = productoController.obtenerTodasLasCategorias();
+
+        cboxCategoria.removeAllItems();
+        cboxCategoria.addItem("Seleccionar categoria");
+
+        for (Categoria cat : categorias) {
+            cboxCategoria.addItem(cat.getNombre());
+        }
+    }
+
+    private void cargarProveedoresEnComboBox() {
+        List<Proveedor> proveedores = productoController.obtenerTodosLosProveedores();
+
+        cboxProveedor.removeAllItems();
+        cboxProveedor.addItem("Seleccionar proveedor");
+
+        for (Proveedor prov : proveedores) {
+            cboxProveedor.addItem(prov.getNombre());
+        }
     }
 
     /**
@@ -162,66 +179,26 @@ public class JPanelProductoEditar extends javax.swing.JPanel {
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
-        Producto producto = new Producto();
-        ProductoController productoController = new ProductoController();
-
         String nombreProducto = txtNombreProducto.getText().trim();
         String stockTexto = txtStock.getText().trim();
         String precioTexto = txtPrecio.getText().trim();
         String descripcion = textAreaDescripcion.getText().trim();
         String nombreCategoriaSeleccionada = cboxCategoria.getSelectedItem().toString();
         String nombreProveedorSeleccionado = cboxProveedor.getSelectedItem().toString();
+        int estado = 1;
+        int iva = 12;
 
-        if (idProducto == 0) {
-            JOptionPane.showMessageDialog(null, "Seleccione un producto para actualizar.");
+        if (cboxCategoria.getSelectedIndex() == 0 || cboxProveedor.getSelectedIndex() == 0) {
+            JOptionPane.showMessageDialog(null, "Campos obligatorios vacíos");
             return;
         }
 
-        if (!validarCampos(nombreProducto, stockTexto, precioTexto, descripcion)) {
-            return;
-        }
+        String mensaje = productoController.actualizarProducto(nombreProducto, stockTexto, precioTexto, descripcion, nombreCategoriaSeleccionada, nombreProveedorSeleccionado, iva, estado, idProducto);
+        JOptionPane.showMessageDialog(this, mensaje);
 
-        try {
-            Producto productoExistente = productoController.obtenerProductoPorId(idProducto);
-            if (productoExistente != null && !productoExistente.getNombreProducto().equalsIgnoreCase(nombreProducto)
-                    && productoController.existeProductoPorNombre(nombreProducto)) {
-                JOptionPane.showMessageDialog(null, "El nombre de producto '" + nombreProducto + "' ya existe.");
-                return;
-            }
-
-            String nombreFormateado = nombreProducto.substring(0, 1).toUpperCase() + nombreProducto.substring(1).toLowerCase();
-            producto.setIdProducto(idProducto);
-            producto.setNombreProducto(nombreFormateado);
-            producto.setCantidad(Integer.parseInt(stockTexto));
-            String precioFormateado = precioTexto.replace(",", ".");
-            producto.setPrecio(Double.parseDouble(precioFormateado));
-            producto.setDescripcion(descripcion);
-            producto.setPorcentajeIva(12);
-            producto.setEstado(1);
-
-            this.obtenerIdCategoriaSeleccionada();
-            producto.setIdCategoria(obtenerIdCategoria);
-
-            this.obtenerIdProveedorSeleccionado();
-            producto.setIdProveedor(obtenerIdProveedor);
-            
-
-            if (productoController.actualizarProducto(producto, nombreCategoriaSeleccionada, nombreProveedorSeleccionado, idProducto)) {
-                JOptionPane.showMessageDialog(null, "Producto actualizado correctamente.");
-                this.cboxProveedor.setSelectedItem("Seleccione proveedor");
-                this.cboxCategoria.setSelectedItem("Seleccione categoria");
-                this.cargarProductosEnTabla();
-                this.setear();
-            } else {
-                JOptionPane.showMessageDialog(null, "Error al actualizar el producto.");
-            }
-
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "Error de formato en stock o precio: " + e.getMessage());
-            System.err.println("Error de formato numérico al actualizar producto: " + e.getMessage());
-        } catch (Exception e) {
-            System.err.println("Error inesperado al actualizar producto: " + e.getMessage());
-            JOptionPane.showMessageDialog(null, "Error inesperado al actualizar el producto.");
+        if (mensaje.contains("correctamente")) {
+            this.setear();
+            this.cargarProductosEnTabla();
         }
     }//GEN-LAST:event_btnActualizarActionPerformed
 
@@ -246,82 +223,42 @@ public class JPanelProductoEditar extends javax.swing.JPanel {
     private javax.swing.JTextField txtStock;
     // End of variables declaration//GEN-END:variables
 
-    private void cargarCategoriasEnComboBox() {
-        CategoriaController controller = new CategoriaController();
-        List<Categoria> categorias = controller.obtenerTodasLasCategorias();
-
-        cboxCategoria.removeAllItems();
-        cboxCategoria.addItem("Seleccionar categoria");
-
-        for (Categoria cat : categorias) {
-            cboxCategoria.addItem(cat.getNombre());
-        }
-    }
-
-    private void cargarProveedoresEnComboBox() {
-        ProveedorController controller = new ProveedorController();
-        List<Proveedor> proveedores = controller.obtenerTodosLosProveedores();
-
-        cboxProveedor.removeAllItems();
-        cboxProveedor.addItem("Seleccionar proveedor");
-
-        for (Proveedor prov : proveedores) {
-            cboxProveedor.addItem(prov.getNombre());
-        }
-    }
-
     private void cargarProductosEnTabla() {
         DefaultTableModel model = new DefaultTableModel();
-        ProductoController controller = new ProductoController();
+        model.setColumnIdentifiers(new Object[]{
+            "ID", "Nombre", "Proveedor", "Cantidad", "Descripción", "Precio", "Iva", "Categoría", "Estado"
+        });
 
-        model.addColumn("ID");
-        model.addColumn("Nombre");
-        model.addColumn("Proveedor");
-        model.addColumn("Cantidad");
-        model.addColumn("Descripción");
-        model.addColumn("Precio");
-        model.addColumn("IVA");
-        model.addColumn("Categoría");
-        model.addColumn("Estado");
+        List<Producto> productos = productoController.obtenerTodosLosProductos();
 
-        List<Producto> productos = controller.obtenerTodosLosProductos();
-
-        if (productos.isEmpty()) {
-        } else {
-            for (Producto p : productos) {
-                Object[] fila = new Object[9];
-                fila[0] = p.getIdProducto();
-                fila[1] = p.getNombreProducto();
-                fila[2] = p.getIdProveedor().getNombre();
-                fila[3] = p.getCantidad();
-                fila[4] = p.getDescripcion();
-                fila[5] = p.getPrecio();
-                fila[6] = String.format("%.2f", p.getPorcentajeIva() / 100.0);
-                fila[7] = p.getIdCategoria().getNombre();
-                fila[8] = (p.getEstado() == 1) ? "Activo" : "Inactivo";
-                model.addRow(fila);
-            }
+        for (Producto p : productos) {
+            model.addRow(new Object[]{
+                p.getIdProducto(),
+                p.getNombreProducto(),
+                p.getProveedor(),
+                p.getCantidad(),
+                p.getDescripcion(),
+                p.getPrecio(),
+                String.format("%.2f", p.getPorcentajeIva() / 100.0),
+                p.getCategoria(),
+                (p.getEstado() == 1) ? "Activo" : "Inactivo"
+            });
         }
+
         tableProducto.setModel(model);
-        jScrollPane4.setViewportView(tableProducto);
-
-        tableProducto.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                int fila_point = tableProducto.rowAtPoint(e.getPoint());
-                int columna_point = 0;
-
-                if (fila_point > -1) {
-                    idProducto = (int) model.getValueAt(fila_point, columna_point);
+        
+        tableProducto.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                int fila = tableProducto.getSelectedRow();
+                if (fila!= -1) {
+                    idProducto = Integer.parseInt(tableProducto.getValueAt(fila, 0).toString());
                     enviarDatosProducto(idProducto);
                 }
             }
         });
     }
-
     private void enviarDatosProducto(int idProducto) {
-        ProductoController controller = new ProductoController();
-        Producto producto = controller.obtenerProductoPorId(idProducto);
+        Producto producto = productoController.obtenerProductoPorId(idProducto);
 
         if (producto != null) {
             txtNombreProducto.setText(producto.getNombreProducto());
@@ -329,8 +266,8 @@ public class JPanelProductoEditar extends javax.swing.JPanel {
             textAreaDescripcion.setText(producto.getDescripcion());
             txtPrecio.setText(String.valueOf(producto.getPrecio()));
 
-            String nombreCategoria = producto.getIdCategoria() != null ? producto.getIdCategoria().getNombre() : null;
-            String nombreProveedor = producto.getIdProveedor() != null ? producto.getIdProveedor().getNombre() : null;
+            String nombreCategoria = producto.getCategoria() != null ? producto.getCategoria().getNombre() : null;
+            String nombreProveedor = producto.getProveedor() != null ? producto.getProveedor().getNombre() : null;
 
             if (nombreCategoria != null) {
                 cboxCategoria.setSelectedItem(nombreCategoria.trim());
@@ -346,22 +283,9 @@ public class JPanelProductoEditar extends javax.swing.JPanel {
 
         } else {
             JOptionPane.showMessageDialog(null, "No se encontró el producto seleccionado.");
-            setear(); 
+            setear();
         }
     }
-
-    private int obtenerIdCategoriaSeleccionada() {
-        String descripcion = (String) cboxCategoria.getSelectedItem();
-        CategoriaDAO dao = new CategoriaDAO();
-        return dao.getIdCategoriaPorNombre(descripcion);
-    }
-
-    private int obtenerIdProveedorSeleccionado() {
-        String nombre = (String) cboxProveedor.getSelectedItem();
-        ProveedorDAO dao = new ProveedorDAO();
-        return dao.getIdProveedorPorNombre(nombre);
-    }
-    
 
     private void setear() {
         txtNombreProducto.setText("");
@@ -371,32 +295,11 @@ public class JPanelProductoEditar extends javax.swing.JPanel {
         txtStock.setText("");
         textAreaDescripcion.setText("");
     }
-
-    private boolean validarCampos(String nombreProducto, String stockTexto, String precioTexto, String descripcion) {
-        if (nombreProducto.isEmpty() || stockTexto.isEmpty() || precioTexto.isEmpty() || descripcion.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Campos obligatorios vacíos.");
-            return false;
+    
+    private void verificarExistenciaProductos() {
+        ProductoController controller = new ProductoController();
+        if (!controller.existenProductosEnSistema()) {
+            JOptionPane.showMessageDialog(null, "No existen productos en el sistema.");
         }
-
-        if (!stockTexto.matches("\\d+")) {
-            JOptionPane.showMessageDialog(null, "Formato de stock incorrecto. Debe ser un número entero.");
-            return false;
-        }
-
-        if (!precioTexto.matches("^\\d+(\\.\\d+)?$") && !precioTexto.matches("^\\d+(,\\d+)?$")) {
-            JOptionPane.showMessageDialog(null, "Formato de precio inválido. Use números con punto o coma decimal.");
-            return false;
-        }
-
-        if (cboxCategoria.getSelectedIndex() == 0) {
-            JOptionPane.showMessageDialog(null, "Debe seleccionar una categoría.");
-            return false;
-        }
-        if (cboxProveedor.getSelectedIndex() == 0) {
-            JOptionPane.showMessageDialog(null, "Debe seleccionar un proveedor.");
-            return false;
-        }
-
-        return true;
     }
 }

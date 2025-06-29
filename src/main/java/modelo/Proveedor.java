@@ -94,7 +94,7 @@ public class Proveedor{
     
     @Override
     public String toString() {
-        return this.getNombre();
+        return this.nombre;
     }
 
 }

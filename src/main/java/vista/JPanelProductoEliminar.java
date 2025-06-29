@@ -8,8 +8,6 @@ import controlador.ProductoController;
 import java.awt.Dimension;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import modelo.Categoria;
-import modelo.Proveedor;
 import java.util.List;
 import modelo.Producto;
 
@@ -18,7 +16,9 @@ import modelo.Producto;
  * @author admin
  */
 public class JPanelProductoEliminar extends javax.swing.JPanel {
+
     private int idProducto;
+    private ProductoController productoController;
 
     /**
      * Creates new form JPanelCategoriaNuevo
@@ -26,8 +26,9 @@ public class JPanelProductoEliminar extends javax.swing.JPanel {
     public JPanelProductoEliminar() {
         initComponents();
         this.setSize(new Dimension(900, 400));
-
+        productoController = new ProductoController();
         this.cargarProductosEnTabla();
+        this.verificarExistenciaProductos();
     }
 
     /**
@@ -105,91 +106,62 @@ public class JPanelProductoEliminar extends javax.swing.JPanel {
     public static javax.swing.JScrollPane jScrollPane4;
     public static javax.swing.JTable tableProducto;
     // End of variables declaration//GEN-END:variables
-    
+
     private void desactivar() {
         int fila = tableProducto.getSelectedRow();
-
-        if (fila != -1) {
-            String estado = tableProducto.getValueAt(fila, 8).toString();
-
-            if (estado.equalsIgnoreCase("Inactivo")) {
-                JOptionPane.showMessageDialog(null, "El producto ya ha sido desactivado anteriormente.");
-                return;
-            }
-
-            idProducto = Integer.parseInt(tableProducto.getValueAt(fila, 0).toString());
-
-            ProductoController controlProducto = new ProductoController();
-
-            if (controlProducto.desactivarProducto(idProducto)) {
-                JOptionPane.showMessageDialog(null, "Producto desactivado correctamente.");
-                this.cargarProductosEnTabla();
-            } else {
-                JOptionPane.showMessageDialog(null, "Error al desactivar el producto.");
-            }
-        } else {
-            JOptionPane.showMessageDialog(null, "Seleccione un producto para desactivar.");
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(null, "Seleccione una categoría para desactivar");
+            return;
         }
+        idProducto = Integer.parseInt(tableProducto.getValueAt(fila, 0).toString());
+
+        String mensaje = productoController.desactivarCategoria(idProducto);
+        JOptionPane.showMessageDialog(null, mensaje);
+        this.cargarProductosEnTabla();
     }
 
     private void activar() {
         int fila = tableProducto.getSelectedRow();
-
-        if (fila != -1) {
-            String estado = tableProducto.getValueAt(fila, 8).toString();
-
-            if (estado.equalsIgnoreCase("Activo")) {
-                JOptionPane.showMessageDialog(null, "El producto ya está activo.");
-                return;
-            }
-
-            idProducto = Integer.parseInt(tableProducto.getValueAt(fila, 0).toString());
-            ProductoController controlProducto = new ProductoController();
-
-            if (controlProducto.activarProducto(idProducto)) {
-                JOptionPane.showMessageDialog(null, "Producto activado correctamente.");
-                this.cargarProductosEnTabla(); 
-            } else {
-                JOptionPane.showMessageDialog(null, "Error al activar el producto.");
-            }
-        } else {
-            JOptionPane.showMessageDialog(null, "Seleccione un producto para activar.");
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(null, "Seleccione una categoría para activar");
+            return;
         }
+        idProducto = Integer.parseInt(tableProducto.getValueAt(fila, 0).toString());
+
+        String mensaje = productoController.activarCategoria(idProducto);
+        JOptionPane.showMessageDialog(null, mensaje);
+        this.cargarProductosEnTabla();
     }
 
     private void cargarProductosEnTabla() {
         DefaultTableModel model = new DefaultTableModel();
-        ProductoController controller = new ProductoController();
+        model.setColumnIdentifiers(new Object[]{
+            "ID", "Nombre", "Proveedor", "Cantidad", "Descripción", "Precio", "Iva", "Categoría", "Estado"
+        });
 
-        model.addColumn("ID");
-        model.addColumn("Nombre");
-        model.addColumn("Proveedor");
-        model.addColumn("Cantidad");
-        model.addColumn("Descripción");
-        model.addColumn("Precio");
-        model.addColumn("IVA");
-        model.addColumn("Categoría");
-        model.addColumn("Estado");
+        List<Producto> productos = productoController.obtenerTodosLosProductos();
 
-        List<Producto> productos = controller.obtenerTodosLosProductos();
-
-        if (productos.isEmpty()) {
-        } else {
-            for (Producto p : productos) {
-                Object[] fila = new Object[9];
-                fila[0] = p.getIdProducto();
-                fila[1] = p.getNombreProducto();
-                fila[2] = p.getIdProveedor().getNombre();
-                fila[3] = p.getCantidad();
-                fila[4] = p.getDescripcion();
-                fila[5] = p.getPrecio();
-                fila[6] = String.format("%.2f", p.getPorcentajeIva() / 100.0);
-                fila[7] = p.getIdCategoria().getNombre();
-                fila[8] = (p.getEstado() == 1) ? "Activo" : "Inactivo";
-                model.addRow(fila);
-            }
+        for (Producto p : productos) {
+            model.addRow(new Object[]{
+                p.getIdProducto(),
+                p.getNombreProducto(),
+                p.getProveedor(),
+                p.getCantidad(),
+                p.getDescripcion(),
+                p.getPrecio(),
+                String.format("%.2f", p.getPorcentajeIva() / 100.0),
+                p.getCategoria(),
+                (p.getEstado() == 1) ? "Activo" : "Inactivo"
+            });
         }
+
         tableProducto.setModel(model);
-        jScrollPane4.setViewportView(tableProducto);
+    }
+    
+    private void verificarExistenciaProductos() {
+        ProductoController controller = new ProductoController();
+        if (!controller.existenProductosEnSistema()) {
+            JOptionPane.showMessageDialog(null, "No existen productos en el sistema.");
+        }
     }
 }

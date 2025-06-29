@@ -4,11 +4,7 @@
  */
 package vista;
 
-import controlador.CategoriaController;
 import controlador.ProductoController;
-import controlador.ProveedorController;
-import dao.CategoriaDAO;
-import dao.ProveedorDAO;
 import java.awt.Dimension;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -23,19 +19,41 @@ import java.util.List;
  */
 public class JPanelProductoNuevo extends javax.swing.JPanel {
 
-    private Categoria obtenerIdCategoria = new Categoria();
-    private Proveedor obtenerIdProveedor = new Proveedor();
-
+    private ProductoController productoController;
     /**
      * Creates new form JPanelCategoriaNuevo
      */
     public JPanelProductoNuevo() {
         initComponents();
         this.setSize(new Dimension(900, 400));
+
+        productoController = new ProductoController();
         this.cargarCategoriasEnComboBox();
         this.cargarProveedoresEnComboBox();
-
         this.cargarProductosEnTabla();
+        this.verificarExistenciaProductos();
+    }
+
+    private void cargarCategoriasEnComboBox() {
+        List<Categoria> categorias = productoController.obtenerTodasLasCategorias();
+
+        cboxCategoria.removeAllItems();
+        cboxCategoria.addItem("Seleccionar categoria");
+
+        for (Categoria cat : categorias) {
+            cboxCategoria.addItem(cat.getNombre());
+        }
+    }
+
+    private void cargarProveedoresEnComboBox() {
+        List<Proveedor> proveedores = productoController.obtenerTodosLosProveedores();
+
+        cboxProveedor.removeAllItems();
+        cboxProveedor.addItem("Seleccionar proveedor");
+
+        for (Proveedor prov : proveedores) {
+            cboxProveedor.addItem(prov.getNombre());
+        }
     }
 
     /**
@@ -156,63 +174,26 @@ public class JPanelProductoNuevo extends javax.swing.JPanel {
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        Producto producto = new Producto();
-        ProductoController productoController = new ProductoController();
-
         String nombreProducto = txtNombreProducto.getText().trim();
         String stockTexto = txtStock.getText().trim();
         String precioTexto = txtPrecio.getText().trim();
         String descripcion = textAreaDescripcion.getText().trim();
         String nombreCategoriaSeleccionada = cboxCategoria.getSelectedItem().toString();
         String nombreProveedorSeleccionado = cboxProveedor.getSelectedItem().toString();
+        int estado = 1;
+        int iva = 12;
 
-        if (productoController.existeProductoPorNombre(nombreProducto)) {
-            JOptionPane.showMessageDialog(null, "El producto ya existe con este nombre.");
+        if (cboxCategoria.getSelectedIndex() == 0 || cboxProveedor.getSelectedIndex() == 0) {
+            JOptionPane.showMessageDialog(null, "Campos obligatorios vacíos");
             return;
         }
-
-        if (!validarCampos(nombreProducto, stockTexto, precioTexto, descripcion)) {
-            return;
-        }
-
-        try {
-            String nombreFormateado = nombreProducto.substring(0, 1).toUpperCase() + nombreProducto.substring(1).toLowerCase();
-            producto.setNombreProducto(nombreFormateado);
-
-            producto.setCantidad(Integer.parseInt(stockTexto));
-
-            String precioFormateado = precioTexto.replace(",", ".");
-            producto.setPrecio(Double.parseDouble(precioFormateado));
-
-            producto.setDescripcion(descripcion);
-            producto.setPorcentajeIva(12);
-            producto.setEstado(1);
-
-            this.obtenerIdCategoriaSeleccionada();
-            producto.setIdCategoria(obtenerIdCategoria);
-
-            this.obtenerIdProveedorSeleccionado();
-            producto.setIdProveedor(obtenerIdProveedor);
-
-            if (productoController.guardarProducto(producto, nombreCategoriaSeleccionada, nombreProveedorSeleccionado)) {
-                JOptionPane.showMessageDialog(null, "Producto guardado con IVA del 12%.");
-                this.cargarCategoriasEnComboBox();
-                this.cargarProveedoresEnComboBox();
-
-                this.cboxProveedor.setSelectedItem("Seleccione proveedor");
-                this.cboxCategoria.setSelectedItem("Seleccione categoria");
-                this.cargarProductosEnTabla();
-                this.setear();
-            } else {
-                JOptionPane.showMessageDialog(null, "Error al guardar el producto.");
-            }
-
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "Error de formato en stock o precio: " + e.getMessage());
-            System.err.println("Error de formato numérico al guardar producto: " + e.getMessage());
-        } catch (Exception e) {
-            System.err.println("Error inesperado al guardar producto: " + e.getMessage());
-            JOptionPane.showMessageDialog(null, "Error inesperado al guardar el producto.");
+        
+        String mensaje = productoController.guardarProducto(nombreProducto, stockTexto, precioTexto, descripcion, nombreCategoriaSeleccionada, nombreProveedorSeleccionado, iva, estado);
+        JOptionPane.showMessageDialog(this, mensaje);
+        
+        if (mensaje.contains("correctamente")) {
+            this.setear();
+            this.cargarProductosEnTabla();
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
 
@@ -237,76 +218,29 @@ public class JPanelProductoNuevo extends javax.swing.JPanel {
     private javax.swing.JTextField txtStock;
     // End of variables declaration//GEN-END:variables
 
-    private void cargarCategoriasEnComboBox() {
-        CategoriaController controller = new CategoriaController();
-        List<Categoria> categorias = controller.obtenerTodasLasCategorias();
-
-        cboxCategoria.removeAllItems();
-        cboxCategoria.addItem("Seleccionar categoria");
-
-        for (Categoria cat : categorias) {
-            cboxCategoria.addItem(cat.getNombre());
-        }
-    }
-
-    private void cargarProveedoresEnComboBox() {
-        ProveedorController controller = new ProveedorController();
-        List<Proveedor> proveedores = controller.obtenerTodosLosProveedores();
-
-        cboxProveedor.removeAllItems();
-        cboxProveedor.addItem("Seleccionar proveedor");
-
-        for (Proveedor prov : proveedores) {
-            cboxProveedor.addItem(prov.getNombre());
-        }
-    }
-
     private void cargarProductosEnTabla() {
         DefaultTableModel model = new DefaultTableModel();
-        ProductoController controller = new ProductoController();
+        model.setColumnIdentifiers(new Object[]{
+            "ID", "Nombre", "Proveedor", "Cantidad", "Descripción", "Precio", "Iva", "Categoría", "Estado"
+        });
 
-        model.addColumn("ID");
-        model.addColumn("Nombre");
-        model.addColumn("Proveedor");
-        model.addColumn("Cantidad");
-        model.addColumn("Descripción");
-        model.addColumn("Precio");
-        model.addColumn("IVA");
-        model.addColumn("Categoría");
-        model.addColumn("Estado");
+        List<Producto> productos = productoController.obtenerTodosLosProductos();
 
-        List<Producto> productos = controller.obtenerTodosLosProductos();
-
-        if (productos.isEmpty()) {
-        } else {
-            for (Producto p : productos) {
-                Object[] fila = new Object[9];
-                fila[0] = p.getIdProducto();
-                fila[1] = p.getNombreProducto();
-                fila[2] = p.getIdProveedor().getNombre();
-                fila[3] = p.getCantidad();
-                fila[4] = p.getDescripcion();
-                fila[5] = p.getPrecio();
-                fila[6] = String.format("%.2f", p.getPorcentajeIva() / 100.0);
-                fila[7] = p.getIdCategoria().getNombre();
-                fila[8] = (p.getEstado() == 1) ? "Activo" : "Inactivo";
-                model.addRow(fila);
-            }
+        for (Producto p : productos) {
+            model.addRow(new Object[]{
+                p.getIdProducto(),
+                p.getNombreProducto(),
+                p.getProveedor(),
+                p.getCantidad(),
+                p.getDescripcion(),
+                p.getPrecio(),
+                String.format("%.2f", p.getPorcentajeIva() / 100.0),
+                p.getCategoria(),
+                (p.getEstado() == 1) ? "Activo" : "Inactivo"
+            });
         }
+
         tableProducto.setModel(model);
-        jScrollPane4.setViewportView(tableProducto);
-    }
-
-    private int obtenerIdCategoriaSeleccionada() {
-        String descripcion = (String) cboxCategoria.getSelectedItem();
-        CategoriaDAO dao = new CategoriaDAO();
-        return dao.getIdCategoriaPorNombre(descripcion);
-    }
-
-    private int obtenerIdProveedorSeleccionado() {
-        String nombre = (String) cboxProveedor.getSelectedItem();
-        ProveedorDAO dao = new ProveedorDAO();
-        return dao.getIdProveedorPorNombre(nombre);
     }
 
     private void setear() {
@@ -317,28 +251,11 @@ public class JPanelProductoNuevo extends javax.swing.JPanel {
         txtStock.setText("");
         textAreaDescripcion.setText("");
     }
-
-    private boolean validarCampos(String nombreProducto, String stockTexto, String precioTexto, String descripcion) {
-        if (nombreProducto.isEmpty() || stockTexto.isEmpty() || precioTexto.isEmpty() || descripcion.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Campos obligatorios vacíos");
-            return false;
+    
+    private void verificarExistenciaProductos() {
+        ProductoController controller = new ProductoController();
+        if (!controller.existenProductosEnSistema()) {
+            JOptionPane.showMessageDialog(null, "No existen productos en el sistema.");
         }
-
-        if (!stockTexto.matches("\\d+")) {
-            JOptionPane.showMessageDialog(null, "Formato de dato incorrecto.");
-            return false;
-        }
-
-        if (!precioTexto.matches("^\\d+(\\.\\d{1,2})?$") && !precioTexto.matches("^\\d+(,\\d{1,2})?$")) {
-            JOptionPane.showMessageDialog(null, "Formato de dato incorrecto.");
-            return false;
-        }
-
-        if (cboxCategoria.getSelectedIndex() == 0 || cboxProveedor.getSelectedIndex() == 0) {
-            JOptionPane.showMessageDialog(null, "Campos obligatorios vacíos");
-            return false;
-        }
-
-        return true;
     }
 }

@@ -52,7 +52,6 @@ public class Categoria {
 
     @Override
     public String toString() {
-        return this.getNombre(); 
+        return this.nombre;
     }
-
 }

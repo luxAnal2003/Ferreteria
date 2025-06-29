@@ -12,7 +12,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import modelo.Categoria;
@@ -21,23 +20,23 @@ import modelo.Proveedor;
 
 public class ProductoDAO {
 
-    public boolean guardar(Producto producto) {
+    public boolean registrarProducto(Producto producto) {
         boolean respuesta = false;
         Connection cn = Conexion.conectar();
 
-        String sql = "INSERT INTO producto (idProducto, nombre, cantidad, precio, descripcion, iva, idCategoria, idProveedor, estado) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
         try {
-            PreparedStatement consulta = cn.prepareStatement(sql);
+            PreparedStatement consulta = cn.prepareStatement(
+                    "INSERT INTO producto (idProducto, nombre, cantidad, precio, descripcion, iva, idCategoria, idProveedor, estado) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+            );
             consulta.setInt(1, 0);
             consulta.setString(2, producto.getNombreProducto());
             consulta.setInt(3, producto.getCantidad());
             consulta.setDouble(4, producto.getPrecio());
             consulta.setString(5, producto.getDescripcion());
             consulta.setInt(6, producto.getPorcentajeIva());
-            consulta.setInt(7, producto.getIdCategoria().getIdCategoria());
-            consulta.setInt(8, producto.getIdProveedor().getIdProveedor());
+            consulta.setInt(7, producto.getCategoria().getIdCategoria());
+            consulta.setInt(8, producto.getProveedor().getIdProveedor());
             consulta.setInt(9, producto.getEstado());
 
             if (consulta.executeUpdate() > 0) {
@@ -50,7 +49,7 @@ public class ProductoDAO {
         return respuesta;
     }
 
-    public boolean actualizar(Producto producto, int idProducto) {
+    public boolean actualizarProducto(Producto producto, int idProducto) {
         boolean respuesta = false;
         Connection cn = Conexion.conectar();
 
@@ -59,8 +58,8 @@ public class ProductoDAO {
                     "UPDATE producto SET nombre = ?, idCategoria = ?, idProveedor = ?, precio = ?, cantidad = ?, descripcion = ?, iva = ?, estado = ? WHERE idProducto = ?"
             );
             consulta.setString(1, producto.getNombreProducto());
-            consulta.setInt(2, producto.getIdCategoria().getIdCategoria());
-            consulta.setInt(3, producto.getIdProveedor().getIdProveedor());
+            consulta.setInt(2, producto.getCategoria().getIdCategoria());
+            consulta.setInt(3, producto.getProveedor().getIdProveedor());
             consulta.setDouble(4, producto.getPrecio());
             consulta.setInt(5, producto.getCantidad());
             consulta.setString(6, producto.getDescripcion());
@@ -78,79 +77,31 @@ public class ProductoDAO {
         return respuesta;
     }
 
-    public boolean eliminar(int idProducto) {
-        boolean respuesta = false;
-        Connection cn = Conexion.conectar();
-
-        try {
-            PreparedStatement consulta = cn.prepareStatement("DELETE FROM producto WHERE idProducto = ?");
-            consulta.setInt(1, idProducto);
-            consulta.executeUpdate();
-            int filasAfectadas = consulta.executeUpdate();
-
-            if (filasAfectadas > 0) {
-                respuesta = true;
-            }
-            cn.close();
-        } catch (SQLException e) {
-            System.out.println("Error al eliminar producto: " + e);
-        }
-        return respuesta;
-    }
-
-    public boolean existeProducto(String producto) {
-        boolean respuesta = false;
-        String sql = "select nombre from producto where nombre = '" + producto + "'";
-        Statement st;
-
-        try {
-            Connection cn = Conexion.conectar();
-            st = cn.createStatement();
-            ResultSet rs = st.executeQuery(sql);
-            while (rs.next()) {
-                respuesta = true;
+    public boolean existeProductoConNombre(String nombre) {
+        String sql = "SELECT COUNT(*) FROM producto WHERE nombre = ?";
+        try (Connection conn = Conexion.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, nombre);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
             }
         } catch (SQLException e) {
-            System.out.println("Error al consultar producto: " + e);
+            e.printStackTrace();
         }
-        return respuesta;
+        return false;
     }
 
-    public boolean desactivar(int idProducto) {
-        boolean respuesta = false;
-        Connection cn = Conexion.conectar();
+    public boolean cambiarEstado(int idProducto, int estado) {
+        String sql = "UPDATE producto SET estado = ? WHERE idProducto = ?";
+        try (Connection conn = Conexion.conectar(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
-        String sql = "UPDATE producto SET estado = 0 WHERE idProducto = ?";
-
-        try {
-            PreparedStatement pst = cn.prepareStatement(sql);
-            pst.setInt(1, idProducto);
-            respuesta = pst.executeUpdate() > 0;
-            cn.close();
+            ps.setInt(1, estado);
+            ps.setInt(2, idProducto);
+            return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            System.out.println("Error al desactivar producto: " + e);
+            e.printStackTrace();
+            return false;
         }
-        return respuesta;
-    }
-
-    public boolean activar(int idProducto) {
-        boolean respuesta = false;
-        Connection cn = Conexion.conectar();
-
-        try {
-            PreparedStatement consulta = cn.prepareStatement("UPDATE producto SET estado = 1 WHERE idProducto = ?");
-            consulta.setInt(1, idProducto);
-
-            if (consulta.executeUpdate() > 0) {
-                respuesta = true;
-            }
-
-            cn.close();
-        } catch (SQLException e) {
-            System.out.println("Error al activar producto: " + e);
-        }
-
-        return respuesta;
     }
 
     public List<Producto> listarProductos() {
@@ -183,18 +134,18 @@ public class ProductoDAO {
                 Categoria categoria = new Categoria();
                 categoria.setIdCategoria(rs.getInt("idCategoria"));
                 categoria.setNombre(rs.getString("descripcionCategoria").trim());
-                p.setIdCategoria(categoria);
+                p.setCategoria(categoria);
 
                 Proveedor proveedor = new Proveedor();
                 proveedor.setIdProveedor(rs.getInt("idProveedor"));
                 proveedor.setNombre(rs.getString("nombreProveedor").trim());
-                p.setIdProveedor(proveedor);
+                p.setProveedor(proveedor);
 
                 lista.add(p);
             }
 
         } catch (SQLException e) {
-            System.err.println("Error al listar productos en ProductoDAO: " + e.getMessage());
+            System.err.println("Error al listar productos: " + e.getMessage());
         } finally {
             try {
                 if (rs != null) {
@@ -207,7 +158,7 @@ public class ProductoDAO {
                     cn.close();
                 }
             } catch (SQLException e) {
-                System.err.println("Error al cerrar conexión en getAllProductos de ProductoDAO: " + e.getMessage());
+                System.err.println("Error al cerrar conexión: " + e.getMessage());
             }
         }
         return lista;
@@ -237,8 +188,8 @@ public class ProductoDAO {
                 Categoria categoria = new CategoriaDAO().obtenerCategoriaPorId(idCategoria);
                 Proveedor proveedor = new ProveedorDAO().obtenerProveedorPorId(idProveedor);
 
-                producto.setIdCategoria(categoria);
-                producto.setIdProveedor(proveedor);
+                producto.setCategoria(categoria);
+                producto.setProveedor(proveedor);
 
                 return producto;
             }
@@ -250,7 +201,7 @@ public class ProductoDAO {
         return null;
     }
 
-    public Producto buscarProductoPorId(int idProducto) {
+    public Producto obtenerProductoPorId(int idProducto) {
         Producto producto = null;
         Connection cn = null;
         PreparedStatement stmt = null;
@@ -281,12 +232,12 @@ public class ProductoDAO {
                 Categoria categoria = new Categoria();
                 categoria.setIdCategoria(rs.getInt("idCategoria"));
                 categoria.setNombre(rs.getString("descripcionCategoria").trim());
-                producto.setIdCategoria(categoria);
+                producto.setCategoria(categoria);
 
                 Proveedor proveedor = new Proveedor();
                 proveedor.setIdProveedor(rs.getInt("idProveedor"));
                 proveedor.setNombre(rs.getString("nombreProveedor").trim());
-                producto.setIdProveedor(proveedor);
+                producto.setProveedor(proveedor);
             }
 
         } catch (SQLException e) {
@@ -310,7 +261,7 @@ public class ProductoDAO {
     }
 
     public boolean existenProductos() {
-        String sql = "SELECT COUNT(*) FROM producto WHERE estado = 1";
+        String sql = "SELECT COUNT(*) FROM producto";
 
         try (Connection con = Conexion.conectar(); PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
 
@@ -324,7 +275,7 @@ public class ProductoDAO {
 
         return false;
     }
-    
+
     public boolean disminuirStock(int idProducto, int cantidad, Connection con) throws SQLException {
         String sql = "UPDATE producto SET cantidad = cantidad - ? WHERE idProducto = ? AND cantidad >= ?";
         PreparedStatement pst = con.prepareStatement(sql);
@@ -332,6 +283,6 @@ public class ProductoDAO {
         pst.setInt(2, idProducto);
         pst.setInt(3, cantidad);
         int filasAfectadas = pst.executeUpdate();
-        return filasAfectadas > 0; 
+        return filasAfectadas > 0;
     }
 }

@@ -4,12 +4,10 @@
  */
 package dao;
 
-import dao.Conexion;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import modelo.Categoria;
@@ -20,7 +18,7 @@ import modelo.Categoria;
  */
 public class CategoriaDAO {
 
-    public boolean guardar(Categoria categoria) {
+    public boolean registrarCategoria(Categoria categoria) {
         boolean respuesta = false;
         Connection cn = Conexion.conectar();
 
@@ -40,13 +38,14 @@ public class CategoriaDAO {
         return respuesta;
     }
 
-    public boolean actualizar(Categoria categoria, int idCategoria) {
+    public boolean actualizarCategoria(Categoria categoria, int idCategoria) {
         boolean respuesta = false;
         Connection cn = Conexion.conectar();
 
         try {
-            PreparedStatement consulta = cn.prepareStatement("update categoria set descripcionCategoria = ? where idCategoria = '" + idCategoria + "'");
+            PreparedStatement consulta = cn.prepareStatement("UPDATE categoria SET descripcionCategoria = ? WHERE idCategoria = ?");
             consulta.setString(1, categoria.getNombre());
+            consulta.setInt(2, idCategoria);
 
             if (consulta.executeUpdate() > 0) {
                 respuesta = true;
@@ -58,75 +57,32 @@ public class CategoriaDAO {
         return respuesta;
     }
 
-    public boolean desactivar(int idCategoria) {
-        boolean respuesta = false;
-        Connection cn = null;
+    public boolean cambiarEstado(int idCategoria, int estado) {
+        String sql = "UPDATE categoria SET estado = ? WHERE idCategoria = ?";
+        try (Connection conn = Conexion.conectar(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
-        String sql = "UPDATE categoria SET estado = 0 WHERE idCategoria = ?";
-
-        try {
-            cn = Conexion.conectar();
-            PreparedStatement pst = cn.prepareStatement(sql);
-            pst.setInt(1, idCategoria);
-            respuesta = pst.executeUpdate() > 0;
+            ps.setInt(1, estado);
+            ps.setInt(2, idCategoria);
+            return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            System.err.println("Error al desactivar categoria: " + e.getMessage());
-        } finally {
-            try {
-                if (cn != null) {
-                    cn.close();
-                }
-            } catch (SQLException e) {
-                System.err.println("Error al cerrar conexión: " + e.getMessage());
-            }
+            e.printStackTrace();
+            return false;
         }
-        return respuesta;
     }
 
-    public boolean activar(int idCategoria) {
-        boolean respuesta = false;
-        Connection cn = null;
-
-        try {
-            cn = Conexion.conectar();
-            PreparedStatement consulta = cn.prepareStatement("UPDATE categoria SET estado = 1 WHERE idCategoria = ?");
-            consulta.setInt(1, idCategoria);
-
-            if (consulta.executeUpdate() > 0) {
-                respuesta = true;
+    public boolean existeCategoriaConNombre(String categoria) {
+        String sql = "SELECT COUNT(*) FROM categoria WHERE descripcionCategoria = ?";
+        try (Connection conn = Conexion.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, categoria);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
             }
         } catch (SQLException e) {
-            System.err.println("Error al activar categoria: " + e.getMessage());
-        } finally {
-            try {
-                if (cn != null) {
-                    cn.close();
-                }
-            } catch (SQLException e) {
-                System.err.println("Error al cerrar conexión: " + e.getMessage());
-            }
+            e.printStackTrace();
         }
-        return respuesta;
+        return false;
     }
-
-    public boolean existeCategoria(String categoria) {
-        boolean respuesta = false;
-        String sql = "select descripcionCategoria from categoria where descripcionCategoria = '" + categoria + "'";
-        Statement st;
-
-        try {
-            Connection cn = Conexion.conectar();
-            st = cn.createStatement();
-            ResultSet rs = st.executeQuery(sql);
-            while (rs.next()) {
-                respuesta = true;
-            }
-        } catch (SQLException e) {
-            System.out.println("Error al consultar categoria: " + e);
-        }
-        return respuesta;
-    }
-
     public List<Categoria> listarCategorias() {
         List<Categoria> lista = new ArrayList<>();
         String sql = "SELECT * FROM Categoria";
@@ -187,6 +143,8 @@ public class CategoriaDAO {
         return categoria;
     }
 
+    //OJITO. este método es para obtener los nombres de categoria en el módulo de productos.
+    //NO se usa en alguna clase de categoría. Es para llenar los combobox.
     public int getIdCategoriaPorNombre(String nombreCategoria) {
         int id = -1;
         Connection cn = null;
@@ -203,7 +161,7 @@ public class CategoriaDAO {
                 id = rs.getInt("idCategoria");
             }
         } catch (SQLException e) {
-            System.err.println("Error al obtener idCategoria: " + e.getMessage());
+            System.err.println("Error al obtener id de Categoria: " + e.getMessage());
         } finally {
             try {
                 if (rs != null) {
@@ -220,5 +178,21 @@ public class CategoriaDAO {
             }
         }
         return id;
+    }
+    
+    public boolean existenCategorias() {
+        String sql = "SELECT COUNT(*) FROM categoria";
+
+        try (Connection con = Conexion.conectar(); PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error al verificar categorias: " + e.getMessage());
+        }
+
+        return false;
     }
 }

@@ -20,7 +20,7 @@ public class VentaCalculadora {
         double total = 0;
 
         for (DetalleVenta detalle : detalles) {
-            Producto producto = productoDAO.buscarProductoPorId(detalle.getIdProducto());
+            Producto producto = productoDAO.obtenerProductoPorId(detalle.getIdProducto());
             double sub = detalle.getCantidad() * detalle.getPrecioUnitario();
             double ivaProducto = sub * producto.getPorcentajeIva() / 100.0;
             double desc = sub * 0.005;

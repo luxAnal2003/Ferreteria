@@ -18,6 +18,7 @@ import modelo.Categoria;
 public class JPanelCategoria extends javax.swing.JPanel {
 
     private int idCategoria;
+    private CategoriaController categoriaController;
 
     /**
      * Creates new form JPanelCategoria
@@ -25,7 +26,9 @@ public class JPanelCategoria extends javax.swing.JPanel {
     public JPanelCategoria() {
         initComponents();
         this.setSize(new Dimension(900, 400));
+        categoriaController = new CategoriaController();
         this.cargarCategoriasEnTabla();
+        this.verificarExistenciaCategoria();
     }
 
     /**
@@ -138,37 +141,14 @@ public class JPanelCategoria extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        Categoria categoria = new Categoria();
-        CategoriaController categoriaController = new CategoriaController();
+        String nombreCategoria = txtCategoria.getText();
 
-        String nombreCategoria = txtCategoria.getText().trim();
+        String mensaje = categoriaController.guardarCategoria(nombreCategoria);
+        JOptionPane.showMessageDialog(this, mensaje);
 
-        if (nombreCategoria.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Complete el campo de categoría.");
-            return;
-        }
-
-        if (categoriaController.existeCategoriaPorDescripcion(nombreCategoria)) {
-            JOptionPane.showMessageDialog(null, "La categoría ya existe.");
-            return;
-        }
-
-        try {
-            String nombreFormateado = nombreCategoria.substring(0, 1).toUpperCase() + nombreCategoria.substring(1).toLowerCase();
-            categoria.setNombre(nombreFormateado);
-            categoria.setEstado(1);
-
-            if (categoriaController.guardarCategoria(categoria)) {
-                JOptionPane.showMessageDialog(null, "Categoría guardada correctamente.");
-                this.cargarCategoriasEnTabla();
-                txtCategoria.setText("");
-                idCategoria = 0;
-            } else {
-                JOptionPane.showMessageDialog(null, "Error al guardar la categoría.");
-            }
-        } catch (Exception e) {
-            System.err.println("Error inesperado al guardar categoría: " + e.getMessage());
-            JOptionPane.showMessageDialog(null, "Error inesperado al guardar la categoría.");
+        if (mensaje.contains("correctamente")) {
+            txtCategoria.setText("");
+            cargarCategoriasEnTabla();
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
 
@@ -179,76 +159,38 @@ public class JPanelCategoria extends javax.swing.JPanel {
     private void btnEliminar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminar1ActionPerformed
         int fila = tableCategoria.getSelectedRow();
         if (fila == -1) {
-            JOptionPane.showMessageDialog(null, "Seleccione una categoría para desactivar.");
+            JOptionPane.showMessageDialog(null, "Seleccione una categoría para desactivar");
             return;
         }
-
         idCategoria = Integer.parseInt(tableCategoria.getValueAt(fila, 0).toString());
-        String estadoActual = tableCategoria.getValueAt(fila, 2).toString();
 
-        if (estadoActual.equalsIgnoreCase("Inactivo")) {
-            JOptionPane.showMessageDialog(null, "La categoría ya ha sido desactivada.");
-            return;
-        }
-
-        CategoriaController categoriaController = new CategoriaController();
-        if (categoriaController.desactivarCategoria(idCategoria)) {
-            JOptionPane.showMessageDialog(null, "Categoría desactivada correctamente.");
-            txtCategoria.setText("");
-            idCategoria = 0;
-            this.cargarCategoriasEnTabla();
-        } else {
-            JOptionPane.showMessageDialog(null, "Error al desactivar la categoría.");
-        }
+        String mensaje = categoriaController.desactivarCategoria(idCategoria);
+        JOptionPane.showMessageDialog(null, mensaje);
+        cargarCategoriasEnTabla();
     }//GEN-LAST:event_btnEliminar1ActionPerformed
 
     private void btnActivarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActivarActionPerformed
         int fila = tableCategoria.getSelectedRow();
         if (fila == -1) {
-            JOptionPane.showMessageDialog(null, "Seleccione una categoría para activar.");
+            JOptionPane.showMessageDialog(null, "Seleccione una categoría para activar");
             return;
         }
-
         idCategoria = Integer.parseInt(tableCategoria.getValueAt(fila, 0).toString());
-        String estadoActual = tableCategoria.getValueAt(fila, 2).toString();
 
-        if (estadoActual.equalsIgnoreCase("Activo")) {
-            JOptionPane.showMessageDialog(null, "La categoría ya está activa.");
-            txtCategoria.setText("");
-            idCategoria = 0;
-            return;
-        }
-
-        CategoriaController categoriaController = new CategoriaController();
-        if (categoriaController.activarCategoria(idCategoria)) {
-            JOptionPane.showMessageDialog(null, "Categoría activada correctamente.");
-            txtCategoria.setText("");
-            this.cargarCategoriasEnTabla();
-        } else {
-            JOptionPane.showMessageDialog(null, "Error al activar la categoría.");
-        }
+        String mensaje = categoriaController.activarCategoria(idCategoria);
+        JOptionPane.showMessageDialog(null, mensaje);
+        cargarCategoriasEnTabla();
     }//GEN-LAST:event_btnActivarActionPerformed
 
     private void btnActualizar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizar1ActionPerformed
-        if (!txtCategoria.getText().isEmpty()) {
-            Categoria categoria = new Categoria();
-            CategoriaController categoriaController = new CategoriaController();
+        String nombreCategoria = txtCategoria.getText();
 
-            String nombreIngresado = txtCategoria.getText().trim();
-            if (!nombreIngresado.isEmpty()) {
-                String nombreFormateado = nombreIngresado.substring(0, 1).toUpperCase() + nombreIngresado.substring(1).toLowerCase();
-                categoria.setNombre(nombreFormateado);
-            }
-            if (categoriaController.actualizarCategoria(categoria, idCategoria)) {
-                JOptionPane.showMessageDialog(null, "Categoria actualizada");
-                txtCategoria.setText("");
-                this.cargarCategoriasEnTabla();
-            } else {
-                JOptionPane.showMessageDialog(null, "Error al actualizar categoria");
-            }
+        String mensaje = categoriaController.actualizarCategoria(nombreCategoria, idCategoria);
+        JOptionPane.showMessageDialog(this, mensaje);
 
-        } else {
-            JOptionPane.showMessageDialog(null, "Seleccione una categoria");
+        if (mensaje.contains("correctamente")) {
+            txtCategoria.setText("");
+            cargarCategoriasEnTabla();
         }
     }//GEN-LAST:event_btnActualizar1ActionPerformed
 
@@ -270,55 +212,47 @@ public class JPanelCategoria extends javax.swing.JPanel {
 
     private void cargarCategoriasEnTabla() {
         DefaultTableModel model = new DefaultTableModel();
-        CategoriaController controller = new CategoriaController();
+        model.setColumnIdentifiers(new Object[]{
+            "ID", "Categoria", "Estado"
+        });
 
-        model.addColumn("IdCategoria");
-        model.addColumn("Descripcion");
-        model.addColumn("Estado");
+        List<Categoria> categorias = categoriaController.obtenerTodasLasCategorias();
 
-        List<Categoria> categorias = controller.obtenerTodasLasCategorias();
-
-        boolean hayRegistros = false;
-        if (!categorias.isEmpty()) {
-            hayRegistros = true;
-            for (Categoria categoria : categorias) {
-                Object[] fila = new Object[3];
-                fila[0] = categoria.getIdCategoria();
-                fila[1] = categoria.getNombre();
-                fila[2] = (categoria.getEstado() == 1) ? "Activo" : "Inactivo";
-                model.addRow(fila);
-            }
+        for (Categoria  c: categorias) {
+            model.addRow(new Object[]{
+                c.getIdCategoria(),
+                c.getNombre(),
+                (c.getEstado() == 1) ? "Activo" : "Inactivo"
+            });
         }
 
         tableCategoria.setModel(model);
-        jScrollPane1.setViewportView(tableCategoria);
-
-        if (!hayRegistros) {
-            JOptionPane.showMessageDialog(null, "No existen categorías registradas actualmente.");
-        }
-
+        
         tableCategoria.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
-                int filaSeleccionada = tableCategoria.getSelectedRow();
-                if (filaSeleccionada != -1) {
-                    int id = (int) tableCategoria.getValueAt(filaSeleccionada, 0);
-                    idCategoria = id;
-                    enviarDatosCategoria(id);
+                int fila = tableCategoria.getSelectedRow();
+                if (fila!= -1) {
+                    idCategoria = Integer.parseInt(tableCategoria.getValueAt(fila, 0).toString());
+                    enviarDatosCategoria(idCategoria);
                 }
             }
         });
-
     }
-
+    
     private void enviarDatosCategoria(int idCategoria) {
-        CategoriaController controller = new CategoriaController();
-        Categoria categoria = controller.obtenerCategoriaPorId(idCategoria);
+        Categoria categoria = categoriaController.obtenerCategoriaPorId(idCategoria);
 
         if (categoria != null) {
             txtCategoria.setText(categoria.getNombre());
         } else {
             JOptionPane.showMessageDialog(null, "No se encontró la categoría seleccionada.");
             txtCategoria.setText("");
+        }
+    }
+    
+    private void verificarExistenciaCategoria() {
+        if (!categoriaController.existenCategoriasEnSistema()) {
+            JOptionPane.showMessageDialog(null, "No existen categorias en el sistema.");
         }
     }
 }

@@ -12,34 +12,34 @@ package modelo;
 public class Producto {
     private int idProducto;
     private String nombreProducto;
-    private Proveedor idProveedor;
+    private Proveedor proveedor;
     private int cantidad;
     private String descripcion;
     private double precio;
     private int porcentajeIva;
-    private Categoria idCategoria;
+    private Categoria categoria;
     private int estado;
 
     public Producto(){
         this.idProducto = 0;
         this.nombreProducto = "";
-        this.idProveedor = new Proveedor();
+        this.proveedor = new Proveedor();
         this.cantidad = 0;
         this.descripcion = "";
         this.precio = 0.0;
         this.porcentajeIva = 0;
-        this.idCategoria = new Categoria();
+        this.categoria = new Categoria();
         this.estado = 0;
     }
 
     public Producto(String nombreProducto, Proveedor idProveedor, int cantidad, String descripcion, double precio, int porcentajeIva, Categoria idCategoria, int estado) {
         this.nombreProducto = nombreProducto;
-        this.idProveedor = idProveedor;
+        this.proveedor = idProveedor;
         this.cantidad = cantidad;
         this.descripcion = descripcion;
         this.precio = precio;
         this.porcentajeIva = porcentajeIva;
-        this.idCategoria = idCategoria;
+        this.categoria = idCategoria;
         this.estado = estado;
     }
     
@@ -51,12 +51,12 @@ public class Producto {
         this.nombreProducto = nombreProducto;
     }
 
-    public Proveedor getIdProveedor() {
-        return idProveedor;
+    public Proveedor getProveedor() {
+        return proveedor;
     }
 
-    public void setIdProveedor(Proveedor idProveedor) {
-        this.idProveedor = idProveedor;
+    public void setProveedor(Proveedor proveedor) {
+        this.proveedor = proveedor;
     }
 
     public int getCantidad() {
@@ -99,12 +99,12 @@ public class Producto {
         this.porcentajeIva = porcentajeIva;
     }
 
-    public Categoria getIdCategoria() {
-        return idCategoria;
+    public Categoria getCategoria() {
+        return categoria;
     }
 
-    public void setIdCategoria(Categoria idCategoria) {
-        this.idCategoria = idCategoria;
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
     }
 
     public int getEstado() {
@@ -115,5 +115,7 @@ public class Producto {
         this.estado = estado;
     }
     
-    
+    public void calcularPrecioConIVA(){
+        //VER
+    }
 }

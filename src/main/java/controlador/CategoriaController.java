@@ -13,38 +13,80 @@ import modelo.Categoria;
  * @author admin
  */
 public class CategoriaController {
-    
+
     private CategoriaDAO categoriaDAO;
 
     public CategoriaController() {
         this.categoriaDAO = new CategoriaDAO();
     }
 
-    public boolean guardarCategoria(Categoria categoria) {
-        return categoriaDAO.guardar(categoria);
-    }
+    public String guardarCategoria(String nombre) {
+        if (nombre == null || nombre.trim().isEmpty()) {
+            return "El nombre de la categoría no puede estar vacío";
+        }
 
-    public boolean actualizarCategoria(Categoria categoria, int idCategoria) {
-        return categoriaDAO.actualizar(categoria, idCategoria);
-    }
+        if (categoriaDAO.existeCategoriaConNombre(nombre)) {
+            return "La categoría ya existe";
+        }
 
-    public boolean desactivarCategoria(int idCategoria) {
-        return categoriaDAO.desactivar(idCategoria);
-    }
+        Categoria cat = new Categoria();
+        cat.setNombre(nombre.trim());
+        cat.setEstado(1);
 
-    public boolean activarCategoria(int idCategoria) {
-        return categoriaDAO.activar(idCategoria);
-    }
-
-    public boolean existeCategoriaPorDescripcion(String descripcionCategoria) {
-        return categoriaDAO.existeCategoria(descripcionCategoria);
+        boolean registrado = categoriaDAO.registrarCategoria(cat);
+        return registrado ? "Categoría registrada correctamente" : "Error al registrar la categoría";
     }
 
     public List<Categoria> obtenerTodasLasCategorias() {
         return categoriaDAO.listarCategorias();
     }
 
+    public String actualizarCategoria(String nombre, int idCategoria) {
+        if (nombre == null || nombre.trim().isEmpty()) {
+            return "El nombre de la categoría no puede estar vacío";
+        }
+
+        Categoria cat = new Categoria();
+        cat.setNombre(nombre.trim());
+        cat.setEstado(1);
+
+        boolean actualizado = categoriaDAO.actualizarCategoria(cat, idCategoria);
+        return actualizado ? "Categoría actualizada correctamente" : "Error al actualizar la categoría";
+    }
+
+    public String desactivarCategoria(int idCategoria) {
+        Categoria cat = categoriaDAO.obtenerCategoriaPorId(idCategoria);
+        if (cat == null) {
+            return "La categoría no existe.";
+        }
+
+        if (cat.getEstado() == 0) {
+            return "La categoría ya está desactivada.";
+        }
+
+        boolean resultado = categoriaDAO.cambiarEstado(idCategoria, 0);
+        return resultado ? "Categoría desactivada correctamente." : "Error al desactivar la categoría.";
+    }
+
+    public String activarCategoria(int idCategoria) {
+        Categoria cat = categoriaDAO.obtenerCategoriaPorId(idCategoria);
+        if (cat == null) {
+            return "La categoría no existe.";
+        }
+
+        if (cat.getEstado() == 1) {
+            return "La categoría ya está activa.";
+        }
+
+        boolean resultado = categoriaDAO.cambiarEstado(idCategoria, 1);
+        return resultado ? "Categoría activada correctamente." : "Error al activar la categoría.";
+    }
+
     public Categoria obtenerCategoriaPorId(int idCategoria) {
         return categoriaDAO.obtenerCategoriaPorId(idCategoria);
+    }
+    
+    public boolean existenCategoriasEnSistema() {
+        return categoriaDAO.existenCategorias();
     }
 }

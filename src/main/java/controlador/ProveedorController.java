@@ -28,11 +28,6 @@ public class ProveedorController {
         return proveedorDAO.existeProveedor(ruc);
     }
 
-    public List<Proveedor> obtenerTodosLosProveedores() {
-        return proveedorDAO.listarProveedores();
-    }
-
-    
     public boolean actualizarProveedor(Proveedor proveedor) {
         return proveedorDAO.actualizar(proveedor);
     }
@@ -48,7 +43,10 @@ public class ProveedorController {
     public Proveedor obtenerProveedorPorId(int idProveedor) {
         return proveedorDAO.obtenerProveedorPorId(idProveedor);
     }
-    
+    public List<Proveedor> obtenerTodosLosProveedores() {
+        return proveedorDAO.listarProveedores();
+    }
+
     public List<Proveedor> buscarProveedoresPorCriterio(String criterio) {
         return proveedorDAO.buscarProveedores(criterio);
     }
@@ -56,4 +54,9 @@ public class ProveedorController {
     public boolean existenProveedoresEnSistema() {
         return proveedorDAO.verificarExistenciaDeProveedores();
     }
+    
+    public int obtenerProveedorPorNombre(String proveedor) {
+        return proveedorDAO.getIdProveedorPorNombre(proveedor);
+    }
+    
 }

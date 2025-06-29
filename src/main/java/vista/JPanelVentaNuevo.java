@@ -472,7 +472,7 @@ public class JPanelVentaNuevo extends javax.swing.JPanel {
         int idProducto = Integer.parseInt(modelo.getValueAt(filaSeleccionada, 0).toString());
 
         ProductoDAO controlador = new ProductoDAO();
-        Producto producto = controlador.buscarProductoPorId(idProducto);
+        Producto producto = controlador.obtenerProductoPorId(idProducto);
 
         if (producto == null) {
             JOptionPane.showMessageDialog(this, "Producto no encontrado en el sistema.");
@@ -556,7 +556,7 @@ public class JPanelVentaNuevo extends javax.swing.JPanel {
                 detalle.setCantidad(cantidadActual);
                 detalle.setSubTotal(subtotal);
                 ProductoDAO controlador = new ProductoDAO();
-                Producto producto = controlador.buscarProductoPorId(idProducto);
+                Producto producto = controlador.obtenerProductoPorId(idProducto);
                 double iva = subtotal * producto.getPorcentajeIva() / 100;
                 double descuento = subtotal * 0.005;
                 double total = subtotal + iva - descuento;
