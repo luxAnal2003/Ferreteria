@@ -16,7 +16,8 @@ import modelo.Cliente;
  * @author admin
  */
 public class JPanelClienteNuevo extends javax.swing.JPanel {
-
+    private ClienteController clienteController;
+    
     /**
      * Creates new form JPanelCategoriaNuevo
      */
@@ -24,8 +25,10 @@ public class JPanelClienteNuevo extends javax.swing.JPanel {
         initComponents();
         this.setSize(new Dimension(900, 400));
 
+        clienteController =  new ClienteController();
         this.cargarClientesEnTabla();
         this.verificarExistenciaClientes();
+        
     }
 
     /**
@@ -141,44 +144,20 @@ public class JPanelClienteNuevo extends javax.swing.JPanel {
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        Cliente cliente = new Cliente();
-        ClienteController clienteController = new ClienteController();
-
-        String cedulaRuc = txtCedulaRuc.getText().trim();
+        String cedula = txtCedulaRuc.getText().trim();
         String nombres = txtNombres.getText().trim();
         String apellidos = txtApellidos.getText().trim();
         String telefono = txtTelefono.getText().trim();
         String email = txtEmail.getText().trim();
         String direccion = txtDireccion.getText().trim();
+        int estado = 1;
+        
+        String mensaje = clienteController.guardarCliente(cedula, nombres, apellidos, telefono, email, direccion, estado);
+        JOptionPane.showMessageDialog(this, mensaje);
 
-        if (clienteController.existeClientePorCedula(cedulaRuc)) { 
-            JOptionPane.showMessageDialog(null, "El cliente con esa cédula/RUC ya existe.");
-            return;
-        }
-
-        if (!validarCampos(cedulaRuc, nombres, apellidos, telefono, email, direccion)) {
-            return;
-        }
-
-        try {
-            cliente.setNombre(nombres.substring(0, 1).toUpperCase() + nombres.substring(1).toLowerCase());
-            cliente.setApellido(apellidos.substring(0, 1).toUpperCase() + apellidos.substring(1).toLowerCase());
-            cliente.setTelefono(telefono);
-            cliente.setCorreo(email);
-            cliente.setCedula(cedulaRuc); 
-            cliente.setDireccion(direccion);
-            cliente.setEstado(1);
-
-            if (clienteController.guardarCliente(cliente)) {
-                JOptionPane.showMessageDialog(null, "Cliente guardado correctamente.");
-                this.cargarClientesEnTabla();
-                this.setear();
-            } else {
-                JOptionPane.showMessageDialog(null, "Error al guardar el cliente.");
-            }
-        } catch (Exception e) {
-            System.out.println("Error inesperado al guardar cliente: " + e.getMessage());
-            JOptionPane.showMessageDialog(null, "Error inesperado al guardar el cliente.");
+        if (mensaje.contains("correctamente")) {
+            this.setear();
+            this.cargarClientesEnTabla();
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
 
@@ -202,31 +181,6 @@ public class JPanelClienteNuevo extends javax.swing.JPanel {
     private javax.swing.JTextField txtTelefono;
     // End of variables declaration//GEN-END:variables
 
-    private boolean validarCampos(String cedulaRuc, String nombres, String apellidos, String telefono, String email, String direccion) {
-        if (cedulaRuc.isEmpty() || nombres.isEmpty() || apellidos.isEmpty() || telefono.isEmpty()
-                || email.isEmpty() || direccion.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Todos los campos son obligatorios.");
-            return false;
-        }
-
-        if (!cedulaRuc.matches("\\d{10}")) {
-            JOptionPane.showMessageDialog(null, "La cédula debe ser numérica y de 10 caracteres");
-            return false;
-        }
-
-        if (!telefono.matches("\\d{10}")) {
-            JOptionPane.showMessageDialog(null, "El teléfono debe ser numérica y de 10 caracteres");
-            return false;
-        }
-
-        if (!email.matches("^[\\w.-]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
-            JOptionPane.showMessageDialog(null, "Formato de Email inválido.");
-            return false;
-        }
-
-        return true;
-    }
-
     private void setear() {
         txtCedulaRuc.setText("");
         txtNombres.setText("");
@@ -238,49 +192,31 @@ public class JPanelClienteNuevo extends javax.swing.JPanel {
 
     private void cargarClientesEnTabla() {
         DefaultTableModel model = new DefaultTableModel();
-        ClienteController controller = new ClienteController();
+        model.setColumnIdentifiers(new Object[]{
+            "ID Cliente", "Cédula", "Nombres", "Apellidos", "Teléfono", "Dirección", "Correo", "Estado"
+        });
 
-        model.addColumn("ID Cliente");
-        model.addColumn("Cédula");
-        model.addColumn("Nombres");
-        model.addColumn("Apellidos");
-        model.addColumn("Teléfono");
-        model.addColumn("Dirección");
-        model.addColumn("Correo");
-        model.addColumn("Estado");
+        List<Cliente> clientes = clienteController.obtenerTodosLosClientes();
 
-        List<Cliente> clientes = controller.obtenerTodosLosClientes();
-
-        boolean hayRegistros = false;
-        if (!clientes.isEmpty()) {
-            hayRegistros = true;
-            for (Cliente cliente : clientes) {
-                Object[] fila = new Object[8];
-                fila[0] = cliente.getIdCliente();
-                fila[1] = cliente.getCedula();
-                fila[2] = cliente.getNombre();
-                fila[3] = cliente.getApellido();
-                fila[4] = cliente.getTelefono();
-                fila[5] = cliente.getDireccion();
-                fila[6] = cliente.getCorreo();
-                fila[7] = (cliente.getEstado() == 1) ? "Activo" : "Inactivo";
-                model.addRow(fila);
-            }
-        }
-
-        if (!hayRegistros) {
-            JOptionPane.showMessageDialog(null, "No existen clientes registrados actualmente.");
+        for (Cliente c : clientes) {
+            model.addRow(new Object[]{
+                c.getIdCliente(),
+                c.getCedula(),
+                c.getNombre(),
+                c.getApellido(),
+                c.getTelefono(),
+                c.getDireccion(),
+                c.getCorreo(),
+                (c.getEstado() == 1) ? "Activo" : "Inactivo"
+            });
         }
 
         tableCliente.setModel(model);
-        jScrollPane3.setViewportView(tableCliente);
     }
-    
-    
+
     private void verificarExistenciaClientes() {
-        ClienteController controller = new ClienteController();
-        if (!controller.existenClientes()) {
-            JOptionPane.showMessageDialog(null, "No existen clientes en el sistema.");
+        if (!clienteController.existenClientesEnSistema()) {
+            JOptionPane.showMessageDialog(null, "No existen clientes en el sistema");
         }
     }
 

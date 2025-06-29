@@ -16,6 +16,7 @@ import modelo.Producto;
  * @author admin
  */
 public class JPanelConsultarProducto extends javax.swing.JPanel {
+    private ProductoController productoController;
 
     /**
      * Creates new form JPanelCategoriaNuevo
@@ -24,6 +25,7 @@ public class JPanelConsultarProducto extends javax.swing.JPanel {
         initComponents();
         this.setSize(new Dimension(900, 400));
 
+        productoController = new ProductoController();
         this.cargarProductosEnTabla();
         this.verificarExistenciaProductos();
         txtBuscador.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -139,38 +141,27 @@ public class JPanelConsultarProducto extends javax.swing.JPanel {
 
     private void cargarProductosEnTabla() {
         DefaultTableModel model = new DefaultTableModel();
-        ProductoController controller = new ProductoController();
+        model.setColumnIdentifiers(new Object[]{
+            "ID", "Nombre", "Proveedor", "Cantidad", "Descripción", "Precio", "Iva", "Categoría", "Estado"
+        });
 
-        model.addColumn("ID");
-        model.addColumn("Nombre");
-        model.addColumn("Proveedor");
-        model.addColumn("Cantidad");
-        model.addColumn("Descripción");
-        model.addColumn("Precio");
-        model.addColumn("IVA");
-        model.addColumn("Categoría");
-        model.addColumn("Estado");
+        List<Producto> productos = productoController.obtenerTodosLosProductos();
 
-        List<Producto> productos = controller.obtenerTodosLosProductos();
-
-        if (productos.isEmpty()) {
-        } else {
-            for (Producto p : productos) {
-                Object[] fila = new Object[9];
-                fila[0] = p.getIdProducto();
-                fila[1] = p.getNombreProducto();
-                fila[2] = p.getProveedor().getNombre();
-                fila[3] = p.getCantidad();
-                fila[4] = p.getDescripcion();
-                fila[5] = p.getPrecio();
-                fila[6] = String.format("%.2f", p.getPorcentajeIva() / 100.0);
-                fila[7] = p.getCategoria().getNombre();
-                fila[8] = (p.getEstado() == 1) ? "Activo" : "Inactivo";
-                model.addRow(fila);
-            }
+        for (Producto p : productos) {
+            model.addRow(new Object[]{
+                p.getIdProducto(),
+                p.getNombreProducto(),
+                p.getProveedor(),
+                p.getCantidad(),
+                p.getDescripcion(),
+                p.getPrecio(),
+                String.format("%.2f", p.getPorcentajeIva() / 100.0),
+                p.getCategoria(),
+                (p.getEstado() == 1) ? "Activo" : "Inactivo"
+            });
         }
+
         tableProducto.setModel(model);
-        jScrollPane3.setViewportView(tableProducto);
     }
 
     private void buscarProductos() {
@@ -183,15 +174,9 @@ public class JPanelConsultarProducto extends javax.swing.JPanel {
         }
 
         DefaultTableModel model = new DefaultTableModel();
-        model.addColumn("ID");
-        model.addColumn("Nombre");
-        model.addColumn("Proveedor");
-        model.addColumn("Cantidad");
-        model.addColumn("Descripción");
-        model.addColumn("Precio");
-        model.addColumn("IVA");
-        model.addColumn("Categoría");
-        model.addColumn("Estado");
+        model.setColumnIdentifiers(new Object[]{
+            "ID", "Nombre", "Proveedor", "Cantidad", "Descripción", "Precio", "Iva", "Categoría", "Estado"
+        });
 
         Producto productoEncontrado = controller.obtenerProductoPorNombre(criterio);
 
@@ -209,9 +194,8 @@ public class JPanelConsultarProducto extends javax.swing.JPanel {
             model.addRow(fila);
 
             tableProducto.setModel(model);
-            jScrollPane3.setViewportView(tableProducto);
         } else {
-            JOptionPane.showMessageDialog(null, "No se encontró el producto con ese nombre.");
+            JOptionPane.showMessageDialog(null, "No se encontró el producto con ese nombre");
             cargarProductosEnTabla();
         }
     }
@@ -219,7 +203,7 @@ public class JPanelConsultarProducto extends javax.swing.JPanel {
     private void verificarExistenciaProductos() {
         ProductoController controller = new ProductoController();
         if (!controller.existenProductosEnSistema()) {
-            JOptionPane.showMessageDialog(null, "No existen productos en el sistema.");
+            JOptionPane.showMessageDialog(null, "No existen productos en el sistema");
         }
     }
 }

@@ -18,6 +18,8 @@ import modelo.Cliente;
 public class JPanelClienteEliminar extends javax.swing.JPanel {
 
     private int idCliente;
+    private ClienteController clienteController;
+    
 
     /**
      * Creates new form JPanelCategoriaNuevo
@@ -25,6 +27,7 @@ public class JPanelClienteEliminar extends javax.swing.JPanel {
     public JPanelClienteEliminar() {
         initComponents();
         this.setSize(new Dimension(900, 400));
+        clienteController = new ClienteController();
         this.verificarExistenciaClientes();
         this.cargarClientesEnTabla();
     }
@@ -107,95 +110,57 @@ public class JPanelClienteEliminar extends javax.swing.JPanel {
 
     private void cargarClientesEnTabla() {
         DefaultTableModel model = new DefaultTableModel();
-        ClienteController controller = new ClienteController();
+        model.setColumnIdentifiers(new Object[]{
+            "ID Cliente", "Cédula", "Nombres", "Apellidos", "Teléfono", "Dirección", "Correo", "Estado"
+        });
 
-        model.addColumn("ID Cliente");
-        model.addColumn("Cédula");
-        model.addColumn("Nombres");
-        model.addColumn("Apellidos");
-        model.addColumn("Teléfono");
-        model.addColumn("Dirección");
-        model.addColumn("Correo");
-        model.addColumn("Estado");
+        List<Cliente> clientes = clienteController.obtenerTodosLosClientes();
 
-        List<Cliente> clientes = controller.obtenerTodosLosClientes();
-
-        boolean hayRegistros = false;
-        if (!clientes.isEmpty()) {
-            hayRegistros = true;
-            for (Cliente cliente : clientes) {
-                Object[] fila = new Object[8];
-                fila[0] = cliente.getIdCliente();
-                fila[1] = cliente.getCedula();
-                fila[2] = cliente.getNombre();
-                fila[3] = cliente.getApellido();
-                fila[4] = cliente.getTelefono();
-                fila[5] = cliente.getDireccion();
-                fila[6] = cliente.getCorreo();
-                fila[7] = (cliente.getEstado() == 1) ? "Activo" : "Inactivo";
-                model.addRow(fila);
-            }
-        }
-
-        if (!hayRegistros) {
-            JOptionPane.showMessageDialog(null, "No existen clientes registrados actualmente");
+        for (Cliente c : clientes) {
+            model.addRow(new Object[]{
+                c.getIdCliente(),
+                c.getCedula(),
+                c.getNombre(),
+                c.getApellido(),
+                c.getTelefono(),
+                c.getDireccion(),
+                c.getCorreo(),
+                (c.getEstado() == 1) ? "Activo" : "Inactivo"
+            });
         }
 
         tableCliente.setModel(model);
-        jScrollPane3.setViewportView(tableCliente);
     }
 
     private void desactivar() {
         int fila = tableCliente.getSelectedRow();
-
-        if (fila != -1) {
-            String estadoActual = tableCliente.getValueAt(fila, 7).toString();
-            if (estadoActual.equalsIgnoreCase("Inactivo")) {
-                JOptionPane.showMessageDialog(null, "El cliente ya ha sido desactivado");
-                return;
-            }
-
-            idCliente = Integer.parseInt(tableCliente.getValueAt(fila, 0).toString());
-
-            ClienteController controller = new ClienteController();
-            if (controller.desactivarCliente(idCliente)) {
-                JOptionPane.showMessageDialog(null, "Cliente desactivado correctamente");
-                cargarClientesEnTabla();
-            } else {
-                JOptionPane.showMessageDialog(null, "Error al desactivar el cliente");
-            }
-        } else {
+        if (fila == -1) {
             JOptionPane.showMessageDialog(null, "Seleccione un cliente para desactivar");
+            return;
         }
+        idCliente = Integer.parseInt(tableCliente.getValueAt(fila, 0).toString());
+
+        String mensaje = clienteController.desactivarCliente(idCliente);
+        JOptionPane.showMessageDialog(null, mensaje);
+        this.cargarClientesEnTabla();
     }
 
     private void activar() {
         int fila = tableCliente.getSelectedRow();
-
-        if (fila != -1) {
-            String estadoActual = tableCliente.getValueAt(fila, 7).toString();
-            if (estadoActual.equalsIgnoreCase("Activo")) {
-                JOptionPane.showMessageDialog(null, "El cliente ya ha sido activado");
-                return;
-            }
-
-            idCliente = Integer.parseInt(tableCliente.getValueAt(fila, 0).toString());
-
-            ClienteController controller = new ClienteController();
-            if (controller.activarCliente(idCliente)) {
-                JOptionPane.showMessageDialog(null, "Cliente activado correctamente");
-                cargarClientesEnTabla();
-            } else {
-                JOptionPane.showMessageDialog(null, "Error al activar el cliente");
-            }
-        }else{
+        if (fila == -1) {
             JOptionPane.showMessageDialog(null, "Seleccione un cliente para activar");
+            return;
         }
+        idCliente = Integer.parseInt(tableCliente.getValueAt(fila, 0).toString());
+
+        String mensaje = clienteController.activarCliente(idCliente);
+        JOptionPane.showMessageDialog(null, mensaje);
+        this.cargarClientesEnTabla();
     }
 
     private void verificarExistenciaClientes() {
         ClienteController controller = new ClienteController();
-        if (!controller.existenClientes()) {
+        if (!controller.existenClientesEnSistema()) {
             JOptionPane.showMessageDialog(null, "No existen clientes en el sistema.");
         }
     }

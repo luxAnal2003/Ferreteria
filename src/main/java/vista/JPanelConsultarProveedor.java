@@ -17,13 +17,15 @@ import modelo.Proveedor;
  */
 public class JPanelConsultarProveedor extends javax.swing.JPanel {
 
+    ProveedorController proveedorController;
+
     /**
      * Creates new form JPanelCategoriaNuevo
      */
     public JPanelConsultarProveedor() {
         initComponents();
         this.setSize(new Dimension(900, 400));
-
+        proveedorController = new ProveedorController();
         this.cargarProveedoresEnTabla();
         this.verificarExistenciaProveedor();
 
@@ -139,54 +141,40 @@ public class JPanelConsultarProveedor extends javax.swing.JPanel {
 
     private void cargarProveedoresEnTabla() {
         DefaultTableModel model = new DefaultTableModel();
-        ProveedorController controller = new ProveedorController();
+        model.setColumnIdentifiers(new Object[]{
+            "ID", "RUC", "Nombre Comercial", "Teléfono", "Email", "Dirección", "Estado"
+        });
 
-        model.addColumn("ID");
-        model.addColumn("RUC");
-        model.addColumn("Nombre Comercial");
-        model.addColumn("Teléfono");
-        model.addColumn("Email");
-        model.addColumn("Dirección");
-        model.addColumn("Estado");
+        List<Proveedor> proveedores = proveedorController.obtenerTodosLosProveedores();
 
-        List<Proveedor> proveedores = controller.obtenerTodosLosProveedores();
-
-        if (proveedores.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "No existen proveedores registrados actualmente.");
-        } else {
-            for (Proveedor p : proveedores) {
-                Object[] fila = new Object[7];
-                fila[0] = p.getIdProveedor();
-                fila[1] = p.getRuc();
-                fila[2] = p.getNombre();
-                fila[3] = p.getTelefono();
-                fila[4] = p.getCorreo();
-                fila[5] = p.getDireccion();
-                fila[6] = (p.getEstado() == 1) ? "Activo" : "Inactivo";
-                model.addRow(fila);
-            }
+        for (Proveedor p : proveedores) {
+            model.addRow(new Object[]{
+                p.getIdProveedor(),
+                p.getRuc(),
+                p.getNombre(),
+                p.getTelefono(),
+                p.getCorreo(),
+                p.getDireccion(),
+                (p.getEstado() == 1) ? "Activo" : "Inactivo"
+            });
         }
+
         tableProveedor.setModel(model);
-        jScrollPane3.setViewportView(tableProveedor);
     }
 
     private void buscarProveedores() {
         String criterio = txtBuscador.getText().trim();
-        ProveedorController controller = new ProveedorController(); 
+        ProveedorController controller = new ProveedorController();
 
         if (criterio.isEmpty()) {
-            cargarProveedoresEnTabla(); 
+            cargarProveedoresEnTabla();
             return;
         }
 
         DefaultTableModel model = new DefaultTableModel();
-        model.addColumn("ID");
-        model.addColumn("RUC");
-        model.addColumn("Nombre Comercial");
-        model.addColumn("Teléfono");
-        model.addColumn("Email");
-        model.addColumn("Dirección");
-        model.addColumn("Estado");
+        model.setColumnIdentifiers(new Object[]{
+            "ID", "RUC", "Nombre Comercial", "Teléfono", "Email", "Dirección", "Estado"
+        });
 
         List<Proveedor> proveedoresEncontrados = controller.buscarProveedoresPorCriterio(criterio);
 

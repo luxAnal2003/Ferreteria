@@ -13,6 +13,7 @@ import modelo.Cliente;
  * @author admin
  */
 public class ClienteController {
+
     private ClienteDAO clienteDAO;
 
     public ClienteController() {
@@ -20,61 +21,125 @@ public class ClienteController {
     }
 
     public List<Cliente> obtenerTodosLosClientes() {
-        return clienteDAO.getAllClientes();
+        return clienteDAO.listarClientes();
     }
-
-    public boolean activarCliente(int idCliente) {
-        boolean exito = clienteDAO.activar(idCliente);
-        if (!exito) {
-            System.err.println("Error al activar cliente ID: " + idCliente);
+    
+    public String guardarCliente(String cedula, String nombres, String apellidos,String telefono,String email,String direccion, int estado) {
+        if (cedula.isEmpty() || nombres.isEmpty() || apellidos.isEmpty() || telefono.isEmpty()|| email.isEmpty() || direccion.isEmpty()) {
+            return "Todos los campos son obligatorios";
         }
-        return exito;
-    }
-
-    public boolean desactivarCliente(int idCliente) {
-        boolean exito = clienteDAO.desactivar(idCliente);
-        if (!exito) {
-            System.err.println("Error al desactivar cliente ID: " + idCliente);
+        
+        Cliente cliente = new Cliente();
+        cliente.setCedula(cedula);
+        cliente.setNombre(nombres);
+        cliente.setApellido(apellidos);
+        cliente.setTelefono(telefono);
+        cliente.setCorreo(email);
+        cliente.setDireccion(direccion);
+        cliente.setEstado(estado);
+        
+        if (!cedula.matches("\\d{10}")) {
+            return"La cédula debe ser numérica y de 10 caracteres";
         }
-        return exito;
+
+        if (!telefono.matches("\\d{10}")) {
+            return "El teléfono debe ser numérica y de 10 caracteres";
+        }
+
+        if (!email.matches("^[\\w.-]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+            return "Formato de Email inválido";
+        }
+        
+        if (clienteDAO.existeClientePorCedula(cedula)) {
+            return "El cliente ya existe con esa cédula";
+        }
+        
+        boolean registrado = clienteDAO.registrarCliente(cliente);
+        return registrado ? "Cliente registrado correctamente" : "Error al registrar el Cliente";
     }
 
-    public boolean existenClientes() {
+    public String actualizarCliente(String cedula, String nombres, String apellidos,String telefono,String email,String direccion, int estado, int idCliente) {
+        if (cedula.isEmpty() || nombres.isEmpty() || apellidos.isEmpty() || telefono.isEmpty()|| email.isEmpty() || direccion.isEmpty()) {
+            return "Todos los campos son obligatorios";
+        }
+        
+        Cliente cliente = new Cliente();
+        cliente.setCedula(cedula);
+        cliente.setNombre(nombres);
+        cliente.setApellido(apellidos);
+        cliente.setTelefono(telefono);
+        cliente.setCorreo(email);
+        cliente.setDireccion(direccion);
+        cliente.setEstado(estado);
+        
+        if (!cedula.matches("\\d{10}")) {
+            return"La cédula debe ser numérica y de 10 caracteres";
+        }
+
+        if (!telefono.matches("\\d{10}")) {
+            return "El teléfono debe ser numérica y de 10 caracteres";
+        }
+
+        if (!email.matches("^[\\w.-]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+            return "Formato de Email inválido";
+        }
+        
+        boolean actualizado = clienteDAO.actualizarCliente(cliente, idCliente);
+        return actualizado ? "Cliente actualizado correctamente" : "Error al actualizar el Cliente";
+    }
+    
+    public String desactivarCliente(int idCliente) {
+        Cliente cli = clienteDAO.obtenerClientePorId(idCliente);
+        if (cli == null) {
+            return "El cliente no existe";
+        }
+
+        if (cli.getEstado() == 0) {
+            return "El cliente ya está desactivado";
+        }
+
+        boolean resultado = clienteDAO.cambiarEstado(idCliente, 0);
+        return resultado ? "Cliente desactivado correctamente" : "Error al desactivar el cliente";
+    }
+
+    public String activarCliente(int idCliente) {
+        Cliente cli = clienteDAO.obtenerClientePorId(idCliente);
+        if (cli == null) {
+            return "El cliente no existe";
+        }
+
+        if (cli.getEstado() == 1) {
+            return "El cliente ya está activo";
+        }
+
+        boolean resultado = clienteDAO.cambiarEstado(idCliente, 1);
+        return resultado ? "Cliente activado correctamente" : "Error al activar el cliente";
+    }
+
+    public boolean existenClientesEnSistema() {
         return clienteDAO.verificarExistenciaClientes();
     }
 
-    public boolean guardarCliente(Cliente cliente) {
-        return clienteDAO.guardar(cliente);
-    }
-
     
+
     public boolean existeClientePorCedula(String cedula) {
         return clienteDAO.existeClientePorCedula(cedula);
     }
 
-    
     public Cliente obtenerClientePorCedula(String cedula) {
         return clienteDAO.buscarPorCedula(cedula);
     }
-    
-    public boolean actualizarCliente(Cliente cliente) {
-        boolean exito = clienteDAO.actualizar(cliente);
-        if (!exito) {
-            System.err.println("Error en ClienteController al actualizar cliente ID: " + cliente.getIdCliente());
-        }
-        return exito;
-    }
-    
+
     public Cliente obtenerClientePorId(int idCliente) {
         return clienteDAO.obtenerClientePorId(idCliente);
     }
-    
+
     public List<Cliente> buscarClientes(String criterio) {
         return clienteDAO.buscarClientesPorCriterio(criterio);
     }
-    
+
     public int obtenerUltimoIdInsertado() {
         return clienteDAO.obtenerUltimoIdInsertado();
     }
-    
+
 }

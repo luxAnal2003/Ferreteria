@@ -16,7 +16,7 @@ import modelo.Proveedor;
  * @author admin
  */
 public class JPanelProveedorEliminar extends javax.swing.JPanel {
-
+    ProveedorController proveedorController;
     private int idProveedor;
 
     /**
@@ -25,7 +25,7 @@ public class JPanelProveedorEliminar extends javax.swing.JPanel {
     public JPanelProveedorEliminar() {
         initComponents();
         this.setSize(new Dimension(900, 400));
-
+        proveedorController = new ProveedorController();
         this.cargarProveedoresEnTabla();
         this.verificarExistenciaProveedor();
     }
@@ -108,89 +108,53 @@ public class JPanelProveedorEliminar extends javax.swing.JPanel {
 
     private void cargarProveedoresEnTabla() {
         DefaultTableModel model = new DefaultTableModel();
-        ProveedorController controller = new ProveedorController(); 
+        model.setColumnIdentifiers(new Object[]{
+            "ID", "RUC", "Nombre Comercial", "Teléfono", "Email", "Dirección", "Estado"
+        });
 
-        model.addColumn("ID");
-        model.addColumn("RUC");
-        model.addColumn("Nombre Comercial");
-        model.addColumn("Teléfono");
-        model.addColumn("Email");
-        model.addColumn("Dirección");
-        model.addColumn("Estado");
+        List<Proveedor> proveedores = proveedorController.obtenerTodosLosProveedores();
 
-        List<Proveedor> proveedores = controller.obtenerTodosLosProveedores();
-
-        if (proveedores.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "No existen proveedores registrados actualmente.");
-        } else {
-            for (Proveedor p : proveedores) {
-                Object[] fila = new Object[7];
-                fila[0] = p.getIdProveedor();
-                fila[1] = p.getRuc();
-                fila[2] = p.getNombre();
-                fila[3] = p.getTelefono();
-                fila[4] = p.getCorreo();
-                fila[5] = p.getDireccion();
-                fila[6] = (p.getEstado() == 1) ? "Activo" : "Inactivo";
-                model.addRow(fila);
-            }
+        for (Proveedor p : proveedores) {
+            model.addRow(new Object[]{
+                p.getIdProveedor(),
+                p.getRuc(),
+                p.getNombre(),
+                p.getTelefono(),
+                p.getCorreo(),
+                p.getDireccion(),
+                (p.getEstado() == 1) ? "Activo" : "Inactivo"
+            });
         }
+
         tableProveedor.setModel(model);
-        jScrollPane3.setViewportView(tableProveedor);
     }
 
     private void activar() {
         int fila = tableProveedor.getSelectedRow();
-
-        if (fila != -1) {
-            String estadoTabla = tableProveedor.getValueAt(fila, 6).toString();
-            if (estadoTabla.equalsIgnoreCase("Activo")) {
-                JOptionPane.showMessageDialog(null, "El proveedor ya está activo.");
-                return;
-            }
-
-            idProveedor = Integer.parseInt(tableProveedor.getValueAt(fila, 0).toString());
-
-            ProveedorController controlProveedor = new ProveedorController();
-            boolean proveedorActivado = controlProveedor.activarProveedor(idProveedor);
-
-            if (proveedorActivado) {
-                JOptionPane.showMessageDialog(null, "Proveedor activado correctamente.");
-                this.cargarProveedoresEnTabla();
-            } else {
-                JOptionPane.showMessageDialog(null, "Error al activar el proveedor.");
-            }
-
-        } else {
-            JOptionPane.showMessageDialog(null, "Seleccione un proveedor para activar.");
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(null, "Seleccione un proveedor para activar");
+            return;
         }
+        idProveedor = Integer.parseInt(tableProveedor.getValueAt(fila, 0).toString());
+
+        String mensaje = proveedorController.activarProveedor(idProveedor);
+        JOptionPane.showMessageDialog(null, mensaje);
+        this.cargarProveedoresEnTabla();
     }
 
     private void desactivarProveedor() {
         int fila = tableProveedor.getSelectedRow();
-
-        if (fila != -1) {
-            String estadoTabla = tableProveedor.getValueAt(fila, 6).toString();
-            if (estadoTabla.equalsIgnoreCase("Inactivo")) {
-                JOptionPane.showMessageDialog(null, "El proveedor ya ha sido desactivado anteriormente.");
-                return;
-            }
-
-            idProveedor = Integer.parseInt(tableProveedor.getValueAt(fila, 0).toString());
-
-            ProveedorController controlProveedor = new ProveedorController();
-            boolean proveedorDesactivado = controlProveedor.desactivarProveedor(idProveedor);
-
-            if (proveedorDesactivado) {
-                JOptionPane.showMessageDialog(null, "Proveedor desactivado correctamente.");
-                this.cargarProveedoresEnTabla();
-            } else {
-                JOptionPane.showMessageDialog(null, "Error al desactivar el proveedor.");
-            }
-        } else {
-            JOptionPane.showMessageDialog(null, "Seleccione un proveedor para desactivar.");
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(null, "Seleccione un proveedor para desactivar");
+            return;
         }
+        idProveedor = Integer.parseInt(tableProveedor.getValueAt(fila, 0).toString());
+
+        String mensaje = proveedorController.desactivarProveedor(idProveedor);
+        JOptionPane.showMessageDialog(null, mensaje);
+        this.cargarProveedoresEnTabla();
     }
+
     private void verificarExistenciaProveedor() {
         ProveedorController controller = new ProveedorController();
         if (!controller.existenProveedoresEnSistema()) {

@@ -110,12 +110,12 @@ public class JPanelProductoEliminar extends javax.swing.JPanel {
     private void desactivar() {
         int fila = tableProducto.getSelectedRow();
         if (fila == -1) {
-            JOptionPane.showMessageDialog(null, "Seleccione una categoría para desactivar");
+            JOptionPane.showMessageDialog(null, "Seleccione un producto para desactivar");
             return;
         }
         idProducto = Integer.parseInt(tableProducto.getValueAt(fila, 0).toString());
 
-        String mensaje = productoController.desactivarCategoria(idProducto);
+        String mensaje = productoController.desactivarProducto(idProducto);
         JOptionPane.showMessageDialog(null, mensaje);
         this.cargarProductosEnTabla();
     }
@@ -123,12 +123,12 @@ public class JPanelProductoEliminar extends javax.swing.JPanel {
     private void activar() {
         int fila = tableProducto.getSelectedRow();
         if (fila == -1) {
-            JOptionPane.showMessageDialog(null, "Seleccione una categoría para activar");
+            JOptionPane.showMessageDialog(null, "Seleccione un producto para activar");
             return;
         }
         idProducto = Integer.parseInt(tableProducto.getValueAt(fila, 0).toString());
 
-        String mensaje = productoController.activarCategoria(idProducto);
+        String mensaje = productoController.activarProducto(idProducto);
         JOptionPane.showMessageDialog(null, mensaje);
         this.cargarProductosEnTabla();
     }

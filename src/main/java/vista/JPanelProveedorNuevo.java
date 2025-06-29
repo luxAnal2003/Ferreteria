@@ -16,13 +16,16 @@ import java.util.List;
  * @author admin
  */
 public class JPanelProveedorNuevo extends javax.swing.JPanel {
+
+    ProveedorController proveedorController;
+
     /**
      * Creates new form JPanelCategoriaNuevo
      */
     public JPanelProveedorNuevo() {
         initComponents();
         this.setSize(new Dimension(900, 400));
-
+        proveedorController = new ProveedorController();
         this.cargarProveedoresEnTabla();
         this.verificarExistenciaProveedor();
     }
@@ -128,42 +131,19 @@ public class JPanelProveedorNuevo extends javax.swing.JPanel {
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        Proveedor proveedor = new Proveedor();
-        ProveedorController proveedorController = new ProveedorController();
-
         String ruc = txtRuc.getText().trim();
         String nombreComercial = txtNombreComercial.getText().trim();
         String telefono = txtTelefono.getText().trim();
         String email = txtEmail.getText().trim();
         String direccion = txtDireccion.getText().trim();
-
-        if (proveedorController.existeProveedorPorRuc(ruc)) {
-            JOptionPane.showMessageDialog(null, "El proveedor ya existe con ese RUC.");
-            return;
-        }
-
-        if (!validarCampos(ruc, nombreComercial, telefono, email, direccion)) {
-            return;
-        }
-
-        try {
-            proveedor.setNombre(nombreComercial.substring(0, 1).toUpperCase() + nombreComercial.substring(1).toLowerCase());
-            proveedor.setTelefono(telefono);
-            proveedor.setCorreo(email);
-            proveedor.setRuc(ruc);
-            proveedor.setDireccion(direccion);
-            proveedor.setEstado(1);
-
-            if (proveedorController.guardarProveedor(proveedor)) {
-                JOptionPane.showMessageDialog(null, "Proveedor guardado correctamente.");
-                this.cargarProveedoresEnTabla();
-                this.setear();
-            } else {
-                JOptionPane.showMessageDialog(null, "Error al guardar proveedor.");
-            }
-        } catch (Exception e) {
-            System.err.println("Error inesperado al guardar proveedor: " + e.getMessage());
-            JOptionPane.showMessageDialog(null, "Error inesperado al guardar el proveedor.");
+        int estado = 1;
+        
+        String mensaje = proveedorController.guardarProveedor(ruc, nombreComercial, telefono, email, direccion, estado);
+        JOptionPane.showMessageDialog(this, mensaje);
+        
+        if (mensaje.contains("correctamente")) {
+            this.setear();
+            this.cargarProveedoresEnTabla();
         }
     }//GEN-LAST:event_btnGuardarActionPerformed
 
@@ -187,59 +167,25 @@ public class JPanelProveedorNuevo extends javax.swing.JPanel {
 
     private void cargarProveedoresEnTabla() {
         DefaultTableModel model = new DefaultTableModel();
-        ProveedorController controller = new ProveedorController(); 
+        model.setColumnIdentifiers(new Object[]{
+            "ID", "RUC", "Nombre Comercial", "Teléfono", "Email", "Dirección", "Estado"
+        });
 
-        model.addColumn("ID");
-        model.addColumn("RUC");
-        model.addColumn("Nombre Comercial");
-        model.addColumn("Teléfono");
-        model.addColumn("Email");
-        model.addColumn("Dirección");
-        model.addColumn("Estado");
-
-        List<Proveedor> proveedores = controller.obtenerTodosLosProveedores();
-
-        if (proveedores.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "No existen proveedores registrados actualmente.");
-        } else {
-            for (Proveedor p : proveedores) {
-                Object[] fila = new Object[7];
-                fila[0] = p.getIdProveedor();
-                fila[1] = p.getRuc();
-                fila[2] = p.getNombre();
-                fila[3] = p.getTelefono();
-                fila[4] = p.getCorreo();
-                fila[5] = p.getDireccion();
-                fila[6] = (p.getEstado() == 1) ? "Activo" : "Inactivo";
-                model.addRow(fila);
-            }
+        List<Proveedor> proveedores = proveedorController.obtenerTodosLosProveedores();
+        
+        for (Proveedor p : proveedores) {
+            model.addRow(new Object[]{
+                p.getIdProveedor(),
+                p.getRuc(),
+                p.getNombre(),
+                p.getTelefono(),
+                p.getCorreo(),
+                p.getDireccion(),
+                (p.getEstado() == 1) ? "Activo" : "Inactivo"
+            });
         }
+
         tableProveedor.setModel(model);
-        jScrollPane3.setViewportView(tableProveedor);
-    }
-
-    private boolean validarCampos(String ruc, String nombreComercial, String telefono, String email, String direccion) {
-        if (ruc.isEmpty() || nombreComercial.isEmpty() || email.isEmpty()
-                || telefono.isEmpty() || direccion.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Todos los campos son obligatorios.");
-            return false;
-        }
-
-        if (!ruc.matches("\\d{13}")) {
-            JOptionPane.showMessageDialog(null, "El RUC debe tener exactamente 13 caracteres numéricos");
-            return false;
-        }
-
-        if (!telefono.matches("\\d{10}")) {
-            JOptionPane.showMessageDialog(null, "El teléfono debe tener exactamente 10 caracteres numéricos");
-            return false;
-        }
-
-        if (!email.matches("^[\\w.-]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
-            JOptionPane.showMessageDialog(null, "Formato de Email inválido.");
-            return false;
-        }
-        return true;
     }
 
     private void setear() {
@@ -249,6 +195,7 @@ public class JPanelProveedorNuevo extends javax.swing.JPanel {
         txtEmail.setText("");
         txtDireccion.setText("");
     }
+
     private void verificarExistenciaProveedor() {
         ProveedorController controller = new ProveedorController();
         if (!controller.existenProveedoresEnSistema()) {

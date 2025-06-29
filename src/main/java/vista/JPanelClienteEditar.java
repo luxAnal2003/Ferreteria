@@ -10,13 +10,14 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import java.util.List;
 import modelo.Cliente;
+import static vista.JPanelClienteNuevo.tableCliente;
 
 /**
  *
  * @author admin
  */
 public class JPanelClienteEditar extends javax.swing.JPanel {
-
+    private ClienteController clienteController;
     private int idCliente;
 
     /**
@@ -26,6 +27,7 @@ public class JPanelClienteEditar extends javax.swing.JPanel {
         initComponents();
         this.setSize(new Dimension(900, 400));
 
+        clienteController =  new ClienteController();
         this.cargarClientesEnTabla();
         this.verificarExistenciaClientes();
     }
@@ -146,48 +148,20 @@ public class JPanelClienteEditar extends javax.swing.JPanel {
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
-        Cliente cliente = new Cliente();
-        ClienteController clienteController = new ClienteController();
-
-        String cedulaRuc = txtCedulaRuc.getText().trim();
+        String cedula = txtCedulaRuc.getText().trim();
         String nombres = txtNombres.getText().trim();
         String apellidos = txtApellidos.getText().trim();
         String telefono = txtTelefono.getText().trim();
         String email = txtEmail.getText().trim();
         String direccion = txtDireccion.getText().trim();
+        int estado = 1;
+        
+        String mensaje = clienteController.actualizarCliente(cedula, nombres, apellidos, telefono, email, direccion, estado, idCliente);
+        JOptionPane.showMessageDialog(this, mensaje);
 
-        if (!validarCampos(cedulaRuc, nombres, apellidos, telefono, email, direccion)) {
-            return;
-        }
-
-        try {
-            int fila = tableCliente.getSelectedRow();
-            if (fila < 0) {
-                JOptionPane.showMessageDialog(null, "Selecciona un cliente para actualizar");
-                return;
-            }
-            idCliente = Integer.parseInt(tableCliente.getValueAt(fila, 0).toString());
-
-            cliente.setIdCliente(idCliente);
-            cliente.setNombre(nombres.substring(0, 1).toUpperCase() + nombres.substring(1).toLowerCase());
-            cliente.setApellido(apellidos.substring(0, 1).toUpperCase() + apellidos.substring(1).toLowerCase());
-            cliente.setTelefono(telefono);
-            cliente.setCorreo(email);
-            cliente.setCedula(cedulaRuc);
-            cliente.setDireccion(direccion);
-            cliente.setEstado(1);
-
-            if (clienteController.actualizarCliente(cliente)) {
-                JOptionPane.showMessageDialog(null, "Cliente actualizado correctamente.");
-                this.cargarClientesEnTabla();
-                this.setear();
-            } else {
-                JOptionPane.showMessageDialog(null, "Error al actualizar el cliente.");
-            }
-
-        } catch (Exception e) {
-            System.err.println("Error inesperado al actualizar cliente: " + e.getMessage());
-            JOptionPane.showMessageDialog(null, "Error inesperado al actualizar el cliente.");
+        if (mensaje.contains("correctamente")) {
+            this.setear();
+            this.cargarClientesEnTabla();
         }
     }//GEN-LAST:event_btnActualizarActionPerformed
 
@@ -211,31 +185,7 @@ public class JPanelClienteEditar extends javax.swing.JPanel {
     private javax.swing.JTextField txtTelefono;
     // End of variables declaration//GEN-END:variables
 
-    private boolean validarCampos(String cedulaRuc, String nombres, String apellidos, String telefono, String email, String direccion) {
-        if (cedulaRuc.isEmpty() || nombres.isEmpty() || apellidos.isEmpty() || telefono.isEmpty()
-                || email.isEmpty() || direccion.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Todos los campos son obligatorios.");
-            return false;
-        }
-
-        if (!cedulaRuc.matches("\\d{10}")) {
-            JOptionPane.showMessageDialog(null, "La cédula debe ser numérica y de 10 caracteres");
-            return false;
-        }
-
-        if (!telefono.matches("\\d{10}")) {
-            JOptionPane.showMessageDialog(null, "El teléfono debe ser numérica y de 10 caracteres");
-            return false;
-        }
-
-        if (!email.matches("^[\\w.-]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
-            JOptionPane.showMessageDialog(null, "Formato de Email inválido.");
-            return false;
-        }
-
-        return true;
-    }
-
+    
     private void setear() {
         txtCedulaRuc.setText("");
         txtNombres.setText("");
@@ -250,43 +200,26 @@ public class JPanelClienteEditar extends javax.swing.JPanel {
 
     private void cargarClientesEnTabla() {
         DefaultTableModel model = new DefaultTableModel();
-        ClienteController controller = new ClienteController();
+        model.setColumnIdentifiers(new Object[]{
+            "ID Cliente", "Cédula", "Nombres", "Apellidos", "Teléfono", "Dirección", "Correo", "Estado"
+        });
 
-        model.addColumn("ID Cliente");
-        model.addColumn("Cédula");
-        model.addColumn("Nombres");
-        model.addColumn("Apellidos");
-        model.addColumn("Teléfono");
-        model.addColumn("Dirección");
-        model.addColumn("Correo");
-        model.addColumn("Estado");
+        List<Cliente> clientes = clienteController.obtenerTodosLosClientes();
 
-        List<Cliente> clientes = controller.obtenerTodosLosClientes();
-
-        boolean hayRegistros = false;
-        if (!clientes.isEmpty()) {
-            hayRegistros = true;
-            for (Cliente cliente : clientes) {
-                Object[] fila = new Object[8];
-                fila[0] = cliente.getIdCliente();
-                fila[1] = cliente.getCedula();
-                fila[2] = cliente.getNombre();
-                fila[3] = cliente.getApellido();
-                fila[4] = cliente.getTelefono();
-                fila[5] = cliente.getDireccion();
-                fila[6] = cliente.getCorreo();
-                fila[7] = (cliente.getEstado() == 1) ? "Activo" : "Inactivo";
-                model.addRow(fila);
-            }
-        }
-
-        if (!hayRegistros) {
-            JOptionPane.showMessageDialog(null, "No existen clientes registrados actualmente.");
+        for (Cliente c : clientes) {
+            model.addRow(new Object[]{
+                c.getIdCliente(),
+                c.getCedula(),
+                c.getNombre(),
+                c.getApellido(),
+                c.getTelefono(),
+                c.getDireccion(),
+                c.getCorreo(),
+                (c.getEstado() == 1) ? "Activo" : "Inactivo"
+            });
         }
 
         tableCliente.setModel(model);
-        jScrollPane3.setViewportView(tableCliente);
-
         tableCliente.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 int fila = tableCliente.getSelectedRow();
@@ -297,10 +230,9 @@ public class JPanelClienteEditar extends javax.swing.JPanel {
             }
         });
     }
-
+   
     private void enviarDatosCliente(int idCliente) {
-        ClienteController controller = new ClienteController();
-        Cliente cliente = controller.obtenerClientePorId(idCliente);
+        Cliente cliente = clienteController.obtenerClientePorId(idCliente);
 
         if (cliente != null) {
             txtCedulaRuc.setText(cliente.getCedula());
@@ -318,8 +250,7 @@ public class JPanelClienteEditar extends javax.swing.JPanel {
     }
     
     private void verificarExistenciaClientes() {
-        ClienteController controller = new ClienteController();
-        if (!controller.existenClientes()) {
+        if (!clienteController.existenClientesEnSistema()) {
             JOptionPane.showMessageDialog(null, "No existen clientes en el sistema.");
         }
     }

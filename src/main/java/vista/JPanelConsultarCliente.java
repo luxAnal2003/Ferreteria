@@ -4,6 +4,7 @@
  */
 package vista;
 
+import controlador.CategoriaController;
 import controlador.ClienteController;
 import java.awt.Dimension;
 import javax.swing.JOptionPane;
@@ -16,7 +17,7 @@ import modelo.Cliente;
  * @author admin
  */
 public class JPanelConsultarCliente extends javax.swing.JPanel {
-
+    private ClienteController clienteController;
     /**
      * Creates new form JPanelCategoriaNuevo
      */
@@ -24,6 +25,7 @@ public class JPanelConsultarCliente extends javax.swing.JPanel {
         initComponents();
         this.setSize(new Dimension(900, 400));
 
+        clienteController = new ClienteController();
         this.cargarClientesEnTabla();
         this.verificarExistenciaClientes();
 
@@ -139,42 +141,26 @@ public class JPanelConsultarCliente extends javax.swing.JPanel {
 
     private void cargarClientesEnTabla() {
         DefaultTableModel model = new DefaultTableModel();
-        ClienteController controller = new ClienteController();
+        model.setColumnIdentifiers(new Object[]{
+            "ID Cliente", "Cédula", "Nombres", "Apellidos", "Teléfono", "Dirección", "Correo", "Estado"
+        });
 
-        model.addColumn("ID Cliente");
-        model.addColumn("Cédula");
-        model.addColumn("Nombres");
-        model.addColumn("Apellidos");
-        model.addColumn("Teléfono");
-        model.addColumn("Dirección");
-        model.addColumn("Correo");
-        model.addColumn("Estado");
+        List<Cliente> clientes = clienteController.obtenerTodosLosClientes();
 
-        List<Cliente> clientes = controller.obtenerTodosLosClientes();
-
-        boolean hayRegistros = false;
-        if (!clientes.isEmpty()) {
-            hayRegistros = true;
-            for (Cliente cliente : clientes) {
-                Object[] fila = new Object[8];
-                fila[0] = cliente.getIdCliente();
-                fila[1] = cliente.getCedula();
-                fila[2] = cliente.getNombre();
-                fila[3] = cliente.getApellido();
-                fila[4] = cliente.getTelefono();
-                fila[5] = cliente.getDireccion();
-                fila[6] = cliente.getCorreo();
-                fila[7] = (cliente.getEstado() == 1) ? "Activo" : "Inactivo";
-                model.addRow(fila);
-            }
-        }
-
-        if (!hayRegistros) {
-            JOptionPane.showMessageDialog(null, "No existen clientes registrados actualmente");
+        for (Cliente c : clientes) {
+            model.addRow(new Object[]{
+                c.getIdCliente(),
+                c.getCedula(),
+                c.getNombre(),
+                c.getApellido(),
+                c.getTelefono(),
+                c.getDireccion(),
+                c.getCorreo(),
+                (c.getEstado() == 1) ? "Activo" : "Inactivo"
+            });
         }
 
         tableCliente.setModel(model);
-        jScrollPane3.setViewportView(tableCliente);
     }
 
     private void buscarClientes() {
@@ -187,14 +173,9 @@ public class JPanelConsultarCliente extends javax.swing.JPanel {
         }
 
         DefaultTableModel model = new DefaultTableModel();
-        model.addColumn("ID Cliente");
-        model.addColumn("Cédula");
-        model.addColumn("Nombres");
-        model.addColumn("Apellidos");
-        model.addColumn("Teléfono");
-        model.addColumn("Dirección");
-        model.addColumn("Correo");
-        model.addColumn("Estado");
+        model.setColumnIdentifiers(new Object[]{
+            "ID Cliente", "Cédula", "Nombres", "Apellidos", "Teléfono", "Dirección", "Correo", "Estado"
+        });
 
         List<Cliente> clientesEncontrados = controller.buscarClientes(criterio);
 
@@ -214,15 +195,15 @@ public class JPanelConsultarCliente extends javax.swing.JPanel {
             tableCliente.setModel(model);
             jScrollPane3.setViewportView(tableCliente);
         } else {
-            JOptionPane.showMessageDialog(null, "No se encontraron clientes activos que coincidan con el criterio de búsqueda.");
+            JOptionPane.showMessageDialog(null, "No se encontraron clientes activos que coincidan con el criterio de búsqueda");
             cargarClientesEnTabla(); 
         }
     }
 
     private void verificarExistenciaClientes() {
         ClienteController controller = new ClienteController();
-        if (!controller.existenClientes()) {
-            JOptionPane.showMessageDialog(null, "No existen clientes en el sistema.");
+        if (!controller.existenClientesEnSistema()) {
+            JOptionPane.showMessageDialog(null, "No existen clientes en el sistema");
         }
     }
 }

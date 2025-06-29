@@ -18,13 +18,11 @@ import modelo.Proveedor;
  */
 public class ProveedorDAO {
 
-    public boolean guardar(Proveedor proveedor) {
+    public boolean registrarProveedor(Proveedor proveedor) {
         boolean respuesta = false;
-        Connection cn = null;
+        Connection cn = Conexion.conectar();
 
         try {
-            cn = Conexion.conectar();
-
             PreparedStatement consulta = cn.prepareStatement("""
                 INSERT INTO proveedor (ruc, nombreProveedor, telefonoProveedor, direccionProveedor,
                                       correoProveedor, estado)
@@ -41,18 +39,38 @@ public class ProveedorDAO {
             if (consulta.executeUpdate() > 0) {
                 respuesta = true;
             }
-
+            cn.close();
         } catch (SQLException e) {
             System.err.println("Error al guardar proveedor: " + e.getMessage());
-        } finally {
-            try {
-                if (cn != null) {
-                    cn.close();
-                }
-            } catch (SQLException e) {
-                System.err.println("Error al cerrar conexión: " + e.getMessage());
+        } 
+        return respuesta;
+    }
+
+    public boolean actualizarProveedor(Proveedor proveedor, int idProveedor) {
+        boolean respuesta = false;
+        Connection cn = Conexion.conectar();
+
+        try {
+            PreparedStatement consulta = cn.prepareStatement(
+                    "UPDATE proveedor SET ruc = ?, nombreProveedor = ?, telefonoProveedor = ?, "
+                + "direccionProveedor = ?, correoProveedor = ?, estado = ? WHERE idProveedor = ?"
+            );
+
+            consulta.setString(1, proveedor.getRuc());
+            consulta.setString(2, proveedor.getNombre());
+            consulta.setString(3, proveedor.getTelefono());
+            consulta.setString(4, proveedor.getDireccion());
+            consulta.setString(5, proveedor.getCorreo());
+            consulta.setInt(6, proveedor.getEstado());
+            consulta.setInt(7, idProveedor);
+
+            if (consulta.executeUpdate() > 0) {
+                respuesta = true;
             }
-        }
+            cn.close();
+        } catch (SQLException e) {
+            System.err.println("Error al actualizar proveedor: " + e.getMessage());
+        } 
         return respuesta;
     }
 
@@ -121,90 +139,17 @@ public class ProveedorDAO {
         return lista;
     }
 
-    public boolean actualizar(Proveedor proveedor) {
-        boolean respuesta = false;
-        Connection cn = null;
+    public boolean cambiarEstado(int idProveedor, int estado) {
+        String sql = "UPDATE proveedor SET estado = ? WHERE idProveedor = ?";
+        try (Connection conn = Conexion.conectar(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
-        String sql = "UPDATE proveedor SET ruc = ?, nombreProveedor = ?, telefonoProveedor = ?, "
-                + "direccionProveedor = ?, correoProveedor = ?, estado = ? WHERE idProveedor = ?";
-
-        try {
-            cn = Conexion.conectar();
-            PreparedStatement consulta = cn.prepareStatement(sql);
-
-            consulta.setString(1, proveedor.getRuc());
-            consulta.setString(2, proveedor.getNombre());
-            consulta.setString(3, proveedor.getTelefono());
-            consulta.setString(4, proveedor.getDireccion());
-            consulta.setString(5, proveedor.getCorreo());
-            consulta.setInt(6, proveedor.getEstado());
-            consulta.setInt(7, proveedor.getIdProveedor());
-
-            if (consulta.executeUpdate() > 0) {
-                respuesta = true;
-            }
-
+            ps.setInt(1, estado);
+            ps.setInt(2, idProveedor);
+            return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            System.err.println("Error al actualizar proveedor: " + e.getMessage());
-        } finally {
-            try {
-                if (cn != null) {
-                    cn.close();
-                }
-            } catch (SQLException e) {
-                System.err.println("Error al cerrar conexión: " + e.getMessage());
-            }
+            e.printStackTrace();
+            return false;
         }
-        return respuesta;
-    }
-
-    public boolean desactivar(int idProveedor) {
-        boolean respuesta = false;
-        Connection cn = null;
-        String sql = "UPDATE proveedor SET estado = 0 WHERE idProveedor = ?";
-
-        try {
-            cn = Conexion.conectar();
-            PreparedStatement pst = cn.prepareStatement(sql);
-            pst.setInt(1, idProveedor);
-            respuesta = pst.executeUpdate() > 0;
-        } catch (SQLException e) {
-            System.err.println("Error al desactivar proveedor: " + e.getMessage());
-        } finally {
-            try {
-                if (cn != null) {
-                    cn.close();
-                }
-            } catch (SQLException e) {
-                System.err.println("Error al cerrar conexión en desactivar proveedor: " + e.getMessage());
-            }
-        }
-        return respuesta;
-    }
-
-    public boolean activar(int idProveedor) {
-        boolean respuesta = false;
-        Connection cn = null;
-        try {
-            cn = Conexion.conectar();
-            PreparedStatement consulta = cn.prepareStatement("UPDATE proveedor SET estado = 1 WHERE idProveedor = ?");
-            consulta.setInt(1, idProveedor);
-
-            if (consulta.executeUpdate() > 0) {
-                respuesta = true;
-            }
-        } catch (SQLException e) {
-            System.err.println("Error al activar proveedor: " + e.getMessage());
-        } finally {
-            try {
-                if (cn != null) {
-                    cn.close();
-                }
-            } catch (SQLException e) {
-                System.err.println("Error al cerrar conexión en activar proveedor: " + e.getMessage());
-            }
-        }
-        return respuesta;
     }
 
     public Proveedor obtenerProveedorPorId(int idProveedor) {

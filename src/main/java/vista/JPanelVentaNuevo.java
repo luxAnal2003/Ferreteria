@@ -653,7 +653,7 @@ public class JPanelVentaNuevo extends javax.swing.JPanel {
             cliente.setDireccion(direccion);
             cliente.setEstado(1);
 
-            if (controladorCliente.guardar(cliente)) {
+            if (controladorCliente.registrarCliente(cliente)) {
                 idClienteSeleccionado = controladorCliente.obtenerUltimoIdInsertado();
                 JOptionPane.showMessageDialog(null, "Cliente guardado correctamente");
                 this.habilitarCamposCliente(false);

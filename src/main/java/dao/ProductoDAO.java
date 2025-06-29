@@ -72,7 +72,7 @@ public class ProductoDAO {
             }
             cn.close();
         } catch (SQLException e) {
-            System.out.println("Error al actualizar producto: " + e);
+            System.out.println("Error al actualizar producto: " + e.getMessage());
         }
         return respuesta;
     }

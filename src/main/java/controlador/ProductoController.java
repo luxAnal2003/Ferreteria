@@ -22,18 +22,18 @@ public class ProductoController {
     private CategoriaDAO categoriaDAO;
     private ProveedorDAO proveedorDAO;
 
-    public List<Categoria> obtenerCategorias() {
+    public ProductoController() {
+        this.productoDAO = new ProductoDAO();
+        this.categoriaDAO = new CategoriaDAO();
+        this.proveedorDAO = new ProveedorDAO();
+    }
+
+     public List<Categoria> obtenerCategorias() {
         return categoriaDAO.listarCategorias();
     }
 
     public List<Proveedor> obtenerProveedores() {
         return proveedorDAO.listarProveedores();
-    }
-
-    public ProductoController() {
-        this.productoDAO = new ProductoDAO();
-        this.categoriaDAO = new CategoriaDAO();
-        this.proveedorDAO = new ProveedorDAO();
     }
 
     public String guardarProducto(String nombreProducto, String stockTexto, String precioTexto, String descripcion,
@@ -42,7 +42,7 @@ public class ProductoController {
         int idProv = proveedorDAO.getIdProveedorPorNombre(nombreProveedor);
 
         if (idCat == -1 || idProv == -1) {
-            return "Error: No se pudo encontrar ID de categoría o proveedor por nombre";
+            return "No se pudo encontrar ID de categoría o proveedor por nombre";
         }
 
         if (nombreProducto.isEmpty() || descripcion.isEmpty() || precioTexto.isEmpty() || stockTexto.isEmpty()) {
@@ -102,7 +102,7 @@ public class ProductoController {
         int idProv = proveedorDAO.getIdProveedorPorNombre(nombreProveedor);
 
         if (idCat == -1 || idProv == -1) {
-            return "Error: No se pudo encontrar ID de categoría o proveedor por nombre";
+            return "No se pudo encontrar ID de categoría o proveedor por nombre";
         }
 
         if (nombreProducto.isEmpty() || descripcion.isEmpty() || precioTexto.isEmpty() || stockTexto.isEmpty()) {
@@ -148,36 +148,36 @@ public class ProductoController {
         producto.setPorcentajeIva(iva);
         producto.setEstado(estado);
 
-        boolean registrado = productoDAO.actualizarProducto(producto, idProducto);
-        return registrado ? "Producto actualizado correctamente" : "Error al actualizado el producto";
+        boolean actualizado = productoDAO.actualizarProducto(producto, idProducto);
+        return actualizado ? "Producto actualizado correctamente" : "Error al actualizado el producto";
     }
 
-    public String desactivarCategoria(int idProducto) {
+    public String desactivarProducto(int idProducto) {
         Producto produc = productoDAO.obtenerProductoPorId(idProducto);
         if (produc == null) {
-            return "La categoría no existe.";
+            return "El producto no existe";
         }
 
         if (produc.getEstado() == 0) {
-            return "La categoría ya está desactivada.";
+            return "El producto ya está desactivada";
         }
 
         boolean resultado = productoDAO.cambiarEstado(idProducto, 0);
-        return resultado ? "Categoría desactivada correctamente." : "Error al desactivar la categoría.";
+        return resultado ? "Producto desactivado correctamente" : "Error al desactivar el producto";
     }
 
-    public String activarCategoria(int idProducto) {
+    public String activarProducto(int idProducto) {
         Producto produc = productoDAO.obtenerProductoPorId(idProducto);
         if (produc == null) {
-            return "La categoría no existe.";
+            return "El producto no existe";
         }
 
         if (produc.getEstado() == 1) {
-            return "La categoría ya está activa.";
+            return "El producto ya está activa";
         }
 
         boolean resultado = productoDAO.cambiarEstado(idProducto, 1);
-        return resultado ? "Categoría activada correctamente." : "Error al activar la categoría.";
+        return resultado ? "Producto activado correctamente" : "Error al activar el producto";
     }
     
     public List<Producto> obtenerTodosLosProductos() {
@@ -191,10 +191,6 @@ public class ProductoController {
     public List<Proveedor> obtenerTodosLosProveedores() {
         return proveedorDAO.listarProveedores();
     }
-    
-//    public boolean existeProductoPorNombre(String nombreProducto) {
-//        return productoDAO.existeProductoConNombre(nombreProducto);
-//    }
 
     public Producto obtenerProductoPorNombre(String nombreProducto) {
         return productoDAO.buscarProductoPorNombre(nombreProducto);

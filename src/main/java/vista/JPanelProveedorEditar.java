@@ -16,7 +16,7 @@ import java.util.List;
  * @author admin
  */
 public class JPanelProveedorEditar extends javax.swing.JPanel {
-
+    ProveedorController proveedorController;
     private int idProveedor;
 
     /**
@@ -25,7 +25,7 @@ public class JPanelProveedorEditar extends javax.swing.JPanel {
     public JPanelProveedorEditar() {
         initComponents();
         this.setSize(new Dimension(900, 400));
-
+        proveedorController = new ProveedorController();
         this.cargarProveedoresEnTabla();
         this.verificarExistenciaProveedor();
     }
@@ -134,47 +134,19 @@ public class JPanelProveedorEditar extends javax.swing.JPanel {
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
-        Proveedor proveedor = new Proveedor();
-        ProveedorController proveedorController = new ProveedorController();
-
         String ruc = txtRuc.getText().trim();
         String nombreComercial = txtNombreComercial.getText().trim();
         String telefono = txtTelefono.getText().trim();
         String email = txtEmail.getText().trim();
         String direccion = txtDireccion.getText().trim();
-
-        if (!validarCampos(ruc, telefono, nombreComercial, email, direccion)) {
-            return;
-        }
-
-        try {
-            if (idProveedor == 0) {
-                JOptionPane.showMessageDialog(null, "Seleccione un proveedor de la tabla para actualizar.");
-                return;
-            }
-
-            proveedor.setIdProveedor(idProveedor);
-            proveedor.setRuc(ruc);
-            proveedor.setNombre(nombreComercial.substring(0, 1).toUpperCase() + nombreComercial.substring(1).toLowerCase());
-            proveedor.setTelefono(telefono);
-            proveedor.setCorreo(email);
-            proveedor.setDireccion(direccion);
-            proveedor.setEstado(1);
-
-            if (proveedorController.actualizarProveedor(proveedor)) {
-                JOptionPane.showMessageDialog(null, "Proveedor actualizado correctamente.");
-                this.cargarProveedoresEnTabla();
-                this.setear();
-            } else {
-                JOptionPane.showMessageDialog(null, "Error al actualizar el proveedor.");
-            }
-
-        } catch (NumberFormatException ex) {
-            System.err.println("Error al parsear ID de proveedor: " + ex.getMessage());
-            JOptionPane.showMessageDialog(null, "Error: El ID del proveedor no es un número válido.");
-        } catch (Exception e) {
-            System.err.println("Error inesperado al actualizar proveedor: " + e.getMessage());
-            JOptionPane.showMessageDialog(null, "Error inesperado al actualizar el proveedor.");
+        int estado = 1;
+        
+        String mensaje = proveedorController.actualizarProveedor(ruc, nombreComercial, telefono, email, direccion, estado, idProveedor);
+        JOptionPane.showMessageDialog(this, mensaje);
+        
+        if (mensaje.contains("correctamente")) {
+            this.setear();
+            this.cargarProveedoresEnTabla();
         }
     }//GEN-LAST:event_btnActualizarActionPerformed
 
@@ -196,37 +168,27 @@ public class JPanelProveedorEditar extends javax.swing.JPanel {
     private javax.swing.JTextField txtTelefono;
     // End of variables declaration//GEN-END:variables
 
-    private void cargarProveedoresEnTabla() {
+private void cargarProveedoresEnTabla() {
         DefaultTableModel model = new DefaultTableModel();
-        ProveedorController controller = new ProveedorController();
+        model.setColumnIdentifiers(new Object[]{
+            "ID", "RUC", "Nombre Comercial", "Teléfono", "Email", "Dirección", "Estado"
+        });
 
-        model.addColumn("ID");
-        model.addColumn("RUC");
-        model.addColumn("Nombre Comercial");
-        model.addColumn("Teléfono");
-        model.addColumn("Email");
-        model.addColumn("Dirección");
-        model.addColumn("Estado");
-
-        List<Proveedor> proveedores = controller.obtenerTodosLosProveedores();
-
-        if (proveedores.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "No existen proveedores registrados actualmente.");
-        } else {
-            for (Proveedor p : proveedores) {
-                Object[] fila = new Object[7];
-                fila[0] = p.getIdProveedor();
-                fila[1] = p.getRuc();
-                fila[2] = p.getNombre();
-                fila[3] = p.getTelefono();
-                fila[4] = p.getCorreo();
-                fila[5] = p.getDireccion();
-                fila[6] = (p.getEstado() == 1) ? "Activo" : "Inactivo";
-                model.addRow(fila);
-            }
+        List<Proveedor> proveedores = proveedorController.obtenerTodosLosProveedores();
+        
+        for (Proveedor p : proveedores) {
+            model.addRow(new Object[]{
+                p.getIdProveedor(),
+                p.getRuc(),
+                p.getNombre(),
+                p.getTelefono(),
+                p.getCorreo(),
+                p.getDireccion(),
+                (p.getEstado() == 1) ? "Activo" : "Inactivo"
+            });
         }
+
         tableProveedor.setModel(model);
-        jScrollPane3.setViewportView(tableProveedor);
         tableProveedor.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 int fila = tableProveedor.getSelectedRow();
@@ -253,31 +215,6 @@ public class JPanelProveedorEditar extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(null, "No se encontró el proveedor seleccionado.");
             setear();
         }
-    }
-
-    private boolean validarCampos(String ruc, String telefono, String nombreComercial, String email, String direccion) {
-        if (ruc.isEmpty() || telefono.isEmpty() || nombreComercial.isEmpty()
-                || email.isEmpty() || direccion.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Todos los campos son obligatorios.");
-            return false;
-        }
-
-        if (!ruc.matches("\\d{13}")) {
-            JOptionPane.showMessageDialog(null, "El RUC debe tener exactamente 13 caracteres numéricos");
-            return false;
-        }
-
-        if (!telefono.matches("\\d{10}")) {
-            JOptionPane.showMessageDialog(null, "El teléfono debe tener exactamente 10 caracteres numéricos");
-            return false;
-        }
-
-        if (!email.matches("^[\\w.-]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
-            JOptionPane.showMessageDialog(null, "Formato de Email inválido.");
-            return false;
-        }
-
-        return true;
     }
 
     private void setear() {
