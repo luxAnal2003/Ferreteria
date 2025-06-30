@@ -71,6 +71,7 @@ public class FrmMenuAdmin extends javax.swing.JFrame {
         menuItemCerrarSesion = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setUndecorated(true);
 
         content.setBackground(new java.awt.Color(255, 255, 255));
 

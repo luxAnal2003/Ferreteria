@@ -10,7 +10,6 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import java.util.List;
 import modelo.Cliente;
-import static vista.JPanelClienteNuevo.tableCliente;
 
 /**
  *

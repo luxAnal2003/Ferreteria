@@ -5,7 +5,6 @@
 package controlador;
 
 import dao.UsuarioDAO;
-import modelo.Producto;
 import modelo.Usuario;
 
 /**

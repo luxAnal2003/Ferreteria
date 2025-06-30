@@ -15,7 +15,9 @@ import java.util.List;
  * @author admin
  */
 public class JPanelEliminarVenta extends javax.swing.JPanel {
+
     private VentaController controlador;
+    private int idVenta;
 
     /**
      * Creates new form JPanelCategoriaNuevo
@@ -23,7 +25,7 @@ public class JPanelEliminarVenta extends javax.swing.JPanel {
     public JPanelEliminarVenta() {
         initComponents();
         this.setSize(new Dimension(900, 400));
-
+        controlador = new VentaController();
         this.cargarVentasEnTabla();
         this.verificarExistenciaVenta();
     }
@@ -105,74 +107,51 @@ public class JPanelEliminarVenta extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     private void cargarVentasEnTabla() {
-        controlador = new VentaController();
         List<Object[]> Ventas = controlador.obtenerVentas();
 
         DefaultTableModel model = new DefaultTableModel(new String[]{"IdVenta", "Fecha", "Total", "Cliente", "Empleado", "Estado"}, 0);
-        
 
         for (Object[] fila : Ventas) {
             model.addRow(fila);
         }
 
         tableVentas.setModel(model);
-        
+
         if (Ventas.isEmpty()) {
             JOptionPane.showMessageDialog(null, "No existen ventas registradas actualmente.");
         }
     }
 
-     private void verificarExistenciaVenta() {
+    private void verificarExistenciaVenta() {
         VentaController controller = new VentaController();
         if (!controller.existenVentas()) {
             JOptionPane.showMessageDialog(null, "No existen clientes en el sistema.");
         }
     }
+
     private void activarVenta() {
         int fila = tableVentas.getSelectedRow();
-
-        if (fila != -1) {
-            String estadoActual = tableVentas.getValueAt(fila, 5).toString();
-            if (estadoActual.equalsIgnoreCase("Activa")) {
-                JOptionPane.showMessageDialog(null, "La venta ya está activa.");
-                return;
-            }
-
-            int idVenta = Integer.parseInt(tableVentas.getValueAt(fila, 0).toString());
-
-            VentaController controller = new VentaController();
-            if (controller.activarVenta(idVenta)) {
-                JOptionPane.showMessageDialog(null, "Venta activada correctamente.");
-                cargarVentasEnTabla();
-            } else {
-                JOptionPane.showMessageDialog(null, "Error al activar la venta.");
-            }
-        } else {
-            JOptionPane.showMessageDialog(null, "Seleccione una venta para activar.");
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(null, "Seleccione un producto para activar");
+            return;
         }
+        idVenta = Integer.parseInt(tableVentas.getValueAt(fila, 0).toString());
+
+        String mensaje = controlador.activarVenta(idVenta);
+        JOptionPane.showMessageDialog(null, mensaje);
+        this.cargarVentasEnTabla();
     }
 
     private void desactivarVenta() {
         int fila = tableVentas.getSelectedRow();
-
-        if (fila != -1) {
-            String estadoActual = tableVentas.getValueAt(fila, 5).toString();
-            if (estadoActual.equalsIgnoreCase("Anulada")) {
-                JOptionPane.showMessageDialog(null, "La venta ya ha sido anulada.");
-                return;
-            }
-
-            int idVenta = Integer.parseInt(tableVentas.getValueAt(fila, 0).toString());
-
-            VentaController controller = new VentaController();
-            if (controller.desactivarVenta(idVenta)) {
-                JOptionPane.showMessageDialog(null, "Venta anulada correctamente.");
-                cargarVentasEnTabla();
-            } else {
-                JOptionPane.showMessageDialog(null, "Error al anular la venta.");
-            }
-        } else {
-            JOptionPane.showMessageDialog(null, "Seleccione una venta para anular.");
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(null, "Seleccione una venta para desactivar");
+            return;
         }
+        idVenta = Integer.parseInt(tableVentas.getValueAt(fila, 0).toString());
+
+        String mensaje = controlador.desactivarVenta(idVenta);
+        JOptionPane.showMessageDialog(null, mensaje);
+        this.cargarVentasEnTabla();
     }
 }

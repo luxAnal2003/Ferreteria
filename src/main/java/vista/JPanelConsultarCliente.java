@@ -4,7 +4,6 @@
  */
 package vista;
 
-import controlador.CategoriaController;
 import controlador.ClienteController;
 import java.awt.Dimension;
 import javax.swing.JOptionPane;

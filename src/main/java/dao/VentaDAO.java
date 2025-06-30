@@ -94,102 +94,72 @@ public class VentaDAO {
         return exito;
     }
 
-    public boolean activar(int idCabeceraVenta) {
-        boolean respuesta = false;
-        Connection cn = null;
+    public boolean cambiarEstado(int idVenta, int estado) {
+        String sql = "UPDATE cabeceraventa SET estado = ? WHERE idCabeceraVenta = ?";
+        try (Connection conn = Conexion.conectar(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
-        String sqlCabecera = "UPDATE cabeceraventa SET estado = 1 WHERE idCabeceraVenta = ?";
-        String sqlDetalle = "UPDATE detalleventa SET estado = 1 WHERE idCabeceraVenta = ?";
-
-        try {
-            cn = Conexion.conectar();
-            cn.setAutoCommit(false); 
-
-            PreparedStatement pstCabecera = cn.prepareStatement(sqlCabecera);
-            pstCabecera.setInt(1, idCabeceraVenta);
-            pstCabecera.executeUpdate();
-
-            PreparedStatement pstDetalle = cn.prepareStatement(sqlDetalle);
-            pstDetalle.setInt(1, idCabeceraVenta);
-            pstDetalle.executeUpdate();
-
-            cn.commit(); 
-            respuesta = true;
+            ps.setInt(1, estado);
+            ps.setInt(2, idVenta);
+            return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            try {
-                if (cn != null) {
-                    cn.rollback();
-                }
-            } catch (SQLException ex) {
-                System.err.println("Error al hacer rollback: " + ex.getMessage());
-            }
-            System.err.println("Error al activar venta: " + e.getMessage());
-        } finally {
-            try {
-                if (cn != null) {
-                    cn.close();
-                }
-            } catch (SQLException e) {
-                System.err.println("Error al cerrar conexión en activar venta: " + e.getMessage());
-            }
+            e.printStackTrace();
+            return false;
         }
-        return respuesta;
     }
 
-    public boolean desactivar(int idCabeceraVenta) {
-        boolean respuesta = false;
-        Connection cn = null;
-        PreparedStatement pstCabecera = null;
-        PreparedStatement pstDetalle = null;
-
-        String sqlCabecera = "UPDATE CabeceraVenta SET estado = 0 WHERE idCabeceraVenta = ?";
-        String sqlDetalle = "UPDATE DetalleVenta SET estado = 0 WHERE idCabeceraVenta = ?";
-
-        try {
-            cn = Conexion.conectar();
-            cn.setAutoCommit(false);
-
-            pstCabecera = cn.prepareStatement(sqlCabecera);
-            pstCabecera.setInt(1, idCabeceraVenta);
-            int filasCabecera = pstCabecera.executeUpdate();
-
-            pstDetalle = cn.prepareStatement(sqlDetalle);
-            pstDetalle.setInt(1, idCabeceraVenta);
-            int filasDetalle = pstDetalle.executeUpdate();
-
-            if (filasCabecera > 0 && filasDetalle > 0) {
-                cn.commit(); 
-                respuesta = true;
-            } else {
-                cn.rollback(); 
-            }
-
+    public boolean cambiarEstadoDetallesVenta(int idCabeceraVenta, int estado) {
+        String sql = "UPDATE detalleventa SET estado = ? WHERE idCabeceraVenta = ?";
+        try (Connection conn = Conexion.conectar(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, estado);
+            ps.setInt(2, idCabeceraVenta);
+            return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            try {
-                if (cn != null) {
-                    cn.rollback();
-                }
-            } catch (SQLException ex) {
-                System.err.println("Error al hacer rollback: " + ex.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public int obtenerEstadoVenta(int idVenta) {
+        String sql = "SELECT estado FROM cabeceraventa WHERE idCabeceraVenta = ?";
+        try (Connection conn = Conexion.conectar(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, idVenta);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("estado");
             }
-            System.err.println("Error al desactivar venta: " + e.getMessage());
-        } finally {
-            try {
-                if (pstDetalle != null) {
-                    pstDetalle.close();
-                }
-                if (pstCabecera != null) {
-                    pstCabecera.close();
-                }
-                if (cn != null) {
-                    cn.close();
-                }
-            } catch (SQLException e) {
-                System.err.println("Error al cerrar conexión en desactivar venta: " + e.getMessage());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1; 
+    }
+
+    public List<DetalleVenta> obtenerDetallesPorCabecera(int idCabeceraVenta) {
+        List<DetalleVenta> lista = new ArrayList<>();
+        String sql = "SELECT * FROM detalleventa WHERE idCabeceraVenta = ?";
+
+        try (Connection conn = Conexion.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, idCabeceraVenta);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                DetalleVenta detalle = new DetalleVenta();
+                detalle.setIdDetalleVenta(rs.getInt("idDetalleVenta"));
+                detalle.setIdCabeceraVenta(rs.getInt("idCabeceraVenta"));
+                detalle.setIdProducto(rs.getInt("idProducto"));
+                detalle.setCantidad(rs.getInt("cantidad"));
+                detalle.setPrecioUnitario(rs.getDouble("precioUnitario"));
+                detalle.setSubTotal(rs.getDouble("subTotal"));
+                detalle.setDescuento(rs.getDouble("descuento"));
+                detalle.setIva(rs.getDouble("iva"));
+                detalle.setTotalPagar(rs.getDouble("totalPagar"));
+                detalle.setEstado(rs.getInt("estado"));
+                lista.add(detalle);
             }
+        } catch (SQLException e) {
+            System.out.println("Error al obtener detalles de venta: " + e.getMessage());
         }
 
-        return respuesta;
+        return lista;
     }
 
     public List<Venta> obtenerTodasLasVentasActivas() throws SQLException {

@@ -21,7 +21,7 @@ public class DetalleVenta {
     private double totalPagar;
     private int estado;
 
-    public DetalleVenta(){
+    public DetalleVenta() {
         this.idDetalleVenta = 0;
         this.idDetalleVenta = 0;
         this.idProducto = 0;
@@ -33,6 +33,7 @@ public class DetalleVenta {
         this.totalPagar = 0.0;
         this.estado = 0;
     }
+
     public DetalleVenta(int idDetalleVenta, int idCabeceraVenta, int idProducto, int cantidad, double precioUnitario, double subTotal, double iva, double descuento, double totalPagar, int estado) {
         this.idDetalleVenta = idDetalleVenta;
         this.idCabeceraVenta = idCabeceraVenta;
@@ -45,13 +46,13 @@ public class DetalleVenta {
         this.totalPagar = totalPagar;
         this.estado = estado;
     }
-    
+
     public DetalleVenta(int idProducto, int cantidad, double precioUnitario) {
         this.idProducto = idProducto;
         this.cantidad = cantidad;
         this.precioUnitario = precioUnitario;
         this.estado = 1;
-        calcularTotales();
+//        calcularTotales();
     }
 
     public int getIdDetalleVenta() {
@@ -133,12 +134,31 @@ public class DetalleVenta {
     public void setEstado(int estado) {
         this.estado = estado;
     }
+
+//    private void calcularTotales() {
+//        this.subTotal = cantidad * precioUnitario;
+//        this.iva = subTotal * 0.12;
+//        this.descuento = subTotal * 0.005;
+//        this.totalPagar = subTotal + iva - descuento;
+//    }
     
-    private void calcularTotales() {
-        this.subTotal = cantidad * precioUnitario;
-        this.iva = subTotal * 0.12;
-        this.descuento = subTotal * 0.005;
-        this.totalPagar = subTotal + iva - descuento;
+    public static DetalleVenta crearDetalleDesdeProducto(Producto producto, int cantidad) {
+        double precio = producto.getPrecio();
+        double subtotal = precio * cantidad;
+        double iva = subtotal * producto.getPorcentajeIva() / 100;
+        double descuento = subtotal * 0.005;
+        double total = subtotal + iva - descuento;
+
+        DetalleVenta detalle = new DetalleVenta();
+        detalle.setIdProducto(producto.getIdProducto());
+        detalle.setCantidad(cantidad);
+        detalle.setPrecioUnitario(precio);
+        detalle.setSubTotal(subtotal);
+        detalle.setIva(iva);
+        detalle.setDescuento(descuento);
+        detalle.setTotalPagar(total);
+        detalle.setEstado(1);
+        return detalle;
     }
-    
+
 }
