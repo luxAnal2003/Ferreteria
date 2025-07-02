@@ -151,7 +151,7 @@ public class JPanelConsultarProveedor extends javax.swing.JPanel {
             model.addRow(new Object[]{
                 p.getIdProveedor(),
                 p.getRuc(),
-                p.getNombre(),
+                p.getRazonSocial(),
                 p.getTelefono(),
                 p.getCorreo(),
                 p.getDireccion(),
@@ -183,7 +183,7 @@ public class JPanelConsultarProveedor extends javax.swing.JPanel {
                 Object[] fila = new Object[7];
                 fila[0] = p.getIdProveedor();
                 fila[1] = p.getRuc();
-                fila[2] = p.getNombre();
+                fila[2] = p.getRazonSocial();
                 fila[3] = p.getTelefono();
                 fila[4] = p.getCorreo();
                 fila[5] = p.getDireccion();

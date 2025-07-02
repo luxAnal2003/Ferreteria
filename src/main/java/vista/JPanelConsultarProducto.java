@@ -184,7 +184,7 @@ public class JPanelConsultarProducto extends javax.swing.JPanel {
             Object[] fila = new Object[9];
             fila[0] = productoEncontrado.getIdProducto();
             fila[1] = productoEncontrado.getNombreProducto();
-            fila[2] = productoEncontrado.getProveedor().getNombre();
+            fila[2] = productoEncontrado.getProveedor().getRazonSocial();
             fila[3] = productoEncontrado.getCantidad();
             fila[4] = productoEncontrado.getDescripcion();
             fila[5] = productoEncontrado.getPrecio();

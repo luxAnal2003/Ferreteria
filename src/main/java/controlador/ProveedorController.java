@@ -42,7 +42,7 @@ public class ProveedorController {
         
         Proveedor proveedor = new Proveedor();
         proveedor.setRuc(ruc);
-        proveedor.setNombre(nombreComercial);
+        proveedor.setRazonSocial(nombreComercial);
         proveedor.setTelefono(telefono);
         proveedor.setCorreo(email);
         proveedor.setDireccion(direccion);
@@ -70,7 +70,7 @@ public class ProveedorController {
 
         Proveedor proveedor = new Proveedor();
         proveedor.setRuc(ruc);
-        proveedor.setNombre(nombreComercial);
+        proveedor.setRazonSocial(nombreComercial);
         proveedor.setTelefono(telefono);
         proveedor.setCorreo(email);
         proveedor.setDireccion(direccion);

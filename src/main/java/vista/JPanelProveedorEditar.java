@@ -180,7 +180,7 @@ private void cargarProveedoresEnTabla() {
             model.addRow(new Object[]{
                 p.getIdProveedor(),
                 p.getRuc(),
-                p.getNombre(),
+                p.getRazonSocial(),
                 p.getTelefono(),
                 p.getCorreo(),
                 p.getDireccion(),
@@ -206,7 +206,7 @@ private void cargarProveedoresEnTabla() {
 
         if (proveedor != null) {
             txtRuc.setText(proveedor.getRuc());
-            txtNombreComercial.setText(proveedor.getNombre());
+            txtNombreComercial.setText(proveedor.getRazonSocial());
             txtTelefono.setText(proveedor.getTelefono());
             txtEmail.setText(proveedor.getCorreo());
             txtDireccion.setText(proveedor.getDireccion());

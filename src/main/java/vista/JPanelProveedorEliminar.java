@@ -118,7 +118,7 @@ public class JPanelProveedorEliminar extends javax.swing.JPanel {
             model.addRow(new Object[]{
                 p.getIdProveedor(),
                 p.getRuc(),
-                p.getNombre(),
+                p.getRazonSocial(),
                 p.getTelefono(),
                 p.getCorreo(),
                 p.getDireccion(),

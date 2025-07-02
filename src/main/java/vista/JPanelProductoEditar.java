@@ -54,7 +54,7 @@ public class JPanelProductoEditar extends javax.swing.JPanel {
         cboxProveedor.addItem("Seleccionar proveedor");
 
         for (Proveedor prov : proveedores) {
-            cboxProveedor.addItem(prov.getNombre());
+            cboxProveedor.addItem(prov.getRazonSocial());
         }
     }
 
@@ -267,7 +267,7 @@ public class JPanelProductoEditar extends javax.swing.JPanel {
             txtPrecio.setText(String.valueOf(producto.getPrecio()));
 
             String nombreCategoria = producto.getCategoria() != null ? producto.getCategoria().getNombre() : null;
-            String nombreProveedor = producto.getProveedor() != null ? producto.getProveedor().getNombre() : null;
+            String nombreProveedor = producto.getProveedor() != null ? producto.getProveedor().getRazonSocial() : null;
 
             if (nombreCategoria != null) {
                 cboxCategoria.setSelectedItem(nombreCategoria.trim());

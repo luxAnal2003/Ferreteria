@@ -12,7 +12,7 @@ public class Proveedor{
 
     private int idProveedor;
     private String ruc;
-    private String nombre;
+    private String razonSocial;
     private String telefono;
     private String correo;
     private String direccion;
@@ -29,7 +29,7 @@ public class Proveedor{
     public Proveedor(int idProveedor, String ruc, String nombre, String telefono, String correo, String direccion, int estado) {
         this.idProveedor = idProveedor;
         this.ruc = ruc;
-        this.nombre = nombre;
+        this.razonSocial = nombre;
         this.telefono = telefono;
         this.correo = correo;
         this.direccion = direccion;
@@ -52,12 +52,12 @@ public class Proveedor{
         this.ruc = ruc;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getRazonSocial() {
+        return razonSocial;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setRazonSocial(String razonSocial) {
+        this.razonSocial = razonSocial;
     }
 
     public String getTelefono() {
@@ -94,7 +94,7 @@ public class Proveedor{
     
     @Override
     public String toString() {
-        return this.nombre;
+        return this.razonSocial;
     }
 
 }

@@ -30,7 +30,7 @@ public class ProveedorDAO {
             """);
 
             consulta.setString(1, proveedor.getRuc());
-            consulta.setString(2, proveedor.getNombre());
+            consulta.setString(2, proveedor.getRazonSocial());
             consulta.setString(3, proveedor.getTelefono());
             consulta.setString(4, proveedor.getDireccion());
             consulta.setString(5, proveedor.getCorreo());
@@ -57,7 +57,7 @@ public class ProveedorDAO {
             );
 
             consulta.setString(1, proveedor.getRuc());
-            consulta.setString(2, proveedor.getNombre());
+            consulta.setString(2, proveedor.getRazonSocial());
             consulta.setString(3, proveedor.getTelefono());
             consulta.setString(4, proveedor.getDireccion());
             consulta.setString(5, proveedor.getCorreo());
@@ -117,7 +117,7 @@ public class ProveedorDAO {
                 Proveedor p = new Proveedor();
                 p.setIdProveedor(rs.getInt("idProveedor"));
                 p.setRuc(rs.getString("ruc"));
-                p.setNombre(rs.getString("nombreProveedor"));
+                p.setRazonSocial(rs.getString("nombreProveedor"));
                 p.setDireccion(rs.getString("direccionProveedor"));
                 p.setTelefono(rs.getString("telefonoProveedor"));
                 p.setCorreo(rs.getString("correoProveedor"));
@@ -170,7 +170,7 @@ public class ProveedorDAO {
                 proveedor = new Proveedor();
                 proveedor.setIdProveedor(rs.getInt("idProveedor"));
                 proveedor.setRuc(rs.getString("ruc"));
-                proveedor.setNombre(rs.getString("nombreProveedor"));
+                proveedor.setRazonSocial(rs.getString("nombreProveedor"));
                 proveedor.setTelefono(rs.getString("telefonoProveedor"));
                 proveedor.setCorreo(rs.getString("correoProveedor"));
                 proveedor.setDireccion(rs.getString("direccionProveedor"));
@@ -218,7 +218,7 @@ public class ProveedorDAO {
                 Proveedor proveedor = new Proveedor();
                 proveedor.setIdProveedor(rs.getInt("idProveedor"));
                 proveedor.setRuc(rs.getString("ruc"));
-                proveedor.setNombre(rs.getString("nombreProveedor"));
+                proveedor.setRazonSocial(rs.getString("nombreProveedor"));
                 proveedor.setTelefono(rs.getString("telefonoProveedor"));
                 proveedor.setCorreo(rs.getString("correoProveedor"));
                 proveedor.setDireccion(rs.getString("direccionProveedor"));

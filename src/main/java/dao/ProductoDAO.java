@@ -138,7 +138,7 @@ public class ProductoDAO {
 
                 Proveedor proveedor = new Proveedor();
                 proveedor.setIdProveedor(rs.getInt("idProveedor"));
-                proveedor.setNombre(rs.getString("nombreProveedor").trim());
+                proveedor.setRazonSocial(rs.getString("nombreProveedor").trim());
                 p.setProveedor(proveedor);
 
                 lista.add(p);
@@ -271,7 +271,7 @@ public class ProductoDAO {
 
                 Proveedor proveedor = new Proveedor();
                 proveedor.setIdProveedor(rs.getInt("idProveedor"));
-                proveedor.setNombre(rs.getString("nombreProveedor").trim());
+                proveedor.setRazonSocial(rs.getString("nombreProveedor").trim());
                 producto.setProveedor(proveedor);
             }
 

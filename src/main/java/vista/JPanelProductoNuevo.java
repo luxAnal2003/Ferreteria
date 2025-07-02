@@ -52,7 +52,7 @@ public class JPanelProductoNuevo extends javax.swing.JPanel {
         cboxProveedor.addItem("Seleccionar proveedor");
 
         for (Proveedor prov : proveedores) {
-            cboxProveedor.addItem(prov.getNombre());
+            cboxProveedor.addItem(prov.getRazonSocial());
         }
     }
 
