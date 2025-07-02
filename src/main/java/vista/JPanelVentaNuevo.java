@@ -585,8 +585,7 @@ public class JPanelVentaNuevo extends javax.swing.JPanel {
             String telefono = txtTelefono.getText().trim();
             String correo = txtEmail.getText().trim();
             String direccion = txtDireccion.getText().trim();
-            String totalStr = txtTotal.getText().trim(); 
-
+            String totalStr = txtTotal.getText().trim().replace(",", ".");
             List<DetalleVenta> listaDetalles = obtenerDetallesDeTabla();
 
             boolean ventaExitosa = ventaController.procesarConfirmarVenta(
@@ -600,8 +599,8 @@ public class JPanelVentaNuevo extends javax.swing.JPanel {
 
             if (ventaExitosa) {
                 JOptionPane.showMessageDialog(this, "Venta registrada exitosamente", "Venta Exitosa", JOptionPane.INFORMATION_MESSAGE);
-                limpiarCamposVenta(); 
-            } 
+                limpiarCamposVenta();
+            }
 
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
@@ -613,20 +612,20 @@ public class JPanelVentaNuevo extends javax.swing.JPanel {
             }
         }
     }
-    
+
     public List<DetalleVenta> obtenerDetallesDeTabla() {
         List<DetalleVenta> detalles = new ArrayList<>();
         DefaultTableModel modelo = (DefaultTableModel) tableProducto.getModel();
 
         for (int i = 0; i < modelo.getRowCount(); i++) {
             try {
-                int idProducto = Integer.parseInt(modelo.getValueAt(i, 0).toString()); 
+                int idProducto = Integer.parseInt(modelo.getValueAt(i, 0).toString());
                 int cantidad = Integer.parseInt(modelo.getValueAt(i, 2).toString());
                 double precioUnitario = Double.parseDouble(modelo.getValueAt(i, 3).toString());
 
                 double subTotal = cantidad * precioUnitario;
-                double iva = subTotal * 0.12; 
-                double descuento = subTotal * 0.05; 
+                double iva = subTotal * 0.12;
+                double descuento = subTotal * 0.05;
                 double totalPagar = subTotal + iva - descuento;
 
                 DetalleVenta detalle = new DetalleVenta();
@@ -637,7 +636,7 @@ public class JPanelVentaNuevo extends javax.swing.JPanel {
                 detalle.setIva(iva);
                 detalle.setDescuento(descuento);
                 detalle.setTotalPagar(totalPagar);
-                detalle.setEstado(1); 
+                detalle.setEstado(1);
 
                 detalles.add(detalle);
             } catch (NumberFormatException ex) {

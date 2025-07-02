@@ -98,7 +98,11 @@ public class VentaController {
             vista.mostrarMensaje("Producto no encontrado");
             return;
         }
-
+        
+        if (producto.getEstado() == 0) {
+            vista.mostrarMensaje("El producto '" + producto.getNombreProducto() + "' está inactivo y no se puede vender.");
+            return;
+        }
         List<DetalleVenta> listaDetalle = vista.getListaDetalle();
 
         if (detalleYaExiste(producto, listaDetalle)) {
