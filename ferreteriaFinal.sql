@@ -1,6 +1,5 @@
 CREATE DATABASE IF NOT EXISTS db_ferreteria;
 USE db_ferreteria;
-select * from producto;
 
 CREATE TABLE rol (
     idRol INT PRIMARY KEY AUTO_INCREMENT,
