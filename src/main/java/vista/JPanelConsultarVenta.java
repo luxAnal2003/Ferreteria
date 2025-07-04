@@ -87,8 +87,8 @@ public class JPanelConsultarVenta extends javax.swing.JPanel {
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jLabel2.setText("Consultar Ventas - Por cliente");
-        add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 20, -1, -1));
+        jLabel2.setText("Consultar Ventas - Por nombre y cédula del cliente");
+        add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 20, -1, -1));
 
         jScrollPane3.setPreferredSize(new java.awt.Dimension(450, 80));
 
@@ -309,17 +309,20 @@ public class JPanelConsultarVenta extends javax.swing.JPanel {
             "ID Venta", "Fecha", "Total", "Cliente", "Empleado", "Estado"
         }, 0);
 
-        for (Object[] fila : ventas) {
-            model.addRow(fila);
+        if (ventas.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No se encontraron ventas con los datos ingresados");
+            txtBuscador.setText("");
+            cargarVentasEnTabla();
+            return;
+        } else {
+            JOptionPane.showMessageDialog(null, "Se encontraron datos de venta");
+            for (Object[] fila : ventas) {
+                model.addRow(fila);
+            }
         }
 
         tableVentas.setModel(model);
         jScrollPane3.setViewportView(tableVentas);
-
-        if (ventas.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "No se encontraron resultados para la búsqueda de ventas.");
-            cargarVentasEnTabla();
-        }
     }
 
     private void mostrarDetalleVenta(int idCabeceraVenta) {

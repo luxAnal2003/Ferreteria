@@ -275,12 +275,6 @@ public class FrmMenuEmpleado extends javax.swing.JFrame {
         this.cerrarSesion();
     }//GEN-LAST:event_menuItemCerrarSesionActionPerformed
 
-    private void menuItemNuevoProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemNuevoProductoActionPerformed
-        content.removeAll();
-        JPanelProductoNuevo producto = new JPanelProductoNuevo();
-        ShowPanel(producto);
-    }//GEN-LAST:event_menuItemNuevoProductoActionPerformed
-
     private void menuItemGestionarProducto1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemGestionarProducto1ActionPerformed
         content.removeAll();
         JPanelConsultarProducto producto = new JPanelConsultarProducto();
@@ -340,6 +334,12 @@ public class FrmMenuEmpleado extends javax.swing.JFrame {
         JPanelProductoEliminar producto = new JPanelProductoEliminar();
         ShowPanel(producto);
     }//GEN-LAST:event_menuItemEliminarProductoActionPerformed
+
+    private void menuItemNuevoProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemNuevoProductoActionPerformed
+        content.removeAll();
+        JPanelProductoNuevo producto = new JPanelProductoNuevo();
+        ShowPanel(producto);
+    }//GEN-LAST:event_menuItemNuevoProductoActionPerformed
 
     /**
      * @param args the command line arguments

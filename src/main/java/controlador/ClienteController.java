@@ -141,6 +141,7 @@ public class ClienteController {
 
         if (cliente != null) {
             vista.mostrarCliente(cliente);
+            vista.mostrarMensaje("Cliente encontrado. Datos autocompletados");
         } else {
             vista.clienteNoEncontrado();
         }
