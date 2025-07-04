@@ -35,35 +35,19 @@ public class VentaController {
         return dao.guardarVentaCompleta(venta, detalles);
     }
 
-    public String activarVenta(int idVenta) {
-        int estadoActual = ventaDAO.obtenerEstadoVenta(idVenta);
-        if (estadoActual == 1) {
-            return "La venta ya está activa.";
-        }
-
-        boolean cabecera = ventaDAO.cambiarEstado(idVenta, 1);
-        boolean detalles = ventaDAO.cambiarEstadoDetallesVenta(idVenta, 1);
-
-        if (cabecera && detalles) {
-            return "Venta activada correctamente.";
-        } else {
-            return "Error al activar la venta.";
-        }
-    }
-
     public String desactivarVenta(int idVenta) {
         int estadoActual = ventaDAO.obtenerEstadoVenta(idVenta);
         if (estadoActual == 0) {
-            return "La venta ya está desactivada.";
+            return "La venta ya está anulada.";
         }
 
         boolean cabecera = ventaDAO.cambiarEstado(idVenta, 0);
         boolean detalles = ventaDAO.cambiarEstadoDetallesVenta(idVenta, 0);
 
         if (cabecera && detalles) {
-            return "Venta desactivada correctamente.";
+            return "Venta anulada correctamente.";
         } else {
-            return "Error al desactivar la venta.";
+            return "Error al anular la venta.";
         }
     }
 
@@ -95,14 +79,10 @@ public class VentaController {
         Producto producto = productoDAO.buscarProductoPorNombre(nombreProducto);
 
         if (producto == null) {
-            vista.mostrarMensaje("Producto no encontrado");
+            vista.mostrarMensaje("Producto no encontrado o inactivo. Por favor consultar en sus productos");
             return;
         }
-        
-        if (producto.getEstado() == 0) {
-            vista.mostrarMensaje("El producto '" + producto.getNombreProducto() + "' está inactivo y no se puede vender.");
-            return;
-        }
+       
         List<DetalleVenta> listaDetalle = vista.getListaDetalle();
 
         if (detalleYaExiste(producto, listaDetalle)) {
@@ -168,12 +148,12 @@ public class VentaController {
             if (detalle.getIdProducto() == idProducto) {
                 Producto producto = productoDAO.obtenerProductoPorId(idProducto);
                 if (producto == null) {
-                    vista.mostrarMensaje("Producto no encontrado.");
+                    vista.mostrarMensaje("Producto no encontrado");
                     return;
                 }
 
                 if (detalle.getCantidad() >= producto.getCantidad()) {
-                    vista.mostrarMensaje("No hay suficiente stock.");
+                    vista.mostrarMensaje("No hay suficiente stock");
                     return;
                 }
 

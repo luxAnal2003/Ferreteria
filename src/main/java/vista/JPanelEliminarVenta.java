@@ -42,7 +42,6 @@ public class JPanelEliminarVenta extends javax.swing.JPanel {
         jLabel2 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tableVentas = new javax.swing.JTable();
-        btnActivar = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
@@ -69,19 +68,9 @@ public class JPanelEliminarVenta extends javax.swing.JPanel {
 
         add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 70, 850, 300));
 
-        btnActivar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        btnActivar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/activar.png"))); // NOI18N
-        btnActivar.setText("Activar");
-        btnActivar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnActivarActionPerformed(evt);
-            }
-        });
-        add(btnActivar, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 30, 140, 30));
-
         btnEliminar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/desactivar.png"))); // NOI18N
-        btnEliminar.setText("Eliminar");
+        btnEliminar.setText("Anular");
         btnEliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnEliminarActionPerformed(evt);
@@ -90,16 +79,11 @@ public class JPanelEliminarVenta extends javax.swing.JPanel {
         add(btnEliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(740, 30, 140, 30));
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnActivarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActivarActionPerformed
-        this.activarVenta();
-    }//GEN-LAST:event_btnActivarActionPerformed
-
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
         this.desactivarVenta();
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnActivar;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JLabel jLabel2;
     public static javax.swing.JScrollPane jScrollPane3;
@@ -127,19 +111,6 @@ public class JPanelEliminarVenta extends javax.swing.JPanel {
         if (!controller.existenVentas()) {
             JOptionPane.showMessageDialog(null, "No existen clientes en el sistema.");
         }
-    }
-
-    private void activarVenta() {
-        int fila = tableVentas.getSelectedRow();
-        if (fila == -1) {
-            JOptionPane.showMessageDialog(null, "Seleccione un producto para activar");
-            return;
-        }
-        idVenta = Integer.parseInt(tableVentas.getValueAt(fila, 0).toString());
-
-        String mensaje = controlador.activarVenta(idVenta);
-        JOptionPane.showMessageDialog(null, mensaje);
-        this.cargarVentasEnTabla();
     }
 
     private void desactivarVenta() {

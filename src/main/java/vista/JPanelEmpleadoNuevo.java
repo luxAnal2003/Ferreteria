@@ -106,7 +106,7 @@ public class JPanelEmpleadoNuevo extends javax.swing.JPanel {
         add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 70, 840, 190));
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel5.setText("Cédula/RUC:");
+        jLabel5.setText("Cédula:");
         add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 280, -1, -1));
         add(txtCedulaRuc, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 300, 190, -1));
 

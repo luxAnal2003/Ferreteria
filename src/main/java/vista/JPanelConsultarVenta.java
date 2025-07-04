@@ -299,6 +299,12 @@ public class JPanelConsultarVenta extends javax.swing.JPanel {
         limpiarDetalleVenta();
         List<Object[]> ventas = controlador.buscarVentas(criterio);
 
+        if (criterio.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Ingrese un criterio de búsqueda");
+            cargarVentasEnTabla();
+            return;
+        }
+
         DefaultTableModel model = new DefaultTableModel(new String[]{
             "ID Venta", "Fecha", "Total", "Cliente", "Empleado", "Estado"
         }, 0);

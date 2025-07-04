@@ -16,6 +16,7 @@ import modelo.Producto;
  * @author admin
  */
 public class JPanelConsultarProducto extends javax.swing.JPanel {
+
     private ProductoController productoController;
 
     /**
@@ -169,6 +170,7 @@ public class JPanelConsultarProducto extends javax.swing.JPanel {
         ProductoController controller = new ProductoController();
 
         if (criterio.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Ingrese un criterio de búsqueda");
             cargarProductosEnTabla();
             return;
         }

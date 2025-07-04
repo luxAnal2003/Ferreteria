@@ -100,24 +100,79 @@ public class VentaDAO {
 
             ps.setInt(1, estado);
             ps.setInt(2, idVenta);
+            
             return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    public boolean cambiarEstadoDetallesVenta(int idVenta, int nuevoEstado) {
+        String sqlActualizarEstado = "UPDATE detalleventa SET estado = ? WHERE idDetalleVenta = ?";
+        String sqlObtenerDetalles = "SELECT idProducto, cantidad FROM detalleventa WHERE idCabeceraVenta = ?";
+
+        try (Connection conn = Conexion.conectar()) {
+            conn.setAutoCommit(false);
+            try (
+                    PreparedStatement psDetalles = conn.prepareStatement(sqlObtenerDetalles); PreparedStatement psActualizarEstado = conn.prepareStatement(sqlActualizarEstado)) {
+                psDetalles.setInt(1, idVenta);
+                ResultSet rs = psDetalles.executeQuery();
+
+                ProductoDAO productoDAO = new ProductoDAO();
+                boolean errorStock = false;
+
+                while (rs.next()) {
+                    int idProducto = rs.getInt("idProducto");
+                    int cantidad = rs.getInt("cantidad");
+
+                    boolean ok;
+                    if (nuevoEstado == 0) {
+                        ok = productoDAO.aumentarStock(idProducto, cantidad, conn);
+                    } else {
+                        ok = true; 
+                    }
+
+                    if (!ok) {
+                        errorStock = true;
+                        break;
+                    }
+                }
+
+                if (errorStock) {
+                    conn.rollback();
+                    return false;
+                }
+
+                psActualizarEstado.setInt(1, nuevoEstado);
+                psActualizarEstado.setInt(2, idVenta);
+                boolean actualizado = psActualizarEstado.executeUpdate() > 0;
+
+                if (actualizado) {
+                    conn.commit();
+                    return true;
+                } else {
+                    conn.rollback();
+                    return false;
+                }
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
     }
 
-    public boolean cambiarEstadoDetallesVenta(int idCabeceraVenta, int estado) {
-        String sql = "UPDATE detalleventa SET estado = ? WHERE idCabeceraVenta = ?";
-        try (Connection conn = Conexion.conectar(); PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, estado);
-            ps.setInt(2, idCabeceraVenta);
-            return ps.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
+//    public boolean cambiarEstadoDetallesVenta(int idCabeceraVenta, int estado) {
+//        String sql = "UPDATE detalleventa SET estado = ? WHERE idCabeceraVenta = ?";
+//        try (Connection conn = Conexion.conectar(); PreparedStatement ps = conn.prepareStatement(sql)) {
+//            ps.setInt(1, estado);
+//            ps.setInt(2, idCabeceraVenta);
+//            return ps.executeUpdate() > 0;
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//            return false;
+//        }
+//    }
 
     public int obtenerEstadoVenta(int idVenta) {
         String sql = "SELECT estado FROM cabeceraventa WHERE idCabeceraVenta = ?";
@@ -130,7 +185,7 @@ public class VentaDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return -1; 
+        return -1;
     }
 
     public List<DetalleVenta> obtenerDetallesPorCabecera(int idCabeceraVenta) {

@@ -16,7 +16,9 @@ import modelo.Cliente;
  * @author admin
  */
 public class JPanelConsultarCliente extends javax.swing.JPanel {
+
     private ClienteController clienteController;
+
     /**
      * Creates new form JPanelCategoriaNuevo
      */
@@ -167,6 +169,8 @@ public class JPanelConsultarCliente extends javax.swing.JPanel {
         ClienteController controller = new ClienteController();
 
         if (criterio.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Ingrese un criterio de búsqueda");
+
             cargarClientesEnTabla();
             return;
         }
@@ -195,7 +199,7 @@ public class JPanelConsultarCliente extends javax.swing.JPanel {
             jScrollPane3.setViewportView(tableCliente);
         } else {
             JOptionPane.showMessageDialog(null, "No se encontraron clientes activos que coincidan con el criterio de búsqueda");
-            cargarClientesEnTabla(); 
+            cargarClientesEnTabla();
         }
     }
 

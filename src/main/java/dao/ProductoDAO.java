@@ -164,46 +164,11 @@ public class ProductoDAO {
         return lista;
     }
 
-//    public Producto buscarProductoPorNombre(String nombreProducto) {
-//        String sql = "SELECT * FROM producto WHERE nombre LIKE ? AND estado = 1";
-//
-//        try (Connection con = Conexion.conectar(); PreparedStatement ps = con.prepareStatement(sql)) {
-//
-//            ps.setString(1, "%" + nombreProducto + "%");
-//            ResultSet rs = ps.executeQuery();
-//
-//            if (rs.next()) {
-//                Producto producto = new Producto();
-//                producto.setIdProducto(rs.getInt("idProducto"));
-//                producto.setNombreProducto(rs.getString("nombre"));
-//                producto.setDescripcion(rs.getString("descripcion"));
-//                producto.setCantidad(rs.getInt("cantidad"));
-//                producto.setPrecio(rs.getDouble("precio"));
-//                producto.setPorcentajeIva(rs.getInt("iva"));
-//                producto.setEstado(rs.getInt("estado"));
-//
-//                int idCategoria = rs.getInt("idCategoria");
-//                int idProveedor = rs.getInt("idProveedor");
-//
-//                Categoria categoria = new CategoriaDAO().obtenerCategoriaPorId(idCategoria);
-//                Proveedor proveedor = new ProveedorDAO().obtenerProveedorPorId(idProveedor);
-//
-//                producto.setCategoria(categoria);
-//                producto.setProveedor(proveedor);
-//
-//                return producto;
-//            }
-//
-//        } catch (SQLException e) {
-//            System.out.println("Error al buscar producto: " + e.getMessage());
-//        }
-//
-//        return null;
-//    }
     public Producto buscarProductoPorNombre(String nombreProducto) {
-        String sql = "SELECT * FROM producto WHERE nombre LIKE ?"; 
+        String sql = "SELECT * FROM producto WHERE nombre LIKE ? AND estado = 1";
 
         try (Connection con = Conexion.conectar(); PreparedStatement ps = con.prepareStatement(sql)) {
+
             ps.setString(1, "%" + nombreProducto + "%");
             ResultSet rs = ps.executeQuery();
 
@@ -319,5 +284,15 @@ public class ProductoDAO {
         pst.setInt(3, cantidad);
         int filasAfectadas = pst.executeUpdate();
         return filasAfectadas > 0;
+    }
+
+    public boolean aumentarStock(int idProducto, int cantidad, Connection con) throws SQLException {
+        String sql = "UPDATE producto SET cantidad = cantidad + ? WHERE idProducto = ?";
+        try (PreparedStatement pst = con.prepareStatement(sql)) {
+            pst.setInt(1, cantidad);
+            pst.setInt(2, idProducto);
+            int filasAfectadas = pst.executeUpdate();
+            return filasAfectadas > 0;
+        }
     }
 }

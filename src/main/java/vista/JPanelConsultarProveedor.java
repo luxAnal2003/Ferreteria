@@ -167,6 +167,7 @@ public class JPanelConsultarProveedor extends javax.swing.JPanel {
         ProveedorController controller = new ProveedorController();
 
         if (criterio.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Ingrese un criterio de búsqueda");
             cargarProveedoresEnTabla();
             return;
         }

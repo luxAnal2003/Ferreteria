@@ -155,6 +155,7 @@ public class JPanelConsultarEmpleado extends javax.swing.JPanel {
     private void buscarEmpleados() {
         String criterio = txtBuscador.getText().trim();
         if (criterio.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Ingrese un criterio de búsqueda");
             cargarEmpleadosEnTabla();
             return;
         }
