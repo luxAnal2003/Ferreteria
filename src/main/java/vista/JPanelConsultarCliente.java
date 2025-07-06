@@ -198,7 +198,7 @@ public class JPanelConsultarCliente extends javax.swing.JPanel {
             tableCliente.setModel(model);
             jScrollPane3.setViewportView(tableCliente);
         } else {
-            JOptionPane.showMessageDialog(null, "No se encontraron clientes activos que coincidan con el criterio de búsqueda");
+            JOptionPane.showMessageDialog(null, "NNo se encontraron resultados");
             cargarClientesEnTabla();
         }
     }

@@ -45,8 +45,6 @@ public class JPanelProveedorNuevo extends javax.swing.JPanel {
         jLabel10 = new javax.swing.JLabel();
         txtNombreComercial = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        tableProveedor = new javax.swing.JTable();
         btnLimpiar = new javax.swing.JButton();
         btnGuardar = new javax.swing.JButton();
         txtRuc = new javax.swing.JTextField();
@@ -54,6 +52,8 @@ public class JPanelProveedorNuevo extends javax.swing.JPanel {
         txtEmail = new javax.swing.JTextField();
         jLabel13 = new javax.swing.JLabel();
         txtDireccion = new javax.swing.JTextField();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tableProveedor = new javax.swing.JTable();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -75,23 +75,6 @@ public class JPanelProveedorNuevo extends javax.swing.JPanel {
         jLabel7.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel7.setText("Telefono:");
         add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 270, -1, -1));
-
-        jScrollPane3.setPreferredSize(new java.awt.Dimension(450, 80));
-
-        tableProveedor.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
-            },
-            new String [] {
-                "Cedula", "Nombre comercial", "Nombre de Contacto", "Telefono", "Email", "Direccion", "Tipo de producto"
-            }
-        ));
-        jScrollPane3.setViewportView(tableProveedor);
-
-        add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, 850, 180));
 
         btnLimpiar.setBackground(new java.awt.Color(204, 204, 255));
         btnLimpiar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -123,6 +106,23 @@ public class JPanelProveedorNuevo extends javax.swing.JPanel {
         jLabel13.setText("Dirección:");
         add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 270, -1, -1));
         add(txtDireccion, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 290, 420, -1));
+
+        jScrollPane3.setPreferredSize(new java.awt.Dimension(450, 80));
+
+        tableProveedor.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "ID", "Ruc", "Nombre comercial", "Telefono", "Email", "Direccion", "Estado"
+            }
+        ));
+        jScrollPane3.setViewportView(tableProveedor);
+
+        add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 80, 850, 180));
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed

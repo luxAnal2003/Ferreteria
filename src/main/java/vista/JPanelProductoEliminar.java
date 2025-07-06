@@ -29,6 +29,15 @@ public class JPanelProductoEliminar extends javax.swing.JPanel {
         productoController = new ProductoController();
         this.cargarProductosEnTabla();
         this.verificarExistenciaProductos();
+        txtBuscador.addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyReleased(java.awt.event.KeyEvent e) {
+                String texto = txtBuscador.getText().trim();
+                if (texto.isEmpty()) {
+                    cargarProductosEnTabla();
+                }
+            }
+        });
     }
 
     /**
@@ -48,7 +57,6 @@ public class JPanelProductoEliminar extends javax.swing.JPanel {
         jLabel8 = new javax.swing.JLabel();
         txtBuscador = new javax.swing.JTextField();
         btnBuscar = new javax.swing.JButton();
-        btnLimpiar = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -65,7 +73,7 @@ public class JPanelProductoEliminar extends javax.swing.JPanel {
                 btnActivarActionPerformed(evt);
             }
         });
-        add(btnActivar, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 340, 140, 30));
+        add(btnActivar, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 20, 140, 30));
 
         btnEliminar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/desactivar.png"))); // NOI18N
@@ -75,7 +83,7 @@ public class JPanelProductoEliminar extends javax.swing.JPanel {
                 btnEliminarActionPerformed(evt);
             }
         });
-        add(btnEliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 340, 140, 30));
+        add(btnEliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 20, 140, 30));
 
         jScrollPane4.setPreferredSize(new java.awt.Dimension(450, 80));
 
@@ -92,7 +100,7 @@ public class JPanelProductoEliminar extends javax.swing.JPanel {
         ));
         jScrollPane4.setViewportView(tableProducto);
 
-        add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 100, 830, 230));
+        add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 100, 840, 230));
 
         jLabel8.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/buscar.png"))); // NOI18N
@@ -104,7 +112,7 @@ public class JPanelProductoEliminar extends javax.swing.JPanel {
                 txtBuscadorKeyPressed(evt);
             }
         });
-        add(txtBuscador, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 60, 530, -1));
+        add(txtBuscador, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 60, 650, -1));
 
         btnBuscar.setBackground(new java.awt.Color(204, 204, 255));
         btnBuscar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -114,17 +122,7 @@ public class JPanelProductoEliminar extends javax.swing.JPanel {
                 btnBuscarActionPerformed(evt);
             }
         });
-        add(btnBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 60, 90, -1));
-
-        btnLimpiar.setBackground(new java.awt.Color(204, 204, 255));
-        btnLimpiar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        btnLimpiar.setText("Limpiar");
-        btnLimpiar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnLimpiarActionPerformed(evt);
-            }
-        });
-        add(btnLimpiar, new org.netbeans.lib.awtextra.AbsoluteConstraints(770, 60, 90, -1));
+        add(btnBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 60, 90, -1));
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnActivarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActivarActionPerformed
@@ -145,16 +143,10 @@ public class JPanelProductoEliminar extends javax.swing.JPanel {
         this.buscarProductos();
     }//GEN-LAST:event_btnBuscarActionPerformed
 
-    private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
-        txtBuscador.setText("");
-        this.cargarProductosEnTabla();
-    }//GEN-LAST:event_btnLimpiarActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActivar;
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnEliminar;
-    private javax.swing.JButton btnLimpiar;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel8;
     public static javax.swing.JScrollPane jScrollPane4;

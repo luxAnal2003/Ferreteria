@@ -9,14 +9,14 @@ import java.awt.Dimension;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import java.util.List;
-import modelo.Empleado;
-import modelo.Usuario;
+import modelo.Rol;
 
 /**
  *
  * @author admin
  */
 public class JPanelEmpleadoNuevo extends javax.swing.JPanel {
+
     private EmpleadoController empleadoController;
 
     /**
@@ -25,10 +25,21 @@ public class JPanelEmpleadoNuevo extends javax.swing.JPanel {
     public JPanelEmpleadoNuevo() {
         initComponents();
         this.setSize(new Dimension(900, 400));
-        empleadoController =  new EmpleadoController();
+        empleadoController = new EmpleadoController();
         this.cargarEmpleadosEnTabla();
+        this.cargarRolesEnComboBox();
     }
 
+     private void cargarRolesEnComboBox() {
+        List<Rol> roles = empleadoController.obtenerRoles();
+
+        cboxRol.removeAllItems();
+        cboxRol.addItem("Seleccionar rol");
+
+        for (Rol rolSeleccioanado : roles) {
+            cboxRol.addItem(rolSeleccioanado.getNombre());
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -60,13 +71,15 @@ public class JPanelEmpleadoNuevo extends javax.swing.JPanel {
         jLabel15 = new javax.swing.JLabel();
         txtContrasenia = new javax.swing.JPasswordField();
         btnVer = new javax.swing.JButton();
+        cboxRol = new javax.swing.JComboBox<>();
+        jLabel16 = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel2.setText("Agregar Empleados");
-        add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 40, -1, -1));
+        add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, -1, -1));
 
         btnLimpiar.setBackground(new java.awt.Color(204, 204, 255));
         btnLimpiar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -76,7 +89,7 @@ public class JPanelEmpleadoNuevo extends javax.swing.JPanel {
                 btnLimpiarActionPerformed(evt);
             }
         });
-        add(btnLimpiar, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 30, 90, 30));
+        add(btnLimpiar, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 20, 90, 30));
 
         btnGuardar.setBackground(new java.awt.Color(204, 204, 255));
         btnGuardar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -86,7 +99,7 @@ public class JPanelEmpleadoNuevo extends javax.swing.JPanel {
                 btnGuardarActionPerformed(evt);
             }
         });
-        add(btnGuardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 30, 90, 30));
+        add(btnGuardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 20, 90, 30));
 
         jScrollPane4.setPreferredSize(new java.awt.Dimension(450, 80));
 
@@ -103,47 +116,47 @@ public class JPanelEmpleadoNuevo extends javax.swing.JPanel {
         ));
         jScrollPane4.setViewportView(tableEmpleado);
 
-        add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 70, 840, 190));
+        add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 60, 840, 150));
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel5.setText("Cédula:");
-        add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 280, -1, -1));
-        add(txtCedulaRuc, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 300, 190, -1));
+        add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 230, -1, -1));
+        add(txtCedulaRuc, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 250, 190, -1));
 
         jLabel13.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel13.setText("Dirección:");
-        add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 330, -1, -1));
-        add(txtDireccion, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 350, 190, -1));
+        add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 340, -1, -1));
+        add(txtDireccion, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 340, 750, -1));
 
         jLabel10.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel10.setText("Nombres:");
-        add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 280, -1, -1));
-        add(txtNombres, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 300, 190, -1));
+        add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 230, -1, -1));
+        add(txtNombres, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 250, 190, -1));
 
         jLabel9.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel9.setText("Apellidos:");
-        add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 330, -1, -1));
-        add(txtApellidos, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 350, 190, -1));
+        add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 280, -1, -1));
+        add(txtApellidos, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 300, 190, -1));
 
         jLabel7.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel7.setText("Telefono:");
-        add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 280, -1, -1));
-        add(txtTelefono, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 300, 190, -1));
+        add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 280, -1, -1));
+        add(txtTelefono, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 300, 190, -1));
 
         jLabel12.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel12.setText("Email:");
-        add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 330, -1, -1));
-        add(txtEmail, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 350, 190, -1));
+        add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 280, -1, -1));
+        add(txtEmail, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 300, 190, -1));
 
         jLabel14.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel14.setText("Nombre de usuario:");
-        add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 280, -1, -1));
-        add(txtUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 300, 200, -1));
+        jLabel14.setText("Rol:");
+        add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 230, -1, -1));
+        add(txtUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 250, 200, -1));
 
         jLabel15.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel15.setText("Contraseña:");
-        add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 330, -1, -1));
-        add(txtContrasenia, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 350, 160, -1));
+        add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 280, -1, -1));
+        add(txtContrasenia, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 300, 160, -1));
 
         btnVer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/ver.png"))); // NOI18N
         btnVer.addActionListener(new java.awt.event.ActionListener() {
@@ -151,7 +164,14 @@ public class JPanelEmpleadoNuevo extends javax.swing.JPanel {
                 btnVerActionPerformed(evt);
             }
         });
-        add(btnVer, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 350, 30, 20));
+        add(btnVer, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 300, 30, 20));
+
+        cboxRol.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione rol", "Item 1", "Item 2", "Item 3", "Item 4" }));
+        add(cboxRol, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 250, 190, -1));
+
+        jLabel16.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel16.setText("Nombre de usuario:");
+        add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 230, -1, -1));
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
@@ -168,12 +188,17 @@ public class JPanelEmpleadoNuevo extends javax.swing.JPanel {
         String direccion = txtDireccion.getText().trim();
         String nombreUsuario = txtUsuario.getText().trim();
         String contrasenia = new String(txtContrasenia.getPassword()).trim();
-        int idRol = 2;
+        String nombreRolSeleccionada = cboxRol.getSelectedItem().toString();
         int estado = 1;
 
-        String mensaje = empleadoController.guardarEmpleadoConUsuario(cedula, nombres, apellidos, telefono, email, direccion, nombreUsuario, contrasenia, idRol, estado);
+        if (cboxRol.getSelectedIndex() == 0) {
+            JOptionPane.showMessageDialog(null, "Campos obligatorios vacíos");
+            return;
+        }
+
+        String mensaje = empleadoController.guardarEmpleadoConUsuario(cedula, nombres, apellidos, telefono, email, direccion, nombreUsuario, contrasenia, nombreRolSeleccionada, estado);
         JOptionPane.showMessageDialog(this, mensaje);
-        
+
         if (mensaje.contains("correctamente")) {
             this.setear();
             this.cargarEmpleadosEnTabla();
@@ -194,11 +219,13 @@ public class JPanelEmpleadoNuevo extends javax.swing.JPanel {
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnLimpiar;
     private javax.swing.JButton btnVer;
+    private javax.swing.JComboBox<String> cboxRol;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel7;

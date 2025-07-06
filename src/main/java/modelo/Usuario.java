@@ -12,8 +12,7 @@ import java.io.Serializable;
  */
 public class Usuario implements Serializable {
     protected int idUsuario;
-    protected int idRol;
-    protected String tipoRol;
+    protected Rol idRol;
     protected String usuario;
     protected String contrasenia;
     protected String nombre;
@@ -24,8 +23,7 @@ public class Usuario implements Serializable {
     
     public Usuario(){
         this.idUsuario = 0;
-        this.idRol = 0;
-        this.tipoRol = "";
+        this.idRol = new Rol();
         this.usuario = "";
         this.contrasenia = "";
         this.nombre = "";
@@ -35,9 +33,8 @@ public class Usuario implements Serializable {
         this.estado = 0;
     }
 
-    public Usuario(int idRol, String tipoRol, String usuario, String contrasenia, String nombre, String apellido, String telefono, String correo, int estado) {
+    public Usuario(Rol idRol, String usuario, String contrasenia, String nombre, String apellido, String telefono, String correo, int estado) {
         this.idRol = idRol;
-        this.tipoRol = tipoRol;
         this.usuario = usuario;
         this.contrasenia = contrasenia;
         this.nombre = nombre;
@@ -47,10 +44,9 @@ public class Usuario implements Serializable {
         this.estado = estado;
     }
     
-    public Usuario(int idUsuario, int idRol, String tipoRol, String usuario, String contrasenia, String nombre, String apellido, String telefono, String correo, int estado) {
+    public Usuario(int idUsuario, Rol idRol, String usuario, String contrasenia, String nombre, String apellido, String telefono, String correo, int estado) {
         this.idUsuario = idUsuario;
         this.idRol = idRol;
-        this.tipoRol = tipoRol;
         this.usuario = usuario;
         this.contrasenia = contrasenia;
         this.nombre = nombre;
@@ -125,21 +121,11 @@ public class Usuario implements Serializable {
         this.estado = estado;
     }
 
-    public int getIdRol() {
+    public Rol getIdRol() {
         return idRol;
     }
 
-    public void setIdRol(int idRol) {
+    public void setIdRol(Rol idRol) {
         this.idRol = idRol;
     }
-
-    public String getTipoRol() {
-        return tipoRol;
-    }
-
-    public void setTipoRol(String tipoRol) {
-        this.tipoRol = tipoRol;
-    }
-
-    
 }

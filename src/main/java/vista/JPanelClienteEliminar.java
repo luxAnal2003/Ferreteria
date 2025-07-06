@@ -30,6 +30,16 @@ public class JPanelClienteEliminar extends javax.swing.JPanel {
         clienteController = new ClienteController();
         this.verificarExistenciaClientes();
         this.cargarClientesEnTabla();
+        
+        txtBuscador.addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyReleased(java.awt.event.KeyEvent e) {
+                String texto = txtBuscador.getText().trim();
+                if (texto.isEmpty()) {
+                    cargarClientesEnTabla();
+                }
+            }
+        });
     }
 
     /**
@@ -46,13 +56,16 @@ public class JPanelClienteEliminar extends javax.swing.JPanel {
         tableCliente = new javax.swing.JTable();
         btnActivar = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
+        jLabel8 = new javax.swing.JLabel();
+        txtBuscador = new javax.swing.JTextField();
+        btnBuscar = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel2.setText("Eliminar Clientes");
-        add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, -1, -1));
+        add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 40, -1, -1));
 
         jScrollPane3.setPreferredSize(new java.awt.Dimension(450, 80));
 
@@ -69,7 +82,7 @@ public class JPanelClienteEliminar extends javax.swing.JPanel {
         ));
         jScrollPane3.setViewportView(tableCliente);
 
-        add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 70, 840, 300));
+        add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 110, 840, 260));
 
         btnActivar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         btnActivar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/activar.png"))); // NOI18N
@@ -90,6 +103,28 @@ public class JPanelClienteEliminar extends javax.swing.JPanel {
             }
         });
         add(btnEliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 30, 140, 30));
+
+        jLabel8.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/buscar.png"))); // NOI18N
+        jLabel8.setText("Buscar:");
+        add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 70, -1, 30));
+
+        txtBuscador.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtBuscadorKeyPressed(evt);
+            }
+        });
+        add(txtBuscador, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 70, 650, -1));
+
+        btnBuscar.setBackground(new java.awt.Color(204, 204, 255));
+        btnBuscar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        btnBuscar.setText("Buscar");
+        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarActionPerformed(evt);
+            }
+        });
+        add(btnBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 70, 90, -1));
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnActivarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActivarActionPerformed
@@ -100,12 +135,64 @@ public class JPanelClienteEliminar extends javax.swing.JPanel {
         this.desactivar();
     }//GEN-LAST:event_btnEliminarActionPerformed
 
+    private void txtBuscadorKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscadorKeyPressed
+        if (evt.getKeyCode() == evt.VK_ENTER) {
+            this.buscarClientes();
+        }
+    }//GEN-LAST:event_txtBuscadorKeyPressed
+
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+        this.buscarClientes();
+    }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void buscarClientes() {
+        String criterio = txtBuscador.getText().trim();
+        ClienteController controller = new ClienteController();
+
+        if (criterio.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Ingrese un criterio de búsqueda");
+
+            cargarClientesEnTabla();
+            return;
+        }
+
+        DefaultTableModel model = new DefaultTableModel();
+        model.setColumnIdentifiers(new Object[]{
+            "ID Cliente", "Cédula", "Nombres", "Apellidos", "Teléfono", "Dirección", "Correo", "Estado"
+        });
+
+        List<Cliente> clientesEncontrados = controller.buscarClientes(criterio);
+
+        if (!clientesEncontrados.isEmpty()) {
+            for (Cliente cliente : clientesEncontrados) {
+                Object[] fila = new Object[8];
+                fila[0] = cliente.getIdCliente();
+                fila[1] = cliente.getCedula();
+                fila[2] = cliente.getNombre();
+                fila[3] = cliente.getApellido();
+                fila[4] = cliente.getTelefono();
+                fila[5] = cliente.getDireccion();
+                fila[6] = cliente.getCorreo();
+                fila[7] = (cliente.getEstado() == 1) ? "Activo" : "Inactivo";
+                model.addRow(fila);
+            }
+            tableCliente.setModel(model);
+            jScrollPane3.setViewportView(tableCliente);
+        } else {
+            JOptionPane.showMessageDialog(null, "NNo se encontraron resultados");
+            cargarClientesEnTabla();
+        }
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActivar;
+    private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel8;
     public static javax.swing.JScrollPane jScrollPane3;
     public static javax.swing.JTable tableCliente;
+    private javax.swing.JTextField txtBuscador;
     // End of variables declaration//GEN-END:variables
 
     private void cargarClientesEnTabla() {

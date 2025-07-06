@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import java.util.List;
 import modelo.Empleado;
+import modelo.Rol;
 import modelo.Usuario;
 
 /**
@@ -28,8 +29,29 @@ public class JPanelEmpleadoEditar extends javax.swing.JPanel {
     public JPanelEmpleadoEditar() {
         initComponents();
         this.setSize(new Dimension(900, 400));
-        empleadoController =  new EmpleadoController();
+        empleadoController = new EmpleadoController();
         this.cargarEmpleadosEnTabla();
+        this.cargarRolesEnComboBox();
+        txtBuscador.addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyReleased(java.awt.event.KeyEvent e) {
+                String texto = txtBuscador.getText().trim();
+                if (texto.isEmpty()) {
+                    cargarEmpleadosEnTabla();
+                }
+            }
+        });
+    }
+
+    private void cargarRolesEnComboBox() {
+        List<Rol> roles = empleadoController.obtenerRoles();
+
+        cboxRol.removeAllItems();
+        cboxRol.addItem("Seleccionar rol");
+
+        for (Rol rolSeleccioanado : roles) {
+            cboxRol.addItem(rolSeleccioanado.getNombre());
+        }
     }
 
     /**
@@ -42,53 +64,39 @@ public class JPanelEmpleadoEditar extends javax.swing.JPanel {
     private void initComponents() {
 
         jLabel2 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        txtTelefono = new javax.swing.JTextField();
-        jLabel9 = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
-        txtNombres = new javax.swing.JTextField();
-        txtApellidos = new javax.swing.JTextField();
-        jLabel7 = new javax.swing.JLabel();
         btnLimpiar = new javax.swing.JButton();
         btnActualizar = new javax.swing.JButton();
-        txtCedulaRuc = new javax.swing.JTextField();
-        jLabel12 = new javax.swing.JLabel();
-        txtEmail = new javax.swing.JTextField();
-        jLabel13 = new javax.swing.JLabel();
-        txtDireccion = new javax.swing.JTextField();
-        jLabel14 = new javax.swing.JLabel();
-        jLabel15 = new javax.swing.JLabel();
-        txtContrasenia = new javax.swing.JPasswordField();
-        txtUsuario = new javax.swing.JTextField();
-        btnVer = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
         tableEmpleado = new javax.swing.JTable();
+        jLabel8 = new javax.swing.JLabel();
+        txtBuscador = new javax.swing.JTextField();
+        btnBuscar = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
+        txtCedulaRuc = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        txtTelefono = new javax.swing.JTextField();
+        jLabel13 = new javax.swing.JLabel();
+        txtDireccion = new javax.swing.JTextField();
+        jLabel9 = new javax.swing.JLabel();
+        txtApellidos = new javax.swing.JTextField();
+        txtNombres = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
+        cboxRol = new javax.swing.JComboBox<>();
+        jLabel12 = new javax.swing.JLabel();
+        txtEmail = new javax.swing.JTextField();
+        jLabel16 = new javax.swing.JLabel();
+        txtUsuario = new javax.swing.JTextField();
+        jLabel15 = new javax.swing.JLabel();
+        txtContrasenia = new javax.swing.JPasswordField();
+        btnVer = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel2.setText("Actualizar Empleados");
-        add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 40, -1, -1));
-
-        jLabel5.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel5.setText("Cédula:");
-        add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 280, -1, -1));
-        add(txtTelefono, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 300, 190, -1));
-
-        jLabel9.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel9.setText("Apellidos:");
-        add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 330, -1, -1));
-
-        jLabel10.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel10.setText("Nombres:");
-        add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 280, -1, -1));
-        add(txtNombres, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 300, 190, -1));
-        add(txtApellidos, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 350, 190, -1));
-
-        jLabel7.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel7.setText("Telefono:");
-        add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 280, -1, -1));
+        add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 40, -1, -1));
 
         btnLimpiar.setBackground(new java.awt.Color(204, 204, 255));
         btnLimpiar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -98,7 +106,7 @@ public class JPanelEmpleadoEditar extends javax.swing.JPanel {
                 btnLimpiarActionPerformed(evt);
             }
         });
-        add(btnLimpiar, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 30, 90, 30));
+        add(btnLimpiar, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 30, 90, 30));
 
         btnActualizar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         btnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/editar-producto.png"))); // NOI18N
@@ -108,39 +116,7 @@ public class JPanelEmpleadoEditar extends javax.swing.JPanel {
                 btnActualizarActionPerformed(evt);
             }
         });
-        add(btnActualizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 30, 140, 30));
-
-        txtCedulaRuc.setEditable(false);
-        txtCedulaRuc.setEnabled(false);
-        add(txtCedulaRuc, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 300, 190, -1));
-
-        jLabel12.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel12.setText("Email:");
-        add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 330, -1, -1));
-        add(txtEmail, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 350, 190, -1));
-
-        jLabel13.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel13.setText("Dirección:");
-        add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 330, -1, -1));
-        add(txtDireccion, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 350, 190, -1));
-
-        jLabel14.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel14.setText("Nombre de usuario:");
-        add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 280, -1, -1));
-
-        jLabel15.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel15.setText("Contraseña:");
-        add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 330, -1, -1));
-        add(txtContrasenia, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 350, 160, -1));
-        add(txtUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 300, 200, -1));
-
-        btnVer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/ver.png"))); // NOI18N
-        btnVer.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnVerActionPerformed(evt);
-            }
-        });
-        add(btnVer, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 350, 30, 20));
+        add(btnActualizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 30, 140, 30));
 
         jScrollPane4.setPreferredSize(new java.awt.Dimension(450, 80));
 
@@ -157,7 +133,84 @@ public class JPanelEmpleadoEditar extends javax.swing.JPanel {
         ));
         jScrollPane4.setViewportView(tableEmpleado);
 
-        add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, 860, 190));
+        add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 110, 830, 120));
+
+        jLabel8.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/buscar.png"))); // NOI18N
+        jLabel8.setText("Buscar:");
+        add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 70, -1, 30));
+
+        txtBuscador.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtBuscadorKeyPressed(evt);
+            }
+        });
+        add(txtBuscador, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 70, 630, -1));
+
+        btnBuscar.setBackground(new java.awt.Color(204, 204, 255));
+        btnBuscar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        btnBuscar.setText("Buscar");
+        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarActionPerformed(evt);
+            }
+        });
+        add(btnBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 70, 90, -1));
+
+        jLabel5.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel5.setText("Cédula:");
+        add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 240, -1, -1));
+        add(txtCedulaRuc, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 260, 190, -1));
+
+        jLabel7.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel7.setText("Telefono:");
+        add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 290, -1, -1));
+        add(txtTelefono, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 310, 190, -1));
+
+        jLabel13.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel13.setText("Dirección:");
+        add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 350, -1, -1));
+        add(txtDireccion, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 350, 750, -1));
+
+        jLabel9.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel9.setText("Apellidos:");
+        add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 290, -1, -1));
+        add(txtApellidos, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 310, 190, -1));
+        add(txtNombres, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 260, 190, -1));
+
+        jLabel10.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel10.setText("Nombres:");
+        add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 240, -1, -1));
+
+        jLabel14.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel14.setText("Rol:");
+        add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 240, -1, -1));
+
+        cboxRol.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione rol", "Item 1", "Item 2", "Item 3", "Item 4" }));
+        add(cboxRol, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 260, 190, -1));
+
+        jLabel12.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel12.setText("Email:");
+        add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 290, -1, -1));
+        add(txtEmail, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 310, 190, -1));
+
+        jLabel16.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel16.setText("Nombre de usuario:");
+        add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 240, -1, -1));
+        add(txtUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 260, 200, -1));
+
+        jLabel15.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel15.setText("Contraseña:");
+        add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 290, -1, -1));
+        add(txtContrasenia, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 310, 160, -1));
+
+        btnVer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/ver.png"))); // NOI18N
+        btnVer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVerActionPerformed(evt);
+            }
+        });
+        add(btnVer, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 310, 30, 20));
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
@@ -174,17 +227,32 @@ public class JPanelEmpleadoEditar extends javax.swing.JPanel {
         String direccion = txtDireccion.getText().trim();
         String nombreUsuario = txtUsuario.getText().trim();
         String contrasenia = new String(txtContrasenia.getPassword()).trim();
-        int idRol = 2;
+        String nombreRolSeleccionada = cboxRol.getSelectedItem().toString();
         int estado = 1;
 
-        String mensaje = empleadoController.actualizarEmpleadoConUsuario(cedula, nombres, apellidos, telefono, email, direccion, nombreUsuario, contrasenia, idRol, estado, idEmpleado, idUsuario);
+        if (cboxRol.getSelectedIndex() == 0) {
+            JOptionPane.showMessageDialog(null, "Campos obligatorios vacíos");
+            return;
+        }
+
+        String mensaje = empleadoController.actualizarEmpleadoConUsuario(cedula, nombres, apellidos, telefono, email, direccion, nombreUsuario, contrasenia, nombreRolSeleccionada, estado, idEmpleado, idUsuario);
         JOptionPane.showMessageDialog(this, mensaje);
-        
+
         if (mensaje.contains("correctamente")) {
             this.setear();
             this.cargarEmpleadosEnTabla();
         }
     }//GEN-LAST:event_btnActualizarActionPerformed
+
+    private void txtBuscadorKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscadorKeyPressed
+        if (evt.getKeyCode() == evt.VK_ENTER) {
+            this.buscarEmpleados();
+        }
+    }//GEN-LAST:event_txtBuscadorKeyPressed
+
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+        this.buscarEmpleados();
+    }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void btnVerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerActionPerformed
         if (txtContrasenia.getEchoChar() != '\u0000') {
@@ -196,22 +264,49 @@ public class JPanelEmpleadoEditar extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btnVerActionPerformed
 
+    private void buscarEmpleados() {
+        String criterio = txtBuscador.getText().trim();
+        if (criterio.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Ingrese un criterio de búsqueda");
+            cargarEmpleadosEnTabla();
+            return;
+        }
+
+        List<Object[]> resultados = empleadoController.buscarEmpleados(criterio);
+        DefaultTableModel model = (DefaultTableModel) tableEmpleado.getModel();
+        model.setRowCount(0);
+
+        for (Object[] fila : resultados) {
+            model.addRow(fila);
+        }
+
+        if (resultados.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No se encontraron resultados.");
+            cargarEmpleadosEnTabla();
+        }
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActualizar;
+    private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnLimpiar;
     private javax.swing.JButton btnVer;
+    private javax.swing.JComboBox<String> cboxRol;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     public static javax.swing.JScrollPane jScrollPane4;
     public static javax.swing.JTable tableEmpleado;
     private javax.swing.JTextField txtApellidos;
+    private javax.swing.JTextField txtBuscador;
     private javax.swing.JTextField txtCedulaRuc;
     private javax.swing.JPasswordField txtContrasenia;
     private javax.swing.JTextField txtDireccion;
@@ -232,7 +327,7 @@ public class JPanelEmpleadoEditar extends javax.swing.JPanel {
         for (Object[] fila : empleados) {
             model.addRow(fila);
         }
-        
+
         tableEmpleado.setModel(model);
         if (model.getColumnCount() > 11) {
             tableEmpleado.getColumnModel().getColumn(11).setMinWidth(0);
@@ -271,6 +366,13 @@ public class JPanelEmpleadoEditar extends javax.swing.JPanel {
                 txtDireccion.setText(empleado.getDireccion());
                 txtUsuario.setText(usuario.getUsuario());
                 txtContrasenia.setText(usuario.getContrasenia());
+                String nombreRol = empleado.getIdRol() != null ? empleado.getIdRol().getNombre() : null;
+
+                if (nombreRol != null) {
+                    cboxRol.setSelectedItem(nombreRol.trim());
+                } else {
+                    cboxRol.setSelectedIndex(0);
+                }
             } else {
                 JOptionPane.showMessageDialog(null, "No se encontraron datos completos para el empleado/usuario seleccionado.");
                 setear();
@@ -279,31 +381,6 @@ public class JPanelEmpleadoEditar extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(null, "No se pudo obtener el ID de usuario asociado al empleado.");
             setear();
         }
-    }
-
-    private boolean validarCampos(String cedulaRuc, String nombres, String apellidos, String telefono, String email, String direccion, String nombreUsuario, String contrasenia) {
-        if (cedulaRuc.isEmpty() || nombres.isEmpty() || apellidos.isEmpty() || telefono.isEmpty()
-                || email.isEmpty() || direccion.isEmpty() || nombreUsuario.isEmpty() || contrasenia.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Todos los campos son obligatorios.");
-            return false;
-        }
-
-        if (!cedulaRuc.matches("\\d{10}")) {
-            JOptionPane.showMessageDialog(null, "La cédula debe ser numérica y de 10 caracteres");
-            return false;
-        }
-
-        if (!telefono.matches("\\d{10}")) {
-            JOptionPane.showMessageDialog(null, "El teléfono debe ser numérica y de 10 caracteres");
-            return false;
-        }
-
-        if (!email.matches("^[\\w.-]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
-            JOptionPane.showMessageDialog(null, "Formato de Email inválido.");
-            return false;
-        }
-
-        return true;
     }
 
     private void setear() {
@@ -315,5 +392,7 @@ public class JPanelEmpleadoEditar extends javax.swing.JPanel {
         txtDireccion.setText("");
         txtUsuario.setText("");
         txtContrasenia.setText("");
+        txtBuscador.setText("");
+        cboxRol.setSelectedIndex(0);
     }
 }

@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.JOptionPane;
+import modelo.Rol;
 import modelo.Usuario;
 
 /**
@@ -22,28 +23,35 @@ public class UsuarioDAO {
         Connection cn = Conexion.conectar();
         Usuario usuarioAutenticado = null;
 
-        String sql = "SELECT u.*, r.tipo FROM usuario u "
+        String sql = "SELECT u.idUsuario, u.usuario, u.contrasenia, u.nombre, u.apellido, u.telefono, "
+                + "u.estado, u.idRol, r.tipo "
+                + "FROM usuario u "
                 + "INNER JOIN rol r ON u.idRol = r.idRol "
-                + "WHERE u.usuario = '" + usuario.getUsuario() + "' "
-                + "AND u.contrasenia = '" + usuario.getContrasenia() + "'";
+                + "WHERE u.usuario = ? AND u.contrasenia = ?";
 
-        try (Statement st = cn.createStatement(); ResultSet rs = st.executeQuery(sql)) {
-            if (rs.next()) {
-                usuarioAutenticado = new Usuario();
-                usuarioAutenticado.setIdUsuario(rs.getInt("idUsuario"));
-                usuarioAutenticado.setUsuario(rs.getString("usuario"));
-                usuarioAutenticado.setContrasenia(rs.getString("contrasenia"));
-                usuarioAutenticado.setNombre(rs.getString("nombre"));
-                usuarioAutenticado.setApellido(rs.getString("apellido"));
-                usuarioAutenticado.setTelefono(rs.getString("telefono"));
-                usuarioAutenticado.setEstado(rs.getInt("estado"));
-                usuarioAutenticado.setIdRol(rs.getInt("idRol"));
+        try (PreparedStatement pst = cn.prepareStatement(sql)) {
+            pst.setString(1, usuario.getUsuario());
+            pst.setString(2, usuario.getContrasenia());
 
-                usuarioAutenticado.setTipoRol(rs.getString("tipo"));
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    usuarioAutenticado = new Usuario();
+                    usuarioAutenticado.setIdUsuario(rs.getInt("idUsuario"));
+                    usuarioAutenticado.setUsuario(rs.getString("usuario"));
+                    usuarioAutenticado.setContrasenia(rs.getString("contrasenia"));
+                    usuarioAutenticado.setNombre(rs.getString("nombre"));
+                    usuarioAutenticado.setApellido(rs.getString("apellido"));
+                    usuarioAutenticado.setTelefono(rs.getString("telefono"));
+                    usuarioAutenticado.setEstado(rs.getInt("estado"));
+
+                    Rol rol = new Rol();
+                    rol.setIdRol(rs.getInt("idRol"));
+                    rol.setTipo(rs.getString("tipo"));
+                    usuarioAutenticado.setIdRol(rol);
+                }
             }
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error al iniciar sesión: " + e.getMessage());
-            System.out.println("Error: " + e);
         }
 
         return usuarioAutenticado;
@@ -54,8 +62,7 @@ public class UsuarioDAO {
         String sql = "INSERT INTO Usuario (idRol, nombre, apellido, usuario, contrasenia, telefono, correo, estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection cn = Conexion.conectar(); PreparedStatement ps = cn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-
-            ps.setInt(1, usuario.getIdRol());
+            ps.setInt(1, usuario.getIdRol().getIdRol());
             ps.setString(2, usuario.getNombre());
             ps.setString(3, usuario.getApellido());
             ps.setString(4, usuario.getUsuario());
@@ -94,7 +101,7 @@ public class UsuarioDAO {
             ps.setString(5, usuario.getTelefono());
             ps.setString(6, usuario.getCorreo());
             ps.setInt(7, usuario.getEstado());
-            ps.setInt(8, usuario.getIdRol());
+            ps.setInt(8, usuario.getIdRol().getIdRol());
             ps.setInt(9, idUsuario);
 
             respuesta = ps.executeUpdate() > 0;
@@ -122,7 +129,9 @@ public class UsuarioDAO {
     public Usuario obtenerUsuarioPorId(int idUsuario) {
         Usuario usuario = null;
 
-        String sql = "SELECT * FROM Usuario WHERE idUsuario = ?";
+        String sql = "SELECT u.*, r.tipo FROM Usuario u "
+                + "INNER JOIN Rol r ON u.idRol = r.idRol "
+                + "WHERE u.idUsuario = ?";
 
         try (Connection conn = Conexion.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -132,7 +141,12 @@ public class UsuarioDAO {
             if (rs.next()) {
                 usuario = new Usuario();
                 usuario.setIdUsuario(rs.getInt("idUsuario"));
-                usuario.setIdRol(rs.getInt("idRol"));
+
+                Rol rol = new Rol();
+                rol.setIdRol(rs.getInt("idRol"));
+                rol.setTipo(rs.getString("tipo"));
+                usuario.setIdRol(rol);
+
                 usuario.setNombre(rs.getString("nombre"));
                 usuario.setApellido(rs.getString("apellido"));
                 usuario.setUsuario(rs.getString("usuario"));

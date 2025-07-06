@@ -5,9 +5,11 @@
 package controlador;
 
 import dao.EmpleadoDAO;
+import dao.RolDAO;
 import dao.UsuarioDAO;
 import java.util.List;
 import modelo.Empleado;
+import modelo.Rol;
 import modelo.Usuario;
 
 /**
@@ -18,14 +20,25 @@ public class EmpleadoController {
 
     private EmpleadoDAO empleadoDAO = new EmpleadoDAO();
     private UsuarioDAO usuarioDAO = new UsuarioDAO();
+    private RolDAO rolDAO = new RolDAO();
 
     public EmpleadoController() {
         this.empleadoDAO = new EmpleadoDAO();
         this.usuarioDAO = new UsuarioDAO();
+        this.rolDAO =  new RolDAO();
     }
 
+     public List<Rol> obtenerRoles() {
+        return rolDAO.listarRoles();
+    }
     public String guardarEmpleadoConUsuario(String cedula, String nombres, String apellidos, String telefono,
-            String email, String direccion, String nombreUsuario, String contrasenia, int idRol, int estado) {
+            String email, String direccion, String nombreUsuario, String contrasenia, String rol, int estado) {
+
+        int idRol = rolDAO.getIdRolPorNombre(rol);
+
+        if (idRol == -1) {
+            return "No se pudo encontrar ID de rol";
+        }
 
         if (cedula.isEmpty() || nombres.isEmpty() || apellidos.isEmpty() || telefono.isEmpty() || email.isEmpty()
                 || direccion.isEmpty() || nombreUsuario.isEmpty() || contrasenia.isEmpty()) {
@@ -41,13 +54,16 @@ public class EmpleadoController {
         }
 
         if (!email.matches("^[\\w.-]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
-            return "Formato de Email inválido.";
-        }
-        
-        if (empleadoDAO.existeEmpleado(cedula)) {
-            return "El empleado ya existe con esa cedula";
+            return "Formato de Email inválido";
         }
 
+        if (empleadoDAO.existeEmpleado(cedula)) {
+            return "La cédula ingresada ya pertenece a otro empleado";
+        }
+
+        Rol rolSeleccionado = new Rol();
+        rolSeleccionado.setIdRol(idRol);
+        
         Usuario usuario = new Usuario();
         usuario.setNombre(nombres);
         usuario.setApellido(apellidos);
@@ -55,13 +71,13 @@ public class EmpleadoController {
         usuario.setCorreo(email);
         usuario.setUsuario(nombreUsuario);
         usuario.setContrasenia(contrasenia);
-        usuario.setIdRol(idRol);
+        usuario.setIdRol(rolSeleccionado);
         usuario.setEstado(estado);
 
         Empleado empleado = new Empleado();
         empleado.setCedula(cedula);
         empleado.setDireccion(direccion);
-        empleado.setIdRol(idRol);
+        empleado.setIdRol(rolSeleccionado);
         empleado.setEstado(estado);
 
         int idUsuarioGenerado = usuarioDAO.registrarUsuario(usuario);
@@ -74,11 +90,21 @@ public class EmpleadoController {
     }
 
     public String actualizarEmpleadoConUsuario(String cedula, String nombres, String apellidos, String telefono,
-            String email, String direccion, String nombreUsuario, String contrasenia, int idRol, int estado, int idEmpleado, int idUsuario) {
+            String email, String direccion, String nombreUsuario, String contrasenia, String rol, int estado, int idEmpleado, int idUsuario) {
 
+        int idRol = rolDAO.getIdRolPorNombre(rol);
+
+        if (idRol == -1) {
+            return "No se pudo encontrar ID de rol";
+        }
+        
         if (cedula.isEmpty() || nombres.isEmpty() || apellidos.isEmpty() || telefono.isEmpty() || email.isEmpty()
                 || direccion.isEmpty() || nombreUsuario.isEmpty() || contrasenia.isEmpty()) {
             return "Todos los campos son obligatorios";
+        }
+
+        if (contrasenia.length() < 6) {
+            return "La contraseña debe tener al menos 6 caracteres";
         }
 
         if (!cedula.matches("\\d{10}")) {
@@ -93,6 +119,10 @@ public class EmpleadoController {
             return "Formato de Email inválido.";
         }
 
+        
+        Rol rolSeleccionado = new Rol();
+        rolSeleccionado.setIdRol(idRol);
+        
         Usuario usuario = new Usuario();
         usuario.setNombre(nombres);
         usuario.setApellido(apellidos);
@@ -100,17 +130,17 @@ public class EmpleadoController {
         usuario.setCorreo(email);
         usuario.setUsuario(nombreUsuario);
         usuario.setContrasenia(contrasenia);
-        usuario.setIdRol(idRol);
+        usuario.setIdRol(rolSeleccionado);
         usuario.setEstado(estado);
 
         Empleado empleado = new Empleado();
         empleado.setCedula(cedula);
         empleado.setDireccion(direccion);
-        empleado.setIdRol(idRol);
+        empleado.setIdRol(rolSeleccionado);
         empleado.setEstado(estado);
 
-        boolean usuarioActualizado = usuarioDAO.actualizarUsuario(usuario, idUsuario); 
-        boolean empleadoActualizado = empleadoDAO.actualizarEmpleado(empleado, idEmpleado); 
+        boolean usuarioActualizado = usuarioDAO.actualizarUsuario(usuario, idUsuario);
+        boolean empleadoActualizado = empleadoDAO.actualizarEmpleado(empleado, idEmpleado);
 
         boolean actualizado = usuarioActualizado && empleadoActualizado;
         return actualizado ? "Empleado actualizado correctamente" : "Error al actualizado el empleado";

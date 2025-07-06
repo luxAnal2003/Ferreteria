@@ -122,6 +122,11 @@ public class JPanelConsultarVenta extends javax.swing.JPanel {
         jLabel8.setText("Buscar:");
         add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 60, -1, 30));
 
+        txtBuscador.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtBuscadorActionPerformed(evt);
+            }
+        });
         txtBuscador.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtBuscadorKeyPressed(evt);
@@ -239,6 +244,10 @@ public class JPanelConsultarVenta extends javax.swing.JPanel {
     private void txtTotalKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTotalKeyPressed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtTotalKeyPressed
+
+    private void txtBuscadorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBuscadorActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtBuscadorActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuscar;

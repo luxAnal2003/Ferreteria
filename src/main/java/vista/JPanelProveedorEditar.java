@@ -16,6 +16,7 @@ import java.util.List;
  * @author admin
  */
 public class JPanelProveedorEditar extends javax.swing.JPanel {
+
     ProveedorController proveedorController;
     private int idProveedor;
 
@@ -28,6 +29,15 @@ public class JPanelProveedorEditar extends javax.swing.JPanel {
         proveedorController = new ProveedorController();
         this.cargarProveedoresEnTabla();
         this.verificarExistenciaProveedor();
+         txtBuscador.addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyReleased(java.awt.event.KeyEvent e) {
+                String texto = txtBuscador.getText().trim();
+                if (texto.isEmpty()) {
+                    cargarProveedoresEnTabla();
+                }
+            }
+        });
     }
 
     /**
@@ -54,6 +64,9 @@ public class JPanelProveedorEditar extends javax.swing.JPanel {
         txtEmail = new javax.swing.JTextField();
         jLabel13 = new javax.swing.JLabel();
         txtDireccion = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
+        txtBuscador = new javax.swing.JTextField();
+        btnBuscar = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -86,12 +99,12 @@ public class JPanelProveedorEditar extends javax.swing.JPanel {
                 {null, null, null, null, null, null, null}
             },
             new String [] {
-                "Cedula", "Nombre comercial", "Nombre de Contacto", "Telefono", "Email", "Direccion", "Tipo de producto"
+                "ID", "Ruc", "Nombre comercial", "Telefono", "Email", "Direccion", "Estado"
             }
         ));
         jScrollPane3.setViewportView(tableProveedor);
 
-        add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, 850, 180));
+        add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 110, 850, 140));
 
         btnLimpiar.setBackground(new java.awt.Color(204, 204, 255));
         btnLimpiar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -126,6 +139,28 @@ public class JPanelProveedorEditar extends javax.swing.JPanel {
         jLabel13.setText("Dirección:");
         add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 270, -1, -1));
         add(txtDireccion, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 290, 420, -1));
+
+        jLabel8.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/buscar.png"))); // NOI18N
+        jLabel8.setText("Buscar:");
+        add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, -1, 30));
+
+        txtBuscador.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtBuscadorKeyPressed(evt);
+            }
+        });
+        add(txtBuscador, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 70, 660, -1));
+
+        btnBuscar.setBackground(new java.awt.Color(204, 204, 255));
+        btnBuscar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        btnBuscar.setText("Buscar");
+        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarActionPerformed(evt);
+            }
+        });
+        add(btnBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 70, 90, -1));
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
@@ -140,18 +175,66 @@ public class JPanelProveedorEditar extends javax.swing.JPanel {
         String email = txtEmail.getText().trim();
         String direccion = txtDireccion.getText().trim();
         int estado = 1;
-        
+
         String mensaje = proveedorController.actualizarProveedor(ruc, nombreComercial, telefono, email, direccion, estado, idProveedor);
         JOptionPane.showMessageDialog(this, mensaje);
-        
+
         if (mensaje.contains("correctamente")) {
             this.setear();
             this.cargarProveedoresEnTabla();
         }
     }//GEN-LAST:event_btnActualizarActionPerformed
 
+    private void txtBuscadorKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscadorKeyPressed
+        if (evt.getKeyCode() == evt.VK_ENTER) {
+            this.buscarProveedores();
+        }
+    }//GEN-LAST:event_txtBuscadorKeyPressed
+
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+        this.buscarProveedores();
+    }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void buscarProveedores() {
+        String criterio = txtBuscador.getText().trim();
+        ProveedorController controller = new ProveedorController();
+
+        if (criterio.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Ingrese un criterio de búsqueda");
+            cargarProveedoresEnTabla();
+            return;
+        }
+
+        DefaultTableModel model = new DefaultTableModel();
+        model.setColumnIdentifiers(new Object[]{
+            "ID", "RUC", "Nombre Comercial", "Teléfono", "Email", "Dirección", "Estado"
+        });
+
+        List<Proveedor> proveedoresEncontrados = controller.buscarProveedoresPorCriterio(criterio);
+
+        if (!proveedoresEncontrados.isEmpty()) {
+            for (Proveedor p : proveedoresEncontrados) {
+                Object[] fila = new Object[7];
+                fila[0] = p.getIdProveedor();
+                fila[1] = p.getRuc();
+                fila[2] = p.getRazonSocial();
+                fila[3] = p.getTelefono();
+                fila[4] = p.getCorreo();
+                fila[5] = p.getDireccion();
+                fila[6] = (p.getEstado() == 1) ? "Activo" : "Inactivo";
+                model.addRow(fila);
+            }
+            tableProveedor.setModel(model);
+            jScrollPane3.setViewportView(tableProveedor);
+        } else {
+            JOptionPane.showMessageDialog(null, "No se encontraron proveedores activos que coincidan con el criterio de búsqueda.");
+            cargarProveedoresEnTabla();
+        }
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActualizar;
+    private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnLimpiar;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel12;
@@ -159,8 +242,10 @@ public class JPanelProveedorEditar extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     public static javax.swing.JScrollPane jScrollPane3;
     public static javax.swing.JTable tableProveedor;
+    private javax.swing.JTextField txtBuscador;
     private javax.swing.JTextField txtDireccion;
     private javax.swing.JTextField txtEmail;
     private javax.swing.JTextField txtNombreComercial;
@@ -168,14 +253,14 @@ public class JPanelProveedorEditar extends javax.swing.JPanel {
     private javax.swing.JTextField txtTelefono;
     // End of variables declaration//GEN-END:variables
 
-private void cargarProveedoresEnTabla() {
+    private void cargarProveedoresEnTabla() {
         DefaultTableModel model = new DefaultTableModel();
         model.setColumnIdentifiers(new Object[]{
             "ID", "RUC", "Nombre Comercial", "Teléfono", "Email", "Dirección", "Estado"
         });
 
         List<Proveedor> proveedores = proveedorController.obtenerTodosLosProveedores();
-        
+
         for (Proveedor p : proveedores) {
             model.addRow(new Object[]{
                 p.getIdProveedor(),
@@ -192,7 +277,7 @@ private void cargarProveedoresEnTabla() {
         tableProveedor.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 int fila = tableProveedor.getSelectedRow();
-                if (fila!= -1) {
+                if (fila != -1) {
                     idProveedor = Integer.parseInt(tableProveedor.getValueAt(fila, 0).toString());
                     enviarDatosProveedor(idProveedor);
                 }
@@ -223,7 +308,9 @@ private void cargarProveedoresEnTabla() {
         txtTelefono.setText("");
         txtEmail.setText("");
         txtDireccion.setText("");
+        txtBuscador.setText("");
     }
+
     private void verificarExistenciaProveedor() {
         ProveedorController controller = new ProveedorController();
         if (!controller.existenProveedoresEnSistema()) {

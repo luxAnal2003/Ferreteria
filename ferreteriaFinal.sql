@@ -14,7 +14,7 @@ CREATE TABLE Usuario (
     apellido VARCHAR(30) NOT NULL,
     usuario VARCHAR(50) NOT NULL,
     contrasenia VARCHAR(50) NOT NULL,
-    telefono VARCHAR(15) NOT NULL,
+    telefono VARCHAR(10) NOT NULL,
     correo VARCHAR(50) NOT NULL,
     estado INT(1) NOT NULL,
     FOREIGN KEY (idRol) REFERENCES rol(idRol)
@@ -24,7 +24,7 @@ CREATE TABLE Cliente (
     idCliente INT PRIMARY KEY AUTO_INCREMENT,
     nombre VARCHAR(30) NOT NULL,
     apellido VARCHAR(30) NOT NULL,
-    telefono VARCHAR(15) NOT NULL,
+    telefono VARCHAR(10) NOT NULL,
     correo VARCHAR(50) NOT NULL,
     cedula VARCHAR(10) NOT NULL,
     direccion VARCHAR(100) NOT NULL,
@@ -54,7 +54,7 @@ CREATE TABLE Proveedor (
     idProveedor INT PRIMARY KEY AUTO_INCREMENT,
     ruc VARCHAR(13) NOT NULL,
     nombreProveedor VARCHAR(30) NOT NULL,
-    telefonoProveedor VARCHAR(15) NOT NULL,
+    telefonoProveedor VARCHAR(10) NOT NULL,
     direccionProveedor VARCHAR(200) NOT NULL,
     correoProveedor VARCHAR(50) NOT NULL,
     estado INT(1) NOT NULL
@@ -102,7 +102,7 @@ CREATE TABLE DetalleVenta (
 
 INSERT INTO rol (tipo, estado) VALUES
 ('Administrador', 1),
-('Empleado', 1);
+('Vendedor', 1);
 select * from rol;
 
 -- Tabla Usuario
@@ -119,12 +119,12 @@ select * from Usuario;
 INSERT INTO Empleado ( idRol, cedula, direccion, estado, idUsuario
 ) VALUES
 (2, '0973856193', 'Av. Principal 100', 1, 2),
+(1, '0945656566', 'Samborondón', 1, 3),
 (2, '0946728355','Calle Secundaria 200', 1, 4),
 (2, '0943399477', 'Portete y la 23', 1, 5),
 (2, '0909054439', 'Samborondon', 1, 6),
 (2, '0351847398', 'Av. Principal 100', 1, 7);
 select *  from empleado;
-
 
 select * from cliente;
 INSERT INTO Cliente (nombre, apellido, telefono, correo, cedula, direccion, estado) VALUES

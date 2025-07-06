@@ -165,7 +165,7 @@ public class ProductoDAO {
     }
 
     public Producto buscarProductoPorNombre(String nombreProducto) {
-        String sql = "SELECT * FROM producto WHERE nombre LIKE ? AND estado = 1";
+        String sql = "SELECT * FROM producto WHERE nombre LIKE ?";
 
         try (Connection con = Conexion.conectar(); PreparedStatement ps = con.prepareStatement(sql)) {
 

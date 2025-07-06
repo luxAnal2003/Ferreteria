@@ -52,7 +52,7 @@ public class ClienteController {
         }
 
         if (clienteDAO.existeClientePorCedula(cedula)) {
-            return "El cliente ya existe con esa cédula";
+            return "El número de identificación ya está registrado";
         }
 
         boolean registrado = clienteDAO.registrarCliente(cliente);

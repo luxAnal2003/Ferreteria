@@ -38,16 +38,16 @@ public class VentaController {
     public String desactivarVenta(int idVenta) {
         int estadoActual = ventaDAO.obtenerEstadoVenta(idVenta);
         if (estadoActual == 0) {
-            return "La venta ya está anulada.";
+            return "Esta venta ya fue anulada previamente";
         }
 
         boolean cabecera = ventaDAO.cambiarEstado(idVenta, 0);
         boolean detalles = ventaDAO.cambiarEstadoDetallesVenta(idVenta, 0);
 
         if (cabecera && detalles) {
-            return "Venta anulada correctamente.";
+            return "Venta anulada correctamente. El inventario ha sido actualizado";
         } else {
-            return "Error al anular la venta.";
+            return "Ocurrió un error al anular la venta. Intente nuevamente o contacte al administrador";
         }
     }
 

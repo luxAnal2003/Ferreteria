@@ -42,22 +42,23 @@ public class FrmMenuEmpleado extends javax.swing.JFrame {
         content = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu5 = new javax.swing.JMenu();
+        menuItemNuevoCliente = new javax.swing.JMenuItem();
+        menuItemEditarCliente = new javax.swing.JMenuItem();
+        menuItemConsultarCliente = new javax.swing.JMenuItem();
         jMenu7 = new javax.swing.JMenu();
         menuItemNuevoProveedor = new javax.swing.JMenuItem();
         menuItemEditarProveedor = new javax.swing.JMenuItem();
-        menuItemEliminarProveedor = new javax.swing.JMenuItem();
         menuItemConsultarProveedor = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
         menuItemNuevoProducto = new javax.swing.JMenuItem();
         menuItemEditarProducto = new javax.swing.JMenuItem();
-        menuItemEliminarProducto = new javax.swing.JMenuItem();
         menuItemGestionarProducto1 = new javax.swing.JMenuItem();
         jMenu8 = new javax.swing.JMenu();
         menuItemGestionarCategoria = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         menuItemNuevaVenta = new javax.swing.JMenuItem();
         menuItemConsultar = new javax.swing.JMenuItem();
-        menuItemEliminarVenta = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
         menuItemCerrarSesion = new javax.swing.JMenuItem();
 
@@ -82,8 +83,45 @@ public class FrmMenuEmpleado extends javax.swing.JFrame {
             .addGroup(contentLayout.createSequentialGroup()
                 .addGap(119, 119, 119)
                 .addComponent(jLabel1)
-                .addContainerGap(130, Short.MAX_VALUE))
+                .addContainerGap(131, Short.MAX_VALUE))
         );
+
+        jMenu5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/cliente.png"))); // NOI18N
+        jMenu5.setText("Cliente");
+        jMenu5.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jMenu5.setPreferredSize(new java.awt.Dimension(130, 50));
+
+        menuItemNuevoCliente.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        menuItemNuevoCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/nuevo-usuario.png"))); // NOI18N
+        menuItemNuevoCliente.setText("Nuevo");
+        menuItemNuevoCliente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemNuevoClienteActionPerformed(evt);
+            }
+        });
+        jMenu5.add(menuItemNuevoCliente);
+
+        menuItemEditarCliente.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        menuItemEditarCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/editar-usuario.png"))); // NOI18N
+        menuItemEditarCliente.setText("Editar");
+        menuItemEditarCliente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemEditarClienteActionPerformed(evt);
+            }
+        });
+        jMenu5.add(menuItemEditarCliente);
+
+        menuItemConsultarCliente.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        menuItemConsultarCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/buscar.png"))); // NOI18N
+        menuItemConsultarCliente.setText("Consultar");
+        menuItemConsultarCliente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuItemConsultarClienteActionPerformed(evt);
+            }
+        });
+        jMenu5.add(menuItemConsultarCliente);
+
+        jMenuBar1.add(jMenu5);
 
         jMenu7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/proveedor.png"))); // NOI18N
         jMenu7.setText("Proveedor");
@@ -109,16 +147,6 @@ public class FrmMenuEmpleado extends javax.swing.JFrame {
             }
         });
         jMenu7.add(menuItemEditarProveedor);
-
-        menuItemEliminarProveedor.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        menuItemEliminarProveedor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/eliminar-usuario.png"))); // NOI18N
-        menuItemEliminarProveedor.setText("Eliminar");
-        menuItemEliminarProveedor.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuItemEliminarProveedorActionPerformed(evt);
-            }
-        });
-        jMenu7.add(menuItemEliminarProveedor);
 
         menuItemConsultarProveedor.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         menuItemConsultarProveedor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/buscar.png"))); // NOI18N
@@ -156,16 +184,6 @@ public class FrmMenuEmpleado extends javax.swing.JFrame {
             }
         });
         jMenu3.add(menuItemEditarProducto);
-
-        menuItemEliminarProducto.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        menuItemEliminarProducto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/eliminar-producto.png"))); // NOI18N
-        menuItemEliminarProducto.setText("Eliminar");
-        menuItemEliminarProducto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuItemEliminarProductoActionPerformed(evt);
-            }
-        });
-        jMenu3.add(menuItemEliminarProducto);
 
         menuItemGestionarProducto1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         menuItemGestionarProducto1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/buscar.png"))); // NOI18N
@@ -220,16 +238,6 @@ public class FrmMenuEmpleado extends javax.swing.JFrame {
             }
         });
         jMenu2.add(menuItemConsultar);
-
-        menuItemEliminarVenta.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        menuItemEliminarVenta.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/eliminar-venta.png"))); // NOI18N
-        menuItemEliminarVenta.setText("Eliminar");
-        menuItemEliminarVenta.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuItemEliminarVentaActionPerformed(evt);
-            }
-        });
-        jMenu2.add(menuItemEliminarVenta);
 
         jMenuBar1.add(jMenu2);
 
@@ -299,12 +307,6 @@ public class FrmMenuEmpleado extends javax.swing.JFrame {
         ShowPanel(venta);
     }//GEN-LAST:event_menuItemConsultarActionPerformed
 
-    private void menuItemEliminarVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemEliminarVentaActionPerformed
-        content.removeAll();
-        JPanelEliminarVenta venta = new JPanelEliminarVenta();
-        ShowPanel(venta);
-    }//GEN-LAST:event_menuItemEliminarVentaActionPerformed
-
     private void menuItemNuevoProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemNuevoProveedorActionPerformed
         content.removeAll();
         JPanelProveedorNuevo proveedor = new JPanelProveedorNuevo();
@@ -317,29 +319,35 @@ public class FrmMenuEmpleado extends javax.swing.JFrame {
         ShowPanel(proveedor);
     }//GEN-LAST:event_menuItemEditarProveedorActionPerformed
 
-    private void menuItemEliminarProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemEliminarProveedorActionPerformed
-        content.removeAll();
-        JPanelProveedorEliminar proveedor = new JPanelProveedorEliminar();
-        ShowPanel(proveedor);
-    }//GEN-LAST:event_menuItemEliminarProveedorActionPerformed
-
     private void menuItemEditarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemEditarProductoActionPerformed
         content.removeAll();
         JPanelProductoEditar producto = new JPanelProductoEditar();
         ShowPanel(producto);
     }//GEN-LAST:event_menuItemEditarProductoActionPerformed
 
-    private void menuItemEliminarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemEliminarProductoActionPerformed
-        content.removeAll();
-        JPanelProductoEliminar producto = new JPanelProductoEliminar();
-        ShowPanel(producto);
-    }//GEN-LAST:event_menuItemEliminarProductoActionPerformed
-
     private void menuItemNuevoProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemNuevoProductoActionPerformed
         content.removeAll();
         JPanelProductoNuevo producto = new JPanelProductoNuevo();
         ShowPanel(producto);
     }//GEN-LAST:event_menuItemNuevoProductoActionPerformed
+
+    private void menuItemNuevoClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemNuevoClienteActionPerformed
+        content.removeAll();
+        JPanelClienteNuevo cliente = new JPanelClienteNuevo();
+        ShowPanel(cliente);
+    }//GEN-LAST:event_menuItemNuevoClienteActionPerformed
+
+    private void menuItemEditarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemEditarClienteActionPerformed
+        content.removeAll();
+        JPanelClienteEditar cliente = new JPanelClienteEditar();
+        ShowPanel(cliente);
+    }//GEN-LAST:event_menuItemEditarClienteActionPerformed
+
+    private void menuItemConsultarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemConsultarClienteActionPerformed
+        content.removeAll();
+        JPanelConsultarCliente cliente = new JPanelConsultarCliente();
+        ShowPanel(cliente);
+    }//GEN-LAST:event_menuItemConsultarClienteActionPerformed
 
     /**
      * @param args the command line arguments
@@ -383,20 +391,21 @@ public class FrmMenuEmpleado extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
+    private javax.swing.JMenu jMenu5;
     private javax.swing.JMenu jMenu7;
     private javax.swing.JMenu jMenu8;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem menuItemCerrarSesion;
     private javax.swing.JMenuItem menuItemConsultar;
+    private javax.swing.JMenuItem menuItemConsultarCliente;
     private javax.swing.JMenuItem menuItemConsultarProveedor;
+    private javax.swing.JMenuItem menuItemEditarCliente;
     private javax.swing.JMenuItem menuItemEditarProducto;
     private javax.swing.JMenuItem menuItemEditarProveedor;
-    private javax.swing.JMenuItem menuItemEliminarProducto;
-    private javax.swing.JMenuItem menuItemEliminarProveedor;
-    private javax.swing.JMenuItem menuItemEliminarVenta;
     private javax.swing.JMenuItem menuItemGestionarCategoria;
     private javax.swing.JMenuItem menuItemGestionarProducto1;
     private javax.swing.JMenuItem menuItemNuevaVenta;
+    private javax.swing.JMenuItem menuItemNuevoCliente;
     private javax.swing.JMenuItem menuItemNuevoProducto;
     private javax.swing.JMenuItem menuItemNuevoProveedor;
     // End of variables declaration//GEN-END:variables

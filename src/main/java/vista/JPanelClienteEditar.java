@@ -16,6 +16,7 @@ import modelo.Cliente;
  * @author admin
  */
 public class JPanelClienteEditar extends javax.swing.JPanel {
+
     private ClienteController clienteController;
     private int idCliente;
 
@@ -26,9 +27,19 @@ public class JPanelClienteEditar extends javax.swing.JPanel {
         initComponents();
         this.setSize(new Dimension(900, 400));
 
-        clienteController =  new ClienteController();
+        clienteController = new ClienteController();
         this.cargarClientesEnTabla();
         this.verificarExistenciaClientes();
+        
+        txtBuscador.addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyReleased(java.awt.event.KeyEvent e) {
+                String texto = txtBuscador.getText().trim();
+                if (texto.isEmpty()) {
+                    cargarClientesEnTabla();
+                }
+            }
+        });
     }
 
     /**
@@ -57,6 +68,9 @@ public class JPanelClienteEditar extends javax.swing.JPanel {
         txtEmail = new javax.swing.JTextField();
         jLabel13 = new javax.swing.JLabel();
         txtDireccion = new javax.swing.JTextField();
+        txtBuscador = new javax.swing.JTextField();
+        btnBuscar = new javax.swing.JButton();
+        jLabel8 = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -99,7 +113,7 @@ public class JPanelClienteEditar extends javax.swing.JPanel {
         ));
         jScrollPane3.setViewportView(tableCliente);
 
-        add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 70, 840, 190));
+        add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 110, 840, 150));
 
         btnLimpiar.setBackground(new java.awt.Color(204, 204, 255));
         btnLimpiar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -134,6 +148,28 @@ public class JPanelClienteEditar extends javax.swing.JPanel {
         jLabel13.setText("Dirección:");
         add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 330, -1, -1));
         add(txtDireccion, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 350, 270, -1));
+
+        txtBuscador.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtBuscadorKeyPressed(evt);
+            }
+        });
+        add(txtBuscador, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 70, 650, -1));
+
+        btnBuscar.setBackground(new java.awt.Color(204, 204, 255));
+        btnBuscar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        btnBuscar.setText("Buscar");
+        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarActionPerformed(evt);
+            }
+        });
+        add(btnBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 70, 90, -1));
+
+        jLabel8.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/buscar.png"))); // NOI18N
+        jLabel8.setText("Buscar:");
+        add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 70, -1, 30));
     }// </editor-fold>//GEN-END:initComponents
 
     /**
@@ -154,7 +190,7 @@ public class JPanelClienteEditar extends javax.swing.JPanel {
         String email = txtEmail.getText().trim();
         String direccion = txtDireccion.getText().trim();
         int estado = 1;
-        
+
         String mensaje = clienteController.actualizarCliente(cedula, nombres, apellidos, telefono, email, direccion, estado, idCliente);
         JOptionPane.showMessageDialog(this, mensaje);
 
@@ -164,8 +200,58 @@ public class JPanelClienteEditar extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btnActualizarActionPerformed
 
+    private void txtBuscadorKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscadorKeyPressed
+        if (evt.getKeyCode() == evt.VK_ENTER) {
+            this.buscarClientes();
+        }
+    }//GEN-LAST:event_txtBuscadorKeyPressed
+
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+        this.buscarClientes();
+    }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void buscarClientes() {
+        String criterio = txtBuscador.getText().trim();
+        ClienteController controller = new ClienteController();
+
+        if (criterio.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Ingrese un criterio de búsqueda");
+
+            cargarClientesEnTabla();
+            return;
+        }
+
+        DefaultTableModel model = new DefaultTableModel();
+        model.setColumnIdentifiers(new Object[]{
+            "ID Cliente", "Cédula", "Nombres", "Apellidos", "Teléfono", "Dirección", "Correo", "Estado"
+        });
+
+        List<Cliente> clientesEncontrados = controller.buscarClientes(criterio);
+
+        if (!clientesEncontrados.isEmpty()) {
+            for (Cliente cliente : clientesEncontrados) {
+                Object[] fila = new Object[8];
+                fila[0] = cliente.getIdCliente();
+                fila[1] = cliente.getCedula();
+                fila[2] = cliente.getNombre();
+                fila[3] = cliente.getApellido();
+                fila[4] = cliente.getTelefono();
+                fila[5] = cliente.getDireccion();
+                fila[6] = cliente.getCorreo();
+                fila[7] = (cliente.getEstado() == 1) ? "Activo" : "Inactivo";
+                model.addRow(fila);
+            }
+            tableCliente.setModel(model);
+            jScrollPane3.setViewportView(tableCliente);
+        } else {
+            JOptionPane.showMessageDialog(null, "NNo se encontraron resultados");
+            cargarClientesEnTabla();
+        }
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActualizar;
+    private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnLimpiar;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel12;
@@ -173,10 +259,12 @@ public class JPanelClienteEditar extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     public static javax.swing.JScrollPane jScrollPane3;
     public static javax.swing.JTable tableCliente;
     private javax.swing.JTextField txtApellidos;
+    private javax.swing.JTextField txtBuscador;
     private javax.swing.JTextField txtCedulaRuc;
     private javax.swing.JTextField txtDireccion;
     private javax.swing.JTextField txtEmail;
@@ -184,7 +272,6 @@ public class JPanelClienteEditar extends javax.swing.JPanel {
     private javax.swing.JTextField txtTelefono;
     // End of variables declaration//GEN-END:variables
 
-    
     private void setear() {
         txtCedulaRuc.setText("");
         txtNombres.setText("");
@@ -195,6 +282,7 @@ public class JPanelClienteEditar extends javax.swing.JPanel {
         idCliente = 0;
         txtCedulaRuc.setEditable(false);
         txtCedulaRuc.setEnabled(false);
+        txtBuscador.setText("");
     }
 
     private void cargarClientesEnTabla() {
@@ -222,14 +310,14 @@ public class JPanelClienteEditar extends javax.swing.JPanel {
         tableCliente.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 int fila = tableCliente.getSelectedRow();
-                if (fila!= -1) {
+                if (fila != -1) {
                     idCliente = Integer.parseInt(tableCliente.getValueAt(fila, 0).toString());
                     enviarDatosCliente(idCliente);
                 }
             }
         });
     }
-   
+
     private void enviarDatosCliente(int idCliente) {
         Cliente cliente = clienteController.obtenerClientePorId(idCliente);
 
@@ -247,7 +335,7 @@ public class JPanelClienteEditar extends javax.swing.JPanel {
             setear();
         }
     }
-    
+
     private void verificarExistenciaClientes() {
         if (!clienteController.existenClientesEnSistema()) {
             JOptionPane.showMessageDialog(null, "No existen clientes en el sistema.");

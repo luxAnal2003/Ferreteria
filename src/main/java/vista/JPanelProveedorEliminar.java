@@ -28,6 +28,15 @@ public class JPanelProveedorEliminar extends javax.swing.JPanel {
         proveedorController = new ProveedorController();
         this.cargarProveedoresEnTabla();
         this.verificarExistenciaProveedor();
+         txtBuscador.addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyReleased(java.awt.event.KeyEvent e) {
+                String texto = txtBuscador.getText().trim();
+                if (texto.isEmpty()) {
+                    cargarProveedoresEnTabla();
+                }
+            }
+        });
     }
 
     /**
@@ -40,17 +49,62 @@ public class JPanelProveedorEliminar extends javax.swing.JPanel {
     private void initComponents() {
 
         jLabel2 = new javax.swing.JLabel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        tableProveedor = new javax.swing.JTable();
         btnActivar = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
+        btnBuscar = new javax.swing.JButton();
+        txtBuscador = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tableProveedor = new javax.swing.JTable();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel2.setText("Eliminar Proveedor");
-        add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 40, -1, -1));
+        add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 40, -1, -1));
+
+        btnActivar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        btnActivar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/activar.png"))); // NOI18N
+        btnActivar.setText("Activar");
+        btnActivar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnActivarActionPerformed(evt);
+            }
+        });
+        add(btnActivar, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 30, 140, 30));
+
+        btnEliminar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/desactivar.png"))); // NOI18N
+        btnEliminar.setText("Eliminar");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
+        add(btnEliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 30, 140, 30));
+
+        btnBuscar.setBackground(new java.awt.Color(204, 204, 255));
+        btnBuscar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        btnBuscar.setText("Buscar");
+        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarActionPerformed(evt);
+            }
+        });
+        add(btnBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(770, 70, 90, -1));
+
+        txtBuscador.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtBuscadorKeyPressed(evt);
+            }
+        });
+        add(txtBuscador, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 70, 630, -1));
+
+        jLabel8.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/buscar.png"))); // NOI18N
+        jLabel8.setText("Buscar:");
+        add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 70, -1, 30));
 
         jScrollPane3.setPreferredSize(new java.awt.Dimension(450, 80));
 
@@ -62,32 +116,12 @@ public class JPanelProveedorEliminar extends javax.swing.JPanel {
                 {null, null, null, null, null, null, null}
             },
             new String [] {
-                "Cedula", "Nombre comercial", "Nombre de Contacto", "Telefono", "Email", "Direccion", "Tipo de producto"
+                "ID", "Ruc", "Nombre comercial", "Telefono", "Email", "Direccion", "Estado"
             }
         ));
         jScrollPane3.setViewportView(tableProveedor);
 
-        add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, 850, 290));
-
-        btnActivar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        btnActivar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/activar.png"))); // NOI18N
-        btnActivar.setText("Activar");
-        btnActivar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnActivarActionPerformed(evt);
-            }
-        });
-        add(btnActivar, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 30, 140, 30));
-
-        btnEliminar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/desactivar.png"))); // NOI18N
-        btnEliminar.setText("Eliminar");
-        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEliminarActionPerformed(evt);
-            }
-        });
-        add(btnEliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 30, 140, 30));
+        add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 110, 850, 260));
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnActivarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActivarActionPerformed
@@ -98,12 +132,62 @@ public class JPanelProveedorEliminar extends javax.swing.JPanel {
         desactivarProveedor();
     }//GEN-LAST:event_btnEliminarActionPerformed
 
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+        this.buscarProveedores();
+    }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void txtBuscadorKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscadorKeyPressed
+        if (evt.getKeyCode() == evt.VK_ENTER) {
+            this.buscarProveedores();
+        }
+    }//GEN-LAST:event_txtBuscadorKeyPressed
+
+    private void buscarProveedores() {
+        String criterio = txtBuscador.getText().trim();
+        ProveedorController controller = new ProveedorController();
+
+        if (criterio.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Ingrese un criterio de búsqueda");
+            cargarProveedoresEnTabla();
+            return;
+        }
+
+        DefaultTableModel model = new DefaultTableModel();
+        model.setColumnIdentifiers(new Object[]{
+            "ID", "RUC", "Nombre Comercial", "Teléfono", "Email", "Dirección", "Estado"
+        });
+
+        List<Proveedor> proveedoresEncontrados = controller.buscarProveedoresPorCriterio(criterio);
+
+        if (!proveedoresEncontrados.isEmpty()) {
+            for (Proveedor p : proveedoresEncontrados) {
+                Object[] fila = new Object[7];
+                fila[0] = p.getIdProveedor();
+                fila[1] = p.getRuc();
+                fila[2] = p.getRazonSocial();
+                fila[3] = p.getTelefono();
+                fila[4] = p.getCorreo();
+                fila[5] = p.getDireccion();
+                fila[6] = (p.getEstado() == 1) ? "Activo" : "Inactivo";
+                model.addRow(fila);
+            }
+            tableProveedor.setModel(model);
+            jScrollPane3.setViewportView(tableProveedor);
+        } else {
+            JOptionPane.showMessageDialog(null, "No se encontraron proveedores activos que coincidan con el criterio de búsqueda.");
+            cargarProveedoresEnTabla();
+        }
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActivar;
+    private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel8;
     public static javax.swing.JScrollPane jScrollPane3;
     public static javax.swing.JTable tableProveedor;
+    private javax.swing.JTextField txtBuscador;
     // End of variables declaration//GEN-END:variables
 
     private void cargarProveedoresEnTabla() {

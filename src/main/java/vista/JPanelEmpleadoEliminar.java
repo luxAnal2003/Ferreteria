@@ -30,7 +30,16 @@ public class JPanelEmpleadoEliminar extends javax.swing.JPanel {
         this.setSize(new Dimension(900, 400));
         empleadoController = new EmpleadoController();
         usuarioController = new UsuarioController();
-        this.cargarEmpleadosEnTabla();
+        this.cargarEmpleadosEnTabla();txtBuscador.addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyReleased(java.awt.event.KeyEvent e) {
+                String texto = txtBuscador.getText().trim();
+                if (texto.isEmpty()) {
+                    cargarEmpleadosEnTabla();
+                }
+            }
+        });
+        
     }
 
     /**
@@ -47,6 +56,9 @@ public class JPanelEmpleadoEliminar extends javax.swing.JPanel {
         btnEliminar = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
         tableEmpleado = new javax.swing.JTable();
+        jLabel8 = new javax.swing.JLabel();
+        txtBuscador = new javax.swing.JTextField();
+        btnBuscar = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -90,7 +102,29 @@ public class JPanelEmpleadoEliminar extends javax.swing.JPanel {
         ));
         jScrollPane4.setViewportView(tableEmpleado);
 
-        add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, 860, 280));
+        add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 110, 860, 240));
+
+        jLabel8.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/buscar.png"))); // NOI18N
+        jLabel8.setText("Buscar:");
+        add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, -1, 30));
+
+        txtBuscador.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtBuscadorKeyPressed(evt);
+            }
+        });
+        add(txtBuscador, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 70, 670, -1));
+
+        btnBuscar.setBackground(new java.awt.Color(204, 204, 255));
+        btnBuscar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        btnBuscar.setText("Buscar");
+        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarActionPerformed(evt);
+            }
+        });
+        add(btnBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 70, 90, -1));
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnActivarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActivarActionPerformed
@@ -113,12 +147,46 @@ public class JPanelEmpleadoEliminar extends javax.swing.JPanel {
         this.cargarEmpleadosEnTabla();
     }//GEN-LAST:event_btnEliminarActionPerformed
 
+    private void txtBuscadorKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscadorKeyPressed
+        if (evt.getKeyCode() == evt.VK_ENTER) {
+            this.buscarEmpleados();
+        }
+    }//GEN-LAST:event_txtBuscadorKeyPressed
+
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+        this.buscarEmpleados();
+    }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void buscarEmpleados() {
+        String criterio = txtBuscador.getText().trim();
+        if (criterio.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Ingrese un criterio de búsqueda");
+            cargarEmpleadosEnTabla();
+            return;
+        }
+
+        List<Object[]> resultados = empleadoController.buscarEmpleados(criterio);
+        DefaultTableModel model = (DefaultTableModel) tableEmpleado.getModel();
+        model.setRowCount(0);
+
+        for (Object[] fila : resultados) {
+            model.addRow(fila);
+        }
+
+        if (resultados.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No se encontraron resultados.");
+            cargarEmpleadosEnTabla();
+        }
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActivar;
+    private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel8;
     public static javax.swing.JScrollPane jScrollPane4;
     public static javax.swing.JTable tableEmpleado;
+    private javax.swing.JTextField txtBuscador;
     // End of variables declaration//GEN-END:variables
     private void cargarEmpleadosEnTabla() {
         DefaultTableModel model = (DefaultTableModel) tableEmpleado.getModel();

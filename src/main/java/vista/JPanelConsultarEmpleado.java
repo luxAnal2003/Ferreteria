@@ -148,7 +148,7 @@ public class JPanelConsultarEmpleado extends javax.swing.JPanel {
         }
 
         if (empleados.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "No existen empleados registrados actualmente.");
+            JOptionPane.showMessageDialog(null, "No existen empleados registrados actualmente");
         }
     }
 
@@ -169,7 +169,7 @@ public class JPanelConsultarEmpleado extends javax.swing.JPanel {
         }
 
         if (resultados.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "No se encontraron resultados.");
+            JOptionPane.showMessageDialog(null, "No se encontraron resultados");
             cargarEmpleadosEnTabla();
         }
     }

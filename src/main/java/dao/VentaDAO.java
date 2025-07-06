@@ -319,7 +319,7 @@ public class VentaDAO {
                 + "INNER JOIN Cliente cl ON cv.idCliente = cl.idCliente "
                 + "INNER JOIN Empleado em ON cv.idEmpleado = em.idEmpleado "
                 + "INNER JOIN Usuario ue ON em.idUsuario = ue.idUsuario "
-                + "WHERE cv.estado = 1 AND (CONCAT(cl.nombre, ' ', cl.apellido) LIKE ? OR cl.cedula LIKE ?)";
+                + "WHERE (CONCAT(cl.nombre, ' ', cl.apellido) LIKE ? OR cl.cedula LIKE ?)";
 
         try (Connection con = Conexion.conectar(); PreparedStatement pst = con.prepareStatement(sql)) {
             String like = "%" + criterio + "%";

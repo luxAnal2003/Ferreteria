@@ -34,6 +34,15 @@ public class JPanelProductoEditar extends javax.swing.JPanel {
         this.cargarCategoriasEnComboBox();
         this.cargarProductosEnTabla();
         this.verificarExistenciaProductos();
+        txtBuscador.addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyReleased(java.awt.event.KeyEvent e) {
+                String texto = txtBuscador.getText().trim();
+                if (texto.isEmpty()) {
+                    cargarProductosEnTabla();
+                }
+            }
+        });
     }
 
     private void cargarCategoriasEnComboBox() {
@@ -85,6 +94,9 @@ public class JPanelProductoEditar extends javax.swing.JPanel {
         btnActualizar = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
         tableProducto = new javax.swing.JTable();
+        jLabel8 = new javax.swing.JLabel();
+        txtBuscador = new javax.swing.JTextField();
+        btnBuscar = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -170,7 +182,29 @@ public class JPanelProductoEditar extends javax.swing.JPanel {
         ));
         jScrollPane4.setViewportView(tableProducto);
 
-        add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 60, 850, 140));
+        add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 100, 850, 100));
+
+        jLabel8.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/buscar.png"))); // NOI18N
+        jLabel8.setText("Buscar:");
+        add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 60, -1, 30));
+
+        txtBuscador.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtBuscadorKeyPressed(evt);
+            }
+        });
+        add(txtBuscador, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 60, 660, -1));
+
+        btnBuscar.setBackground(new java.awt.Color(204, 204, 255));
+        btnBuscar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        btnBuscar.setText("Buscar");
+        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarActionPerformed(evt);
+            }
+        });
+        add(btnBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 60, 90, -1));
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
@@ -202,8 +236,56 @@ public class JPanelProductoEditar extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btnActualizarActionPerformed
 
+    private void txtBuscadorKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscadorKeyPressed
+        if (evt.getKeyCode() == evt.VK_ENTER) {
+            this.buscarProductos();
+        }
+    }//GEN-LAST:event_txtBuscadorKeyPressed
+
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+        this.buscarProductos();
+    }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void buscarProductos() {
+        String criterio = txtBuscador.getText().trim();
+        ProductoController controller = new ProductoController();
+
+        if (criterio.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Ingrese un criterio de búsqueda");
+            cargarProductosEnTabla();
+            return;
+        }
+
+        DefaultTableModel model = new DefaultTableModel();
+        model.setColumnIdentifiers(new Object[]{
+            "ID", "Nombre", "Proveedor", "Cantidad", "Descripción", "Precio", "Iva", "Categoría", "Estado"
+        });
+
+        Producto productoEncontrado = controller.obtenerProductoPorNombre(criterio);
+
+        if (productoEncontrado != null) {
+            Object[] fila = new Object[9];
+            fila[0] = productoEncontrado.getIdProducto();
+            fila[1] = productoEncontrado.getNombreProducto();
+            fila[2] = productoEncontrado.getProveedor().getRazonSocial();
+            fila[3] = productoEncontrado.getCantidad();
+            fila[4] = productoEncontrado.getDescripcion();
+            fila[5] = productoEncontrado.getPrecio();
+            fila[6] = String.format("%.2f", productoEncontrado.getPorcentajeIva() / 100.0);
+            fila[7] = productoEncontrado.getCategoria().getNombre();
+            fila[8] = (productoEncontrado.getEstado() == 1) ? "Activo" : "Inactivo";
+            model.addRow(fila);
+
+            tableProducto.setModel(model);
+        } else {
+            JOptionPane.showMessageDialog(null, "No se encontró el producto con ese nombre");
+            cargarProductosEnTabla();
+        }
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActualizar;
+    private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnLimpiar;
     private javax.swing.JComboBox<String> cboxCategoria;
     private javax.swing.JComboBox<String> cboxProveedor;
@@ -213,11 +295,13 @@ public class JPanelProductoEditar extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane2;
     public static javax.swing.JScrollPane jScrollPane4;
     public static javax.swing.JTable tableProducto;
     private javax.swing.JTextArea textAreaDescripcion;
+    private javax.swing.JTextField txtBuscador;
     private javax.swing.JTextField txtNombreProducto;
     private javax.swing.JTextField txtPrecio;
     private javax.swing.JTextField txtStock;
@@ -294,6 +378,7 @@ public class JPanelProductoEditar extends javax.swing.JPanel {
         txtPrecio.setText("");
         txtStock.setText("");
         textAreaDescripcion.setText("");
+        txtBuscador.setText("");
     }
     
     private void verificarExistenciaProductos() {

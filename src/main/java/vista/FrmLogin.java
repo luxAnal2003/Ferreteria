@@ -214,13 +214,13 @@ public class FrmLogin extends javax.swing.JFrame {
     }//GEN-LAST:event_btnIniciarSesionActionPerformed
 
     private void txtUsuarioKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtUsuarioKeyPressed
-        if(evt.getKeyCode() == evt.VK_ENTER){
+        if (evt.getKeyCode() == evt.VK_ENTER) {
             txtContrasenia.requestFocus();
         }
     }//GEN-LAST:event_txtUsuarioKeyPressed
 
     private void txtContraseniaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtContraseniaKeyPressed
-        if(evt.getKeyCode() == evt.VK_ENTER){
+        if (evt.getKeyCode() == evt.VK_ENTER) {
             this.login();
         }
     }//GEN-LAST:event_txtContraseniaKeyPressed
@@ -277,6 +277,38 @@ public class FrmLogin extends javax.swing.JFrame {
     private javax.swing.JTextField txtUsuario;
     // End of variables declaration//GEN-END:variables
 
+//    private void login() {
+//        if (!txtUsuario.getText().isEmpty() && !txtContrasenia.getText().isEmpty()) {
+//            UsuarioDAO controlUsuario = new UsuarioDAO();
+//            Usuario usuario = new Usuario();
+//            usuario.setUsuario(txtUsuario.getText().trim());
+//            usuario.setContrasenia(txtContrasenia.getText().trim());
+//
+//            Usuario usuarioAutenticado = controlUsuario.login(usuario);
+//
+//            if (usuarioAutenticado != null) {
+//                config.Sesion.setUsuarioActual(usuarioAutenticado);
+//                JOptionPane.showMessageDialog(null, "Bienvenido " + usuarioAutenticado.getNombre());
+//
+//                switch (usuarioAutenticado.getTipoRol().toLowerCase()) {
+//                    case "administrador":
+//                        new FrmMenuAdmin().setVisible(true);
+//                        break;
+//                    case "empleado":
+//                        new FrmMenuEmpleado().setVisible(true);
+//                        break;
+//                    default:
+//                        JOptionPane.showMessageDialog(null, "Rol desconocido.");
+//                }
+//                this.dispose();
+//
+//            } else {
+//                JOptionPane.showMessageDialog(null, "Usuario o Clave incorrecta");
+//            }
+//        } else {
+//            JOptionPane.showMessageDialog(null, "Ingrese sus credenciales");
+//        }
+//    }
     private void login() {
         if (!txtUsuario.getText().isEmpty() && !txtContrasenia.getText().isEmpty()) {
             UsuarioDAO controlUsuario = new UsuarioDAO();
@@ -290,7 +322,7 @@ public class FrmLogin extends javax.swing.JFrame {
                 config.Sesion.setUsuarioActual(usuarioAutenticado);
                 JOptionPane.showMessageDialog(null, "Bienvenido " + usuarioAutenticado.getNombre());
 
-                switch (usuarioAutenticado.getTipoRol().toLowerCase()) {
+                switch (usuarioAutenticado.getIdRol().getTipo().toLowerCase()) {
                     case "administrador":
                         new FrmMenuAdmin().setVisible(true);
                         break;
@@ -309,4 +341,5 @@ public class FrmLogin extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Ingrese sus credenciales");
         }
     }
+
 }
