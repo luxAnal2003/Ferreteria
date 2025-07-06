@@ -244,7 +244,7 @@ public class JPanelClienteEditar extends javax.swing.JPanel {
             tableCliente.setModel(model);
             jScrollPane3.setViewportView(tableCliente);
         } else {
-            JOptionPane.showMessageDialog(null, "NNo se encontraron resultados");
+            JOptionPane.showMessageDialog(null, "No se encontraron resultados");
             cargarClientesEnTabla();
         }
     }

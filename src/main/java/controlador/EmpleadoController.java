@@ -25,12 +25,13 @@ public class EmpleadoController {
     public EmpleadoController() {
         this.empleadoDAO = new EmpleadoDAO();
         this.usuarioDAO = new UsuarioDAO();
-        this.rolDAO =  new RolDAO();
+        this.rolDAO = new RolDAO();
     }
 
-     public List<Rol> obtenerRoles() {
+    public List<Rol> obtenerRoles() {
         return rolDAO.listarRoles();
     }
+
     public String guardarEmpleadoConUsuario(String cedula, String nombres, String apellidos, String telefono,
             String email, String direccion, String nombreUsuario, String contrasenia, String rol, int estado) {
 
@@ -61,9 +62,13 @@ public class EmpleadoController {
             return "La cédula ingresada ya pertenece a otro empleado";
         }
 
+        if (contrasenia.length() < 6) {
+            return "La contraseña debe tener al menos 6 caracteres";
+        }
+
         Rol rolSeleccionado = new Rol();
         rolSeleccionado.setIdRol(idRol);
-        
+
         Usuario usuario = new Usuario();
         usuario.setNombre(nombres);
         usuario.setApellido(apellidos);
@@ -97,7 +102,7 @@ public class EmpleadoController {
         if (idRol == -1) {
             return "No se pudo encontrar ID de rol";
         }
-        
+
         if (cedula.isEmpty() || nombres.isEmpty() || apellidos.isEmpty() || telefono.isEmpty() || email.isEmpty()
                 || direccion.isEmpty() || nombreUsuario.isEmpty() || contrasenia.isEmpty()) {
             return "Todos los campos son obligatorios";
@@ -119,10 +124,9 @@ public class EmpleadoController {
             return "Formato de Email inválido.";
         }
 
-        
         Rol rolSeleccionado = new Rol();
         rolSeleccionado.setIdRol(idRol);
-        
+
         Usuario usuario = new Usuario();
         usuario.setNombre(nombres);
         usuario.setApellido(apellidos);
@@ -146,26 +150,32 @@ public class EmpleadoController {
         return actualizado ? "Empleado actualizado correctamente" : "Error al actualizado el empleado";
     }
 
+    //Para enviar datos de empleado y editar
     public Empleado obtenerEmpleadoPorId(int idEmpleado) {
         return empleadoDAO.obtenerEmpleadoPorId(idEmpleado);
     }
-
+    
+    //Para enviar datos de empleado y editar
     public Usuario obtenerUsuarioPorId(int idUsuario) {
         return usuarioDAO.obtenerUsuarioPorId(idUsuario);
     }
-
+    
+    //Para enviar datos de empleado y editar
     public int obtenerIdUsuarioAsociadoAEmpleado(int idEmpleado) {
         return empleadoDAO.obtenerIdUsuarioPorIdEmpleado(idEmpleado);
     }
 
+    //Para cargar los datos en las tablas
     public List<Object[]> obtenerEmpleados() {
         return empleadoDAO.obtenerEmpleadosConUsuario();
     }
 
+    //Para verificar que no existan mas empleados con la misma cédula
     public boolean existeCedulaEmpleado(String cedula) {
         return empleadoDAO.existeEmpleado(cedula);
     }
 
+    //Desactivar el empleado
     public String desactivarEmpleado(int idProducto) {
         Empleado emp = empleadoDAO.obtenerEmpleadoPorId(idProducto);
         if (emp == null) {
@@ -180,6 +190,7 @@ public class EmpleadoController {
         return resultado ? "Empleado desactivado correctamente" : "Error al desactivar el empleado";
     }
 
+    //Activar el empleado
     public String activarEmpleado(int idProducto) {
         Empleado emp = empleadoDAO.obtenerEmpleadoPorId(idProducto);
         if (emp == null) {
@@ -193,19 +204,17 @@ public class EmpleadoController {
         boolean resultado = empleadoDAO.cambiarEstado(idProducto, 1);
         return resultado ? "Empleado activado correctamente" : "Error al activar el empleado";
     }
-
-    public List<Object[]> obtenerEmpleadosActivos() {
-        return empleadoDAO.obtenerEmpleadosActivos();
-    }
-
+    //Para buscar empleados
     public List<Object[]> buscarEmpleados(String criterio) {
         return empleadoDAO.buscarEmpleados(criterio);
     }
 
+    //Para verificar si hay empleados registrados en el sistema
     public boolean existenEmpleadosActivos() {
         return empleadoDAO.contarEmpleadosActivos() > 0;
     }
 
+    //Para obtener el id del empleado que realizó una venta 
     public int obtenerIdEmp(int idEmpleado) {
         return empleadoDAO.obtenerIdEmpleadoPorUsuario(idEmpleado);
     }

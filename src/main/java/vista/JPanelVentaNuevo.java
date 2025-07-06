@@ -418,6 +418,9 @@ public class JPanelVentaNuevo extends javax.swing.JPanel {
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
         this.limpiarCamposVenta();
+        this.habilitarCampoCedula(false);
+        habilitarCamposCliente(false);
+        this.setear();
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
     private void btnAumentarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAumentarActionPerformed
@@ -653,12 +656,6 @@ public class JPanelVentaNuevo extends javax.swing.JPanel {
     private void limpiarCamposVenta() {
         listaDetalle.clear();
         modeloTabla.setRowCount(0);
-        txtCedulaRuc.setText("");
-        txtNombres.setText("");
-        txtApellidos.setText("");
-        txtTelefono.setText("");
-        txtEmail.setText("");
-        txtDireccion.setText("");
         txtBuscadorProducto.setText("");
 
         txtTotal.setText("0.00");
@@ -668,7 +665,6 @@ public class JPanelVentaNuevo extends javax.swing.JPanel {
 
         idClienteSeleccionado = -1;
         grupoFacturacion.clearSelection();
-
     }
 
     private void configurarTablaProducto() {

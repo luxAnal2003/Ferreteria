@@ -335,6 +335,10 @@ public class JPanelEmpleadoEditar extends javax.swing.JPanel {
             tableEmpleado.getColumnModel().getColumn(11).setWidth(0);
         }
 
+        if (empleados.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No existen empleados registrados actualmente.");
+        }
+        
         tableEmpleado.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 int fila = tableEmpleado.getSelectedRow();

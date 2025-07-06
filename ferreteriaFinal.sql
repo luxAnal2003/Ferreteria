@@ -159,6 +159,6 @@ INSERT INTO CabeceraVenta (idCliente, idEmpleado, total, fechaVenta, estado) VAL
 -- Tabla DetalleVenta
 select * from detalleVenta;
 INSERT INTO DetalleVenta (idCabeceraVenta, idProducto, cantidad, precioUnitario, subTotal, descuento, iva, totalPagar, estado) VALUES
-(1, 1, 3, 12.50, 37.50, 0, 4.50, 42.00, 1),
-(1, 2, 5, 5.75, 28.75, 0, 3.45, 32.20, 1),
-(2, 3, 2, 20.00, 40.00, 0, 4.80, 44.80, 1);
+(1, 1, 3, 12.50, 37.50, 0.5, 4.50, 42.00, 1),
+(1, 2, 5, 5.75, 28.75, 0.5, 3.45, 32.20, 1),
+(2, 3, 2, 20.00, 40.00, 0.5, 4.80, 44.80, 1);

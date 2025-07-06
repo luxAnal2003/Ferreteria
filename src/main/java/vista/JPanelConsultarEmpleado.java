@@ -49,12 +49,12 @@ public class JPanelConsultarEmpleado extends javax.swing.JPanel {
     private void initComponents() {
 
         jLabel2 = new javax.swing.JLabel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        tableEmpleado = new javax.swing.JTable();
         btnLimpiar = new javax.swing.JButton();
         jLabel8 = new javax.swing.JLabel();
         txtBuscador = new javax.swing.JTextField();
         btnBuscar = new javax.swing.JButton();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        tableEmpleado = new javax.swing.JTable();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -62,23 +62,6 @@ public class JPanelConsultarEmpleado extends javax.swing.JPanel {
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel2.setText("Consultar Empleado - Por nombres, apellidos y cédula");
         add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 20, -1, -1));
-
-        jScrollPane3.setPreferredSize(new java.awt.Dimension(450, 80));
-
-        tableEmpleado.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null}
-            },
-            new String [] {
-                "ID", "Nombre", "Apellido", "Rol", "Cédula", "Dirección", "Telefono", "Estado"
-            }
-        ));
-        jScrollPane3.setViewportView(tableEmpleado);
-
-        add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 110, 840, 260));
 
         btnLimpiar.setBackground(new java.awt.Color(204, 204, 255));
         btnLimpiar.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -111,6 +94,23 @@ public class JPanelConsultarEmpleado extends javax.swing.JPanel {
             }
         });
         add(btnBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 60, 90, -1));
+
+        jScrollPane4.setPreferredSize(new java.awt.Dimension(450, 80));
+
+        tableEmpleado.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "ID", "Cedula", "Nombre", "Apellido", "Telefono", "Dirección", "Correo", "usuario", "Contraseña", "Rol", "Estado", "idUsuario"
+            }
+        ));
+        jScrollPane4.setViewportView(tableEmpleado);
+
+        add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 110, 830, 260));
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
@@ -133,18 +133,27 @@ public class JPanelConsultarEmpleado extends javax.swing.JPanel {
     private javax.swing.JButton btnLimpiar;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel8;
-    public static javax.swing.JScrollPane jScrollPane3;
+    public static javax.swing.JScrollPane jScrollPane4;
     public static javax.swing.JTable tableEmpleado;
     private javax.swing.JTextField txtBuscador;
     // End of variables declaration//GEN-END:variables
 
     private void cargarEmpleadosEnTabla() {
-        List<Object[]> empleados = controller.obtenerEmpleadosActivos();
-        DefaultTableModel model = (DefaultTableModel) tableEmpleado.getModel();
-        model.setRowCount(0);
+        List<Object[]> empleados = controller.obtenerEmpleados();
+        DefaultTableModel model = new DefaultTableModel(new String[]{
+            "ID", "Cédula", "Nombres", "Apellidos", "Teléfono", "Dirección",
+            "Correo", "Usuario", "Contraseña", "Rol", "Estado", "idUsuario"
+        }, 0);
 
         for (Object[] fila : empleados) {
             model.addRow(fila);
+        }
+
+        tableEmpleado.setModel(model);
+        if (model.getColumnCount() > 11) {
+            tableEmpleado.getColumnModel().getColumn(11).setMinWidth(0);
+            tableEmpleado.getColumnModel().getColumn(11).setMaxWidth(0);
+            tableEmpleado.getColumnModel().getColumn(11).setWidth(0);
         }
 
         if (empleados.isEmpty()) {

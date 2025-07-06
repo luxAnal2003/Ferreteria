@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import modelo.Empleado;
 import modelo.Rol;
-import modelo.Usuario;
 
 public class EmpleadoDAO {
 
@@ -154,34 +153,6 @@ public class EmpleadoDAO {
         return idUsuario;
     }
 
-//    public Empleado obtenerEmpleadoPorId(int idEmpleado) {
-//        Empleado empleado = null;
-//
-//        String sql = "SELECT * FROM Empleado WHERE idEmpleado = ?";
-//
-//        try (Connection conn = Conexion.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-//
-//            stmt.setInt(1, idEmpleado);
-//            ResultSet rs = stmt.executeQuery();
-//
-//            if (rs.next()) {
-//                empleado = new Empleado();
-//                empleado.setIdEmpleado(rs.getInt("idEmpleado"));
-//                Rol rol = new Rol();
-//                rol.setIdRol(rs.getInt("idRol"));
-//                empleado.setIdRol(rol);
-//                empleado.setCedula(rs.getString("cedula"));
-//                empleado.setDireccion(rs.getString("direccion"));
-//                empleado.setEstado(rs.getInt("estado"));
-//                empleado.setIdUsuario(rs.getInt("idUsuario"));
-//            }
-//
-//        } catch (SQLException e) {
-//            System.out.println("Error al obtener empleado por ID: " + e.getMessage());
-//        }
-//
-//        return empleado;
-//    }
     public Empleado obtenerEmpleadoPorId(int idEmpleado) {
         Empleado empleado = null;
         Connection conn = null;
