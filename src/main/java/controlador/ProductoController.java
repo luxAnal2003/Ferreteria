@@ -28,11 +28,11 @@ public class ProductoController {
         this.proveedorDAO = new ProveedorDAO();
     }
 
-     public List<Categoria> obtenerCategorias() {
+    public List<Categoria> obtenerTodasLasCategorias() {
         return categoriaDAO.listarCategorias();
     }
 
-    public List<Proveedor> obtenerProveedores() {
+    public List<Proveedor> obtenerTodosLosProveedores() {
         return proveedorDAO.listarProveedores();
     }
 
@@ -79,7 +79,8 @@ public class ProductoController {
         producto.setNombreProducto(nombreProducto);
         producto.setDescripcion(descripcion);
         producto.setPrecio(precio);
-        producto.setCantidad(stock);producto.setPorcentajeIva(iva);
+        producto.setCantidad(stock);
+        producto.setPorcentajeIva(iva);
         producto.setEstado(estado);
 
         Categoria categoria = new Categoria();
@@ -177,27 +178,22 @@ public class ProductoController {
         boolean resultado = productoDAO.cambiarEstado(idProducto, 1);
         return resultado ? "Producto activado correctamente" : "Error al activar el producto";
     }
-    
+
+    //para obtener los productos en las tablas 
     public List<Producto> obtenerTodosLosProductos() {
         return productoDAO.listarProductos();
     }
-    
-    public List<Categoria> obtenerTodasLasCategorias() {
-        return categoriaDAO.listarCategorias();
-    }
 
-    public List<Proveedor> obtenerTodosLosProveedores() {
-        return proveedorDAO.listarProveedores();
-    }
-
-    public Producto obtenerProductoPorNombre(String nombreProducto) {
+    //para la consulta de un producto
+    public Producto buscarProductoPorNombre(String nombreProducto) {
         return productoDAO.buscarProductoPorNombre(nombreProducto);
     }
 
+    //Para una venta y para enviar los datos a los campos de producto y actualizar
     public Producto obtenerProductoPorId(int idProducto) {
         return productoDAO.obtenerProductoPorId(idProducto);
     }
-
+    //verificar si hay productos en el sistema
     public boolean existenProductosEnSistema() {
         return productoDAO.existenProductos();
     }

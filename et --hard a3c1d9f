@@ -1,0 +1,325 @@
+[33mcommit ee22ee34ed0e2c5c716cb0e4f311eb01d857c9cc[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: luccy <valbarracin2003@gmail.com>
+Date:   Sun Jul 6 16:02:17 2025 -0500
+
+    Modificaciones en los módulos
+
+[33mcommit 95fecf677b312b68684da52f0189e7e6529d67be[m
+Author: luccy <valbarracin2003@gmail.com>
+Date:   Sat Jul 5 21:42:20 2025 -0500
+
+    Modificaciones en los módulos
+
+[33mcommit 8ae257478214a072a3dfef0adca9c21e63da0f5d[m
+Author: luccy <valbarracin2003@gmail.com>
+Date:   Fri Jul 4 18:49:55 2025 -0500
+
+    Modificaciones en los módulos venta y productos para casos de uso en el documento
+
+[33mcommit 4e6d50142001c4f5fd2fdf0328a8db6d847b9a53[m
+Author: luccy <valbarracin2003@gmail.com>
+Date:   Fri Jul 4 15:56:48 2025 -0500
+
+    Agregando modificacion al modulo de Venta
+
+[33mcommit 0c4d157d67da6cd679f783ac000d9c1217a5bef0[m
+Author: luccy <valbarracin2003@gmail.com>
+Date:   Wed Jul 2 14:30:33 2025 -0500
+
+    Variable de proveedor
+
+[33mcommit 119784a001f5037da75e788ad594e15088576afe[m
+Author: luccy <valbarracin2003@gmail.com>
+Date:   Wed Jul 2 14:14:11 2025 -0500
+
+    Sentencias sql actualizada
+
+[33mcommit d5cdc4300ec0204e3dcc53ad6e49a937ba1b35b7[m
+Author: luccy <valbarracin2003@gmail.com>
+Date:   Wed Jul 2 14:12:38 2025 -0500
+
+    Modificaciones en Venta
+
+[33mcommit 27d67af7514b0de7e47e93466fd8290e0076a3b7[m
+Author: luccy <valbarracin2003@gmail.com>
+Date:   Sun Jun 29 19:23:09 2025 -0500
+
+    Funcional
+
+[33mcommit 12cbda57a95e5be684c99516f4f88d53c37d64b6[m
+Author: luccy <valbarracin2003@gmail.com>
+Date:   Sun Jun 29 02:41:59 2025 -0500
+
+    Módulo Empleado con MVC
+
+[33mcommit 1005756243d132672b1c86e076a238ad44bf8e93[m
+Author: luccy <valbarracin2003@gmail.com>
+Date:   Sun Jun 29 01:05:36 2025 -0500
+
+    Módulo Proveedor con MVC
+
+[33mcommit 705bba811fe5fc6cd970099c616aeebb21edf8c6[m
+Author: luccy <valbarracin2003@gmail.com>
+Date:   Sat Jun 28 22:55:08 2025 -0500
+
+    Módulo Productos y Categoria con MVC
+
+[33mcommit a7b3fb38471c883deb028e2bdff37f5c48e77b99[m
+Author: luccy <valbarracin2003@gmail.com>
+Date:   Wed Jun 25 02:27:14 2025 -0500
+
+    Completo al parecer
+
+[33mcommit 09c4562572b83013cc70589a096852fcb56db1e9[m
+Author: luccy <valbarracin2003@gmail.com>
+Date:   Tue Jun 24 20:34:28 2025 -0500
+
+    Cliente, producto y proveedores con MVC
+
+[33mcommit b386536f1ecc118184e3376ebd8574683f78690f[m
+Author: luccy <valbarracin2003@gmail.com>
+Date:   Tue Jun 24 15:40:19 2025 -0500
+
+    Cliente con MVC
+
+[33mcommit dbe14973467ce9ce8500845ed2bccd844f2320cd[m
+Author: luccy <valbarracin2003@gmail.com>
+Date:   Tue Jun 24 05:29:49 2025 -0500
+
+    Corrección de arquitectura
+
+[33mcommit 8f5098cc7669ce847d7175699a406d5345f755f0[m
+Author: luccy <valbarracin2003@gmail.com>
+Date:   Tue Jun 24 01:43:24 2025 -0500
+
+    Corrección de guardado de Venta-- verificar si está correcto
+
+[33mcommit 1827016449e758c633437b643385028b7c4f9bfa[m
+Author: luccy <valbarracin2003@gmail.com>
+Date:   Thu Jun 19 21:01:46 2025 -0500
+
+    Correccion
+
+[33mcommit 694c9ff0cf8db034133994a3a57a2cd633ae597a[m
+Author: luccy <valbarracin2003@gmail.com>
+Date:   Thu Jun 19 20:56:44 2025 -0500
+
+    Corregir columnas
+
+[33mcommit e83e358281b9e114fb8419cedf4b4e3524d8f7e3[m
+Author: luccy <valbarracin2003@gmail.com>
+Date:   Thu Jun 19 02:05:11 2025 -0500
+
+    Modulos completos divididos por Editar-Eliminar-Insertar-Consultar
+
+[33mcommit e6b34c9b01f0e631f8435f28b561977f386fa056[m
+Author: luccy <valbarracin2003@gmail.com>
+Date:   Wed Jun 18 21:22:08 2025 -0500
+
+    Modulos completos
+
+[33mcommit a0ae055ff50c7ba01b2bd5da480133964fdb32e9[m
+Author: luccy <valbarracin2003@gmail.com>
+Date:   Wed Jun 18 14:00:05 2025 -0500
+
+    Modulos completos, falta modificar ciertas cosas
+
+[33mcommit 3b559228382a65a081e588e73686377056af319d[m
+Author: luccy <valbarracin2003@gmail.com>
+Date:   Tue Jun 17 03:46:34 2025 -0500
+
+    Modulo venta sin permitir guardar, consultar o anular. Solo permite ciertas funcionales
+
+[33mcommit d464c592238d39a3eb6cebfda9f20acdaaab335b[m
+Author: luccy <valbarracin2003@gmail.com>
+Date:   Mon Jun 16 22:53:14 2025 -0500
+
+    Img
+
+[33mcommit 0a64c9178f00006cd945acf46a0ad8cd93427a3b[m
+Author: luccy <valbarracin2003@gmail.com>
+Date:   Mon Jun 16 22:04:39 2025 -0500
+
+    Modulo de cliente completo
+
+[33mcommit c69dac7ab491887e574ea6c68a5bfe598b1dc685[m
+Author: luccy <valbarracin2003@gmail.com>
+Date:   Mon Jun 16 21:23:11 2025 -0500
+
+    Modulo de cliente - falta consultar
+
+[33mcommit 19d30fe208c197b386a3512b6a49ac244ec6635d[m
+Author: luccy <valbarracin2003@gmail.com>
+Date:   Mon Jun 16 16:14:05 2025 -0500
+
+    Modulo de empleado completo
+
+[33mcommit 637e02c413a87c26be028028ac548edf0cfbb29d[m
+Author: luccy <valbarracin2003@gmail.com>
+Date:   Mon Jun 16 05:01:35 2025 -0500
+
+    Modulo de empleado falta modificar el actualizar y crear consulta
+
+[33mcommit c33c172586d30549796348ea111255a3362b91fb[m
+Author: luccy <valbarracin2003@gmail.com>
+Date:   Mon Jun 16 01:33:34 2025 -0500
+
+    Modulo de producto completo y funcional
+
+[33mcommit 69209fada5c63c00689ead55810ae39996d14519[m
+Author: luccy <valbarracin2003@gmail.com>
+Date:   Sun Jun 15 18:55:47 2025 -0500
+
+    Modulo de producto - guardado correctamente
+
+[33mcommit 05a8cc222a423e0ceea30cb0b2aaa063e87b8601[m
+Author: luccy <valbarracin2003@gmail.com>
+Date:   Sun Jun 15 03:09:48 2025 -0500
+
+    Categoría funcional
+
+[33mcommit aa51f9051407b2e037fd2a9fa38c902b8f185327[m
+Author: luccy <valbarracin2003@gmail.com>
+Date:   Sat Jun 14 12:54:02 2025 -0500
+
+    Base de datos conectada, manejo de roles y login correcto
+
+[33mcommit 89cd4c30fb09a937a84ffd501ac2611441291aec[m
+Author: luccy <valbarracin2003@gmail.com>
+Date:   Wed Jun 11 14:36:56 2025 -0500
+
+    Corregir guardado de producto
+
+[33mcommit b180751ad2b45d6c3a7368bc221ff34bf68d87a2[m
+Author: luccy <valbarracin2003@gmail.com>
+Date:   Wed Jun 11 13:08:02 2025 -0500
+
+    Unión de todos los modulos. Faltan ciertos detalles
+
+[33mcommit adad3f69262732df4f9f740386171c8f28414f87[m
+Merge: 490523b c2f3068
+Author: luxAnal2003 <113499846+luxAnal2003@users.noreply.github.com>
+Date:   Wed Jun 11 12:25:15 2025 -0500
+
+    Merge pull request #7 from bdfz17/main
+    
+    Modulo de Proveedor Agregado
+
+[33mcommit c2f3068f7a4c7a27d079f58bfccd2ed5af81f4ab[m
+Author: bdfz17 <biancafz12@hotmail.com>
+Date:   Wed Jun 11 11:09:11 2025 -0500
+
+    Modulo de Proveedor Agregado
+
+[33mcommit 490523bfb8fe75fd8fe0daa6cda4d2e50ad6b8c0[m
+Author: luccy <valbarracin2003@gmail.com>
+Date:   Wed Jun 11 04:43:14 2025 -0500
+
+    Falta proveedores y clientes
+
+[33mcommit 193815c76048ded5ea8fdc097408e12cab3380f4[m
+Author: luccy <valbarracin2003@gmail.com>
+Date:   Wed Jun 11 04:42:19 2025 -0500
+
+    Agrega .gitignore y elimina target del control de versiones
+
+[33mcommit 2ada2574d731f89a8280abd8c898e1bdcd9d2edf[m[33m ([m[1;31morigin/fix-ignore-target[m[33m)[m
+Author: luccy <valbarracin2003@gmail.com>
+Date:   Wed Jun 11 01:17:27 2025 -0500
+
+    Eliminar carpeta target/ del control de versiones
+
+[33mcommit 2fb4ee081f5d6f47c35d6e7138bd6c4ee291b8c0[m
+Merge: dc0d34f 4835105
+Author: luxAnal2003 <113499846+luxAnal2003@users.noreply.github.com>
+Date:   Wed Jun 11 00:13:02 2025 -0500
+
+    Merge pull request #6 from MiguelEspinoza0404/main
+    
+    Listo jefecita. Pase buena noche
+
+[33mcommit 4835105e22451feb12e21be6ceb011369f194cb3[m
+Merge: 1932afe dc0d34f
+Author: MiguelEspinoza0404 <yoangel1221@gmail.com>
+Date:   Tue Jun 10 23:26:31 2025 -0500
+
+    Merge branch 'main' of https://github.com/MiguelEspinoza0404/Ferreteria
+
+[33mcommit 1932afe4b8e4a0395a9c260db4e136d7962561f6[m
+Author: MiguelEspinoza0404 <yoangel1221@gmail.com>
+Date:   Tue Jun 10 23:26:17 2025 -0500
+
+    Terminado crud, falta corregir el tema de crud en venta
+
+[33mcommit dc0d34fedab36cfcea527d6fe60a8430de473637[m
+Merge: d53e930 c92b903
+Author: luxAnal2003 <113499846+luxAnal2003@users.noreply.github.com>
+Date:   Tue Jun 10 22:56:16 2025 -0500
+
+    Merge pull request #4 from MiguelEspinoza0404/main
+    
+    hola
+
+[33mcommit c92b90333db491bb2515b11d612b02479b078171[m
+Merge: f5a9fe9 d53e930
+Author: MiguelEspinoza0404 <yoangel1221@gmail.com>
+Date:   Tue Jun 10 22:51:20 2025 -0500
+
+    resolve conflict
+
+[33mcommit f5a9fe9ae7b64abca72389071891db3b3ddf269d[m
+Author: gzevallos-sasf <guillermo.zevallos@sasf.net>
+Date:   Tue Jun 10 22:34:56 2025 -0500
+
+    terminado jefa
+
+[33mcommit d53e9302785199f61d784c006c02092d7f2bee6a[m
+Merge: 5efcbe0 d3cd02c
+Author: luxAnal2003 <113499846+luxAnal2003@users.noreply.github.com>
+Date:   Tue Jun 10 22:25:13 2025 -0500
+
+    Merge pull request #1 from IZi000/main
+    
+    MI gente linda
+
+[33mcommit d3cd02c612f3446964c73a4a039c043a630c7ab4[m
+Author: Eliud <jotarok54@gmail.com>
+Date:   Tue Jun 10 22:22:12 2025 -0500
+
+    HOla min gente linda
+
+[33mcommit 0d22622a1e100787d632941161d45c5070915b74[m
+Author: Eliud <jotarok54@gmail.com>
+Date:   Tue Jun 10 22:10:16 2025 -0500
+
+    Cambiosn modulo cliente
+
+[33mcommit 5efcbe0fbc11fec81420e64f7e0b890e1dc285d1[m
+Author: luccy <valbarracin2003@gmail.com>
+Date:   Tue Jun 10 18:55:24 2025 -0500
+
+    Modificando variables
+
+[33mcommit 7cd2df62aa8d4deefb63a9a18484ef3aabc84ec5[m
+Author: luccy <valbarracin2003@gmail.com>
+Date:   Tue Jun 10 18:30:22 2025 -0500
+
+    Reorganizando archivos
+
+[33mcommit c8e48bfb1164d105f2678b37ae2225731b1a4101[m
+Author: luccy <valbarracin2003@gmail.com>
+Date:   Tue Jun 10 18:26:55 2025 -0500
+
+    Eliminando recursos innecesarios
+
+[33mcommit 36b64f2afeedaada77882f0413f10f231bb9fb16[m
+Author: luccy <valbarracin2003@gmail.com>
+Date:   Tue Jun 10 18:15:42 2025 -0500
+
+    v1.1
+
+[33mcommit 7a99e9d13be56ff8830ee2e111554232e4b2536c[m
+Author: luccy <valbarracin2003@gmail.com>
+Date:   Tue Jun 10 18:05:57 2025 -0500
+
+    v1

@@ -275,6 +275,7 @@ public class ProveedorDAO {
         }
     }
 
+    //SE LO USA PARA LLENAR LOS COMBOBOX
     public int getIdProveedorPorNombre(String nombreProveedor) {
         int id = -1;
         Connection cn = null;

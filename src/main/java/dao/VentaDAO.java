@@ -162,18 +162,6 @@ public class VentaDAO {
         }
     }
 
-//    public boolean cambiarEstadoDetallesVenta(int idCabeceraVenta, int estado) {
-//        String sql = "UPDATE detalleventa SET estado = ? WHERE idCabeceraVenta = ?";
-//        try (Connection conn = Conexion.conectar(); PreparedStatement ps = conn.prepareStatement(sql)) {
-//            ps.setInt(1, estado);
-//            ps.setInt(2, idCabeceraVenta);
-//            return ps.executeUpdate() > 0;
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//            return false;
-//        }
-//    }
-
     public int obtenerEstadoVenta(int idVenta) {
         String sql = "SELECT estado FROM cabeceraventa WHERE idCabeceraVenta = ?";
         try (Connection conn = Conexion.conectar(); PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -186,71 +174,6 @@ public class VentaDAO {
             e.printStackTrace();
         }
         return -1;
-    }
-
-    public List<DetalleVenta> obtenerDetallesPorCabecera(int idCabeceraVenta) {
-        List<DetalleVenta> lista = new ArrayList<>();
-        String sql = "SELECT * FROM detalleventa WHERE idCabeceraVenta = ?";
-
-        try (Connection conn = Conexion.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, idCabeceraVenta);
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                DetalleVenta detalle = new DetalleVenta();
-                detalle.setIdDetalleVenta(rs.getInt("idDetalleVenta"));
-                detalle.setIdCabeceraVenta(rs.getInt("idCabeceraVenta"));
-                detalle.setIdProducto(rs.getInt("idProducto"));
-                detalle.setCantidad(rs.getInt("cantidad"));
-                detalle.setPrecioUnitario(rs.getDouble("precioUnitario"));
-                detalle.setSubTotal(rs.getDouble("subTotal"));
-                detalle.setDescuento(rs.getDouble("descuento"));
-                detalle.setIva(rs.getDouble("iva"));
-                detalle.setTotalPagar(rs.getDouble("totalPagar"));
-                detalle.setEstado(rs.getInt("estado"));
-                lista.add(detalle);
-            }
-        } catch (SQLException e) {
-            System.out.println("Error al obtener detalles de venta: " + e.getMessage());
-        }
-
-        return lista;
-    }
-
-    public List<Venta> obtenerTodasLasVentasActivas() throws SQLException {
-        List<Venta> ventas = new ArrayList<>();
-        Connection con = null;
-        String sql = "SELECT cv.idCabeceraVenta, cv.idCliente, cv.idEmpleado, cv.fechaVenta, cv.total, cv.estado, "
-                + "cl.nombre AS nombre_cliente, cl.apellido AS apellido_cliente, "
-                + "u.nombre AS nombre_empleado, u.apellido AS apellido_empleado "
-                + "FROM CabeceraVenta cv "
-                + "INNER JOIN Cliente cl ON cv.idCliente = cl.idCliente "
-                + "INNER JOIN Empleado e ON cv.idEmpleado = e.idEmpleado "
-                + "INNER JOIN Usuario u ON e.idUsuario = u.idUsuario "
-                + "WHERE cv.estado = 1";
-
-        try {
-            con = Conexion.conectar();
-            Statement st = con.createStatement();
-            ResultSet rs = st.executeQuery(sql);
-
-            while (rs.next()) {
-                Venta venta = new Venta();
-                venta.setIdCabecera(rs.getInt("idCabeceraVenta"));
-                venta.setIdCliente(rs.getInt("idCliente"));
-                venta.setIdEmpleado(rs.getInt("idEmpleado"));
-                venta.setFechaVenta(rs.getString("fechaVenta"));
-                venta.setTotal(rs.getDouble("total"));
-                venta.setEstado(rs.getInt("estado"));
-
-                ventas.add(venta);
-            }
-        } finally {
-            if (con != null) {
-                con.close();
-            }
-        }
-        return ventas;
     }
 
     public boolean verificarExistenciaVentas() {
@@ -283,7 +206,7 @@ public class VentaDAO {
         }
     }
 
-    public List<Object[]> obtenerVentasConDetalle() {
+    public List<Object[]> llenarTablaVentas() {
         List<Object[]> ventas = new ArrayList<>();
         String sql = "SELECT cv.idCabeceraVenta, cv.fechaVenta, cv.total, "
                 + "CONCAT(cl.nombre, ' ', cl.apellido) AS nombre_cliente, "
@@ -356,6 +279,7 @@ public class VentaDAO {
         return null;
     }
 
+    //para consultar
     public List<Object[]> obtenerDetalleVenta(int idCabeceraVenta) {
         List<Object[]> detalles = new ArrayList<>();
         String sql = "SELECT dv.cantidad, dv.precioUnitario, dv.subTotal, dv.descuento, dv.iva, p.nombre "

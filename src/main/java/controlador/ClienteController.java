@@ -147,14 +147,17 @@ public class ClienteController {
         }
     }
 
+    //Se lo utiliza para enviar los datos de cliente al momento de eliminar
     public Cliente obtenerClientePorId(int idCliente) {
         return clienteDAO.obtenerClientePorId(idCliente);
     }
 
+    //Se lo utiliza para el buscador de clientes
     public List<Cliente> buscarClientes(String criterio) {
         return clienteDAO.buscarClientesPorCriterio(criterio);
     }
 
+    //Se utiliza para crear una nueva venta con el ultimo cliente registrado
     public int obtenerUltimoIdInsertado() {
         return clienteDAO.obtenerUltimoIdInsertado();
     }

@@ -16,7 +16,6 @@ import modelo.Categoria;
  * @author admin
  */
 public class JPanelCategoria extends javax.swing.JPanel {
-
     private int idCategoria;
     private CategoriaController categoriaController;
 

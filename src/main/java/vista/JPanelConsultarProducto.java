@@ -180,7 +180,7 @@ public class JPanelConsultarProducto extends javax.swing.JPanel {
             "ID", "Nombre", "Proveedor", "Cantidad", "Descripción", "Precio", "Iva", "Categoría", "Estado"
         });
 
-        Producto productoEncontrado = controller.obtenerProductoPorNombre(criterio);
+        Producto productoEncontrado = controller.buscarProductoPorNombre(criterio);
 
         if (productoEncontrado != null) {
             Object[] fila = new Object[9];

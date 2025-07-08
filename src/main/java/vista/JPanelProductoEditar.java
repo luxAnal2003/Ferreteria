@@ -248,7 +248,6 @@ public class JPanelProductoEditar extends javax.swing.JPanel {
 
     private void buscarProductos() {
         String criterio = txtBuscador.getText().trim();
-        ProductoController controller = new ProductoController();
 
         if (criterio.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Ingrese un criterio de búsqueda");
@@ -261,7 +260,7 @@ public class JPanelProductoEditar extends javax.swing.JPanel {
             "ID", "Nombre", "Proveedor", "Cantidad", "Descripción", "Precio", "Iva", "Categoría", "Estado"
         });
 
-        Producto productoEncontrado = controller.obtenerProductoPorNombre(criterio);
+        Producto productoEncontrado = productoController.buscarProductoPorNombre(criterio);
 
         if (productoEncontrado != null) {
             Object[] fila = new Object[9];

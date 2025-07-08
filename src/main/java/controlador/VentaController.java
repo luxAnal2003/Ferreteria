@@ -7,7 +7,6 @@ package controlador;
 import config.Sesion;
 import dao.ProductoDAO;
 import dao.VentaDAO;
-import java.sql.SQLException;
 import java.util.List;
 import modelo.DetalleVenta;
 import modelo.Producto;
@@ -51,30 +50,32 @@ public class VentaController {
         }
     }
 
+    //PARA VERIFICAR SI HAY VENTS EN EL SISTEMA
     public boolean existenVentas() {
         return ventaDAO.verificarExistenciaVentas();
     }
 
-    public List<Venta> listarVentasActivas() throws SQLException {
-        return ventaDAO.obtenerTodasLasVentasActivas();
-    }
-
+    //OBTIENE TODAS LAS VENTAS PARA LAS TABLAS
     public List<Object[]> obtenerVentas() {
-        return ventaDAO.obtenerVentasConDetalle();
+        return ventaDAO.llenarTablaVentas();
     }
 
+    //HACE LA CONSULTA DE UNA VENTA EN CRITERIO
     public List<Object[]> buscarVentas(String criterio) {
         return ventaDAO.buscarVentas(criterio);
     }
 
+    //SE OBTIENEN LOS TOTALES AL MOMENTO DE CONSULTAR
     public Object[] obtenerTotalesVenta(int idCabeceraVenta) {
         return ventaDAO.obtenerTotalesVenta(idCabeceraVenta);
     }
 
+    //MUESTRA EL DETALLE DE VENTA AL MOMENTO DE CONSULTAR
     public List<Object[]> obtenerDetalleVenta(int idCabeceraVenta) {
         return ventaDAO.obtenerDetalleVenta(idCabeceraVenta);
     }
 
+    //AGREGA UN PRODUCTO A LA LISTA DE DETALLES
     public void agregarProductoALista(String nombreProducto, JPanelVentaNuevo vista) {
         Producto producto = productoDAO.buscarProductoPorNombre(nombreProducto);
 
@@ -112,6 +113,7 @@ public class VentaController {
         vista.actualizarTotales(listaDetalle);
     }
 
+    //PARA VERIDFICAR SI UN PRODUCTO YA HA SIDO AGREGADO A LA LISTA
     private boolean detalleYaExiste(Producto producto, List<DetalleVenta> listaDetalle) {
         for (DetalleVenta detalle : listaDetalle) {
             if (detalle.getIdProducto() == producto.getIdProducto()) {
@@ -121,6 +123,7 @@ public class VentaController {
         return false;
     }
 
+    //PARA ELIMINAR UN PRODUCTO DE LA LISTA
     public void eliminarProductoDeLista(int idProducto, JPanelVentaNuevo vista) {
         List<DetalleVenta> listaDetalle = vista.getListaDetalle();
 
@@ -141,6 +144,7 @@ public class VentaController {
         }
     }
 
+    //PARA AUMENTAR LA CANTIDAD DE UN PRODUCTO
     public void aumentarCantidadProducto(int idProducto, JPanelVentaNuevo vista) {
         List<DetalleVenta> listaDetalle = vista.getListaDetalle();
 
@@ -171,6 +175,7 @@ public class VentaController {
         }
     }
 
+    //PARA DISMINUIR LA CANTIDAD
     public void disminuirCantidad(int fila, JPanelVentaNuevo vista) {
         List<DetalleVenta> listaDetalle = vista.getListaDetalle();
 
@@ -205,6 +210,7 @@ public class VentaController {
         vista.actualizarTotales(listaDetalle);
     }
 
+    //PARA CONFIRMAR UNA VENTA
     public boolean procesarConfirmarVenta(
             int idClienteSeleccionado, boolean radioButtonSiIsSelected, boolean radioButtonNoIsSelected,
             String cedula, String nombres, String apellidos, String telefono,

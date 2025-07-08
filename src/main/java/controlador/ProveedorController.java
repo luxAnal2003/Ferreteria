@@ -108,23 +108,23 @@ public class ProveedorController {
         return resultado ? "Proveedor activado correctamente" : "Error al activar el proveedor";
     }
 
+    //SE LO UTILIZA PARA ENVIAR LOS DATOS PARA EDITAR
     public Proveedor obtenerProveedorPorId(int idProveedor) {
         return proveedorDAO.obtenerProveedorPorId(idProveedor);
     }
+    
+    //SE LO UTILIZA PARA LLENAR LOS DATOS EN LOS COMBO BOX
     public List<Proveedor> obtenerTodosLosProveedores() {
         return proveedorDAO.listarProveedores();
     }
 
+    //SE LO UTILIZA PARA BUSCAR UN PROVEEDOR POR CRITERIO
     public List<Proveedor> buscarProveedoresPorCriterio(String criterio) {
         return proveedorDAO.buscarProveedores(criterio);
     }
 
+    //SE LO USA PARA VERIFICAR SI HAY O NO PROVEEDORES EN EL SISTEMA
     public boolean existenProveedoresEnSistema() {
         return proveedorDAO.verificarExistenciaDeProveedores();
     }
-    
-    public int obtenerProveedorPorNombre(String proveedor) {
-        return proveedorDAO.getIdProveedorPorNombre(proveedor);
-    }
-    
 }
