@@ -176,8 +176,8 @@ public class EmpleadoController {
     }
 
     //Desactivar el empleado
-    public String desactivarEmpleado(int idProducto) {
-        Empleado emp = empleadoDAO.obtenerEmpleadoPorId(idProducto);
+    public String desactivarEmpleado(int idEmpleado) {
+        Empleado emp = empleadoDAO.obtenerEmpleadoPorId(idEmpleado);
         if (emp == null) {
             return "El empleado no existe";
         }
@@ -186,13 +186,13 @@ public class EmpleadoController {
             return "El empleado ya está desactivado";
         }
 
-        boolean resultado = empleadoDAO.cambiarEstado(idProducto, 0);
+        boolean resultado = empleadoDAO.cambiarEstado(idEmpleado, 0);
         return resultado ? "Empleado desactivado correctamente" : "Error al desactivar el empleado";
     }
 
     //Activar el empleado
-    public String activarEmpleado(int idProducto) {
-        Empleado emp = empleadoDAO.obtenerEmpleadoPorId(idProducto);
+    public String activarEmpleado(int idEmpleado) {
+        Empleado emp = empleadoDAO.obtenerEmpleadoPorId(idEmpleado);
         if (emp == null) {
             return "El empleado no existe";
         }
@@ -201,7 +201,7 @@ public class EmpleadoController {
             return "El empleado ya está activa";
         }
 
-        boolean resultado = empleadoDAO.cambiarEstado(idProducto, 1);
+        boolean resultado = empleadoDAO.cambiarEstado(idEmpleado, 1);
         return resultado ? "Empleado activado correctamente" : "Error al activar el empleado";
     }
     //Para buscar empleados

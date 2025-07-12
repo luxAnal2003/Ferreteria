@@ -5,7 +5,6 @@
 package vista;
 
 import controlador.UsuarioController;
-import dao.UsuarioDAO;
 import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
