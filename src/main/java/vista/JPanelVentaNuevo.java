@@ -418,9 +418,10 @@ public class JPanelVentaNuevo extends javax.swing.JPanel {
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
         this.limpiarCamposVenta();
-        this.habilitarCampoCedula(false);
-        habilitarCamposCliente(false);
         this.setear();
+        this.habilitarCampoCedula(false);
+        this.habilitarCamposCliente(false);
+
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
     private void btnAumentarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAumentarActionPerformed
@@ -603,6 +604,9 @@ public class JPanelVentaNuevo extends javax.swing.JPanel {
             if (ventaExitosa) {
                 JOptionPane.showMessageDialog(this, "Venta registrada exitosamente", "Venta Exitosa", JOptionPane.INFORMATION_MESSAGE);
                 limpiarCamposVenta();
+                setear();
+                this.habilitarCampoCedula(false);
+                this.habilitarCamposCliente(false);
             }
 
         } catch (Exception e) {

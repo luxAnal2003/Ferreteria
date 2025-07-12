@@ -4,6 +4,7 @@
  */
 package vista;
 
+import controlador.UsuarioController;
 import dao.UsuarioDAO;
 import java.awt.Dimension;
 import javax.swing.JFrame;
@@ -277,46 +278,13 @@ public class FrmLogin extends javax.swing.JFrame {
     private javax.swing.JTextField txtUsuario;
     // End of variables declaration//GEN-END:variables
 
-//    private void login() {
-//        if (!txtUsuario.getText().isEmpty() && !txtContrasenia.getText().isEmpty()) {
-//            UsuarioDAO controlUsuario = new UsuarioDAO();
-//            Usuario usuario = new Usuario();
-//            usuario.setUsuario(txtUsuario.getText().trim());
-//            usuario.setContrasenia(txtContrasenia.getText().trim());
-//
-//            Usuario usuarioAutenticado = controlUsuario.login(usuario);
-//
-//            if (usuarioAutenticado != null) {
-//                config.Sesion.setUsuarioActual(usuarioAutenticado);
-//                JOptionPane.showMessageDialog(null, "Bienvenido " + usuarioAutenticado.getNombre());
-//
-//                switch (usuarioAutenticado.getTipoRol().toLowerCase()) {
-//                    case "administrador":
-//                        new FrmMenuAdmin().setVisible(true);
-//                        break;
-//                    case "empleado":
-//                        new FrmMenuEmpleado().setVisible(true);
-//                        break;
-//                    default:
-//                        JOptionPane.showMessageDialog(null, "Rol desconocido.");
-//                }
-//                this.dispose();
-//
-//            } else {
-//                JOptionPane.showMessageDialog(null, "Usuario o Clave incorrecta");
-//            }
-//        } else {
-//            JOptionPane.showMessageDialog(null, "Ingrese sus credenciales");
-//        }
-//    }
     private void login() {
         if (!txtUsuario.getText().isEmpty() && !txtContrasenia.getText().isEmpty()) {
-            UsuarioDAO controlUsuario = new UsuarioDAO();
-            Usuario usuario = new Usuario();
-            usuario.setUsuario(txtUsuario.getText().trim());
-            usuario.setContrasenia(txtContrasenia.getText().trim());
+            UsuarioController controlUsuario = new UsuarioController();
+            String usuario = txtUsuario.getText();
+            String contrasenia = txtContrasenia.getText();
 
-            Usuario usuarioAutenticado = controlUsuario.login(usuario);
+            Usuario usuarioAutenticado = controlUsuario.login(usuario, contrasenia);
 
             if (usuarioAutenticado != null) {
                 config.Sesion.setUsuarioActual(usuarioAutenticado);
