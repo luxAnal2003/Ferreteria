@@ -96,7 +96,6 @@ public class CategoriaDAO {
                 cat.setEstado(rs.getInt("estado"));
                 lista.add(cat);
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -188,7 +187,6 @@ public class CategoriaDAO {
             if (rs.next()) {
                 return rs.getInt(1) > 0;
             }
-
         } catch (SQLException e) {
             System.out.println("Error al verificar categorias: " + e.getMessage());
         }

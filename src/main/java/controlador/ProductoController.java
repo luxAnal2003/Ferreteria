@@ -67,8 +67,8 @@ public class ProductoController {
 
         if (precio < 0) {
             return "El precio debe ser mayor o igual a cero";
-        } else if (stock < 0) {
-            return "El stock debe ser mayor o igual a cero";
+        } else if (stock < 1) {
+            return "El stock debe ser mayor o igual a uno";
         }
 
         if (productoDAO.existeProductoConNombre(nombreProducto)) {

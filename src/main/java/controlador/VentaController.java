@@ -83,7 +83,12 @@ public class VentaController {
             vista.mostrarMensaje("Producto no encontrado o inactivo. Por favor consultar en sus productos");
             return;
         }
-       
+
+        if (producto.getCantidad()< 1) {
+            vista.mostrarMensaje("El producto no tiene stock disponible");
+            return;
+        }
+
         List<DetalleVenta> listaDetalle = vista.getListaDetalle();
 
         if (detalleYaExiste(producto, listaDetalle)) {
