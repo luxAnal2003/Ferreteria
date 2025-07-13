@@ -194,7 +194,7 @@ public class JPanelConsultarProveedor extends javax.swing.JPanel {
             tableProveedor.setModel(model);
             jScrollPane3.setViewportView(tableProveedor);
         } else {
-            JOptionPane.showMessageDialog(null, "No se encontraron proveedores activos que coincidan con el criterio de búsqueda.");
+            JOptionPane.showMessageDialog(null, "No se encontraron proveedores que coincidan con el criterio de búsqueda");
             cargarProveedoresEnTabla();
         }
     }
@@ -202,7 +202,7 @@ public class JPanelConsultarProveedor extends javax.swing.JPanel {
     private void verificarExistenciaProveedor() {
         ProveedorController controller = new ProveedorController();
         if (!controller.existenProveedoresEnSistema()) {
-            JOptionPane.showMessageDialog(null, "No existen proveedores en el sistema.");
+            JOptionPane.showMessageDialog(null, "No existen proveedores en el sistema");
         }
     }
 }
