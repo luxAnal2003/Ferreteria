@@ -293,7 +293,7 @@ public class FrmLogin extends javax.swing.JFrame {
                     case "administrador":
                         new FrmMenuAdmin().setVisible(true);
                         break;
-                    case "empleado":
+                    case "vendedor":
                         new FrmMenuEmpleado().setVisible(true);
                         break;
                     default:
